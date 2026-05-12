@@ -30,17 +30,19 @@ Key files:
   id: string,
   name: string,
   period: 1–9,           // semester placement
-  hours: number,          // total (must be multiple of 15)
-  teoria: number,
-  pratica: number,
-  extensao: number,       // subset of hours (not additive — no double-counting)
-  nucleus: 'I'|'II'|'III'|'IV'|'autonoma'|'optativa',
+  hours: number,          // total (must be multiple of 15); equals teoria+pratica+extensao
+  teoria:  { hours: number, nucleus: 'I'|'II' },
+  pratica: { hours: number, nucleus: 'I'|'II' },
+  extensao:{ hours: number, nucleus: 'III' },   // always III — legislation forbids double-counting
+  // nucleus on the card as a whole = derived display color; no single-nucleus field
   prerequisites: id[],
   department: string,     // DC, DED, DM, DL, DLCH, …
-  color: string,          // visual category key
+  color: string,          // visual category key (defaults from teoria.nucleus)
   isElective: boolean,
   isEAD: boolean,
 }
+// Default when creating a discipline: teoria.nucleus = II, pratica.nucleus = II, extensao = 0h.
+// UI shows the single-nucleus shortcut; "advanced" toggle reveals per-component nucleus selectors.
 ```
 
 ### Constraints (from Restrições Curriculares Atualizado.md)
