@@ -67,7 +67,7 @@ Deployed to GitHub Pages for zero-setup sharing.
 ### Libraries (via CDN, pinned versions)
 - **Alpine.js** — reactive state and templating
 - **SortableJS** — drag-and-drop between period columns
-- (possibly) **Floating UI** or native `<dialog>` — discipline edit modal
+- native `<dialog>` — discipline edit modal (no extra dependency)
 
 ### Files
 ```
@@ -83,16 +83,21 @@ URL shared with faculty for zero-setup experimentation (browser only).
 
 ## Key Behaviors
 - **WYSIWYG grid** — 9 columns (periods), discipline cards draggable between columns
-- **Edit modal** — click any card to edit name, full hours split (teoria/prática/extensão all shown),
-  nucleus + sub-nucleus (explicit field, not derived from color), prerequisites, department, EaD flag
-- **Nucleus allocation** — disciplines can be moved between nuclei; color is the visual proxy for nucleus
-  but sub-nucleus is supported as a separate field within each nucleus
+- **Prerequisites** — stored as `id[]`; shown as text on the card ("Pré-req.: X, Y");
+  assigned via searchable multi-select in the edit modal;
+  toggle button overlays bezier-curve arrows on the grid (left→right, prereq→dependent),
+  staggered vertically per column-pair to avoid full overlap — if rendering proves too messy the
+  toggle is removed; extensão is always Núcleo III (read-only in modal)
+- **Edit modal** — click any card: name, full hours split (teoria/prática/extensão with per-component
+  nucleus selector; default single-nucleus shortcut, "advanced" toggle reveals per-component selectors);
+  prerequisites multi-select; department; EaD flag
+- **Nucleus allocation** — teoria and prática each carry a nucleus (I or II); extensão always III;
+  card color = visual proxy derived from the nucleus of the larger component
 - **Add / delete disciplines** — per-period add button; delete button on each card
-- **Constraint panel** — collapsible panel anchored to the bottom of the page; each constraint
-  is expandable to show its detail/legal citation; shows current value vs. required
-- **Weekly hours convention** — 60h discipline in a 15-week semester = 4h/week;
-  period weekly total = sum(discipline.hours) / 15; limit is 28h/week (noturno)
-- **Atividades Autônomas** — separate numeric input field outside the grid (not a discipline slot);
-  must be ≥ 120h to satisfy constraint #6
-- **Export/Import JSON** — serialize the full state so configurations can be saved and shared
-- **Print/Export HTML** — regenerate the original visual design for presentation purposes
+- **Constraint panel** — collapsible panel anchored to the bottom; each constraint expandable to show
+  detail and legal citation; displays current value vs. required for numeric constraints
+- **Weekly hours convention** — 60h discipline / 15 weeks = 4h/week;
+  period weekly total = sum(discipline.hours) / 15; limit 28h/week (noturno)
+- **Atividades Autônomas** — separate numeric input outside the grid; must be ≥ 120h
+- **Export/Import JSON** — full state serialization for saving and sharing configurations
+- **Print/Export HTML** — regenerate the original static visual design for presentation
