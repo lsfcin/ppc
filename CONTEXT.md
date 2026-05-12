@@ -81,8 +81,16 @@ URL shared with faculty for zero-setup experimentation (browser only).
 
 ## Key Behaviors
 - **WYSIWYG grid** — 9 columns (periods), discipline cards draggable between columns
-- **Edit modal** — click any card to edit name, hours split (teoria/prática/extensão), nucleus, prerequisites, department, EaD flag
-- **Add / delete disciplines** — per-period or globally
-- **Constraint panel** — always-visible sidebar or footer with live green/red checks for all 11 constraints
+- **Edit modal** — click any card to edit name, full hours split (teoria/prática/extensão all shown),
+  nucleus + sub-nucleus (explicit field, not derived from color), prerequisites, department, EaD flag
+- **Nucleus allocation** — disciplines can be moved between nuclei; color is the visual proxy for nucleus
+  but sub-nucleus is supported as a separate field within each nucleus
+- **Add / delete disciplines** — per-period add button; delete button on each card
+- **Constraint panel** — collapsible panel anchored to the bottom of the page; each constraint
+  is expandable to show its detail/legal citation; shows current value vs. required
+- **Weekly hours convention** — 60h discipline in a 15-week semester = 4h/week;
+  period weekly total = sum(discipline.hours) / 15; limit is 28h/week (noturno)
+- **Atividades Autônomas** — separate numeric input field outside the grid (not a discipline slot);
+  must be ≥ 120h to satisfy constraint #6
 - **Export/Import JSON** — serialize the full state so configurations can be saved and shared
 - **Print/Export HTML** — regenerate the original visual design for presentation purposes
