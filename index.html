@@ -88,14 +88,13 @@
     <div class="panel">
       <h2>Legenda</h2>
       <div class="legend">
-        <div class="legend-item"><span class="swatch yellow"></span> Formação docente — Núcleo I</div>
-        <div class="legend-item"><span class="swatch blue"></span>   Computação — Núcleo II</div>
-        <div class="legend-item"><span class="swatch cyan"></span>   Mat. / Computação — Núcleo II</div>
-        <div class="legend-item"><span class="swatch green"></span>  Matemática — Núcleo II</div>
-        <div class="legend-item"><span class="swatch purple"></span> Extensão / Projeto — Núcleo III</div>
-        <div class="legend-item"><span class="swatch orange"></span> Estágio — Núcleo IV</div>
-        <div class="legend-item"><span class="swatch salmon"></span> Métodos / TCC</div>
-        <div class="legend-item"><span class="swatch gray"></span>   Optativa</div>
+        <div class="legend-item"><span class="swatch salmon"></span> Núcleo I — Formação docente</div>
+        <div class="legend-item"><span class="swatch blue"></span>   Núcleo II — Computação</div>
+        <div class="legend-item"><span class="swatch cyan"></span>   Núcleo II — Mat. / Computação</div>
+        <div class="legend-item"><span class="swatch green"></span>  Núcleo II — Matemática</div>
+        <div class="legend-item"><span class="swatch gray"></span>   Núcleo II — Optativa</div>
+        <div class="legend-item"><span class="swatch purple"></span> Núcleo III — Extensão</div>
+        <div class="legend-item"><span class="swatch orange"></span> Núcleo IV — Estágio</div>
       </div>
     </div>
   </div>
@@ -138,25 +137,12 @@
       <label>Nome</label>
       <input type="text" x-model="editing.name">
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="field">
         <label>Departamento</label>
         <select x-model="editing.department">
           <option>DC</option><option>DED</option><option>DM</option>
           <option>DL</option><option>DLCH</option><option>Outro</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Cor / Categoria</label>
-        <select x-model="editing.color">
-          <option value="yellow">Formação docente</option>
-          <option value="blue">Computação</option>
-          <option value="cyan">Mat./Computação</option>
-          <option value="green">Matemática</option>
-          <option value="purple">Extensão/Projeto</option>
-          <option value="orange">Estágio</option>
-          <option value="salmon">Métodos/TCC</option>
-          <option value="gray">Optativa</option>
         </select>
       </div>
       <div class="field">
@@ -177,15 +163,26 @@
       <div class="hours-row">
         <div class="hours-cell">
           <label>Teoria</label>
-          <input type="number" min="0" step="15" x-model.number="editing.teoria.hours">
+          <input type="number" min="0" step="15" x-model.number="editing.teoria.hours" @change="fixColor()">
+          <select x-show="editing.teoria.hours > 0" x-model="editing.teoria.nucleus" class="nucleus-inline" @change="fixColor()">
+            <option value="I">Núcleo I</option>
+            <option value="II">Núcleo II</option>
+            <option value="IV">Núcleo IV</option>
+          </select>
         </div>
         <div class="hours-cell">
           <label>Prática</label>
-          <input type="number" min="0" step="15" x-model.number="editing.pratica.hours">
+          <input type="number" min="0" step="15" x-model.number="editing.pratica.hours" @change="fixColor()">
+          <select x-show="editing.pratica.hours > 0" x-model="editing.pratica.nucleus" class="nucleus-inline" @change="fixColor()">
+            <option value="I">Núcleo I</option>
+            <option value="II">Núcleo II</option>
+            <option value="IV">Núcleo IV</option>
+          </select>
         </div>
         <div class="hours-cell">
           <label>Extensão</label>
-          <input type="number" min="0" step="15" x-model.number="editing.extensao.hours">
+          <input type="number" min="0" step="15" x-model.number="editing.extensao.hours" @change="fixColor()">
+          <div x-show="editing.extensao.hours > 0" class="nucleus-fixed">Núcleo III (fixo)</div>
         </div>
       </div>
       <div style="margin-top:6px;font-size:12px;color:var(--muted)">
@@ -193,33 +190,13 @@
         <span class="hours-warning" x-show="hoursInvalid()" x-text="' — ' + hoursWarning()"></span>
       </div>
     </div>
-    <div>
-      <button class="adv-toggle" @click="showAdvanced = !showAdvanced"
-        x-text="showAdvanced ? '▲ Ocultar alocação de núcleo' : '▼ Configuração avançada de núcleo'">
-      </button>
-      <div x-show="showAdvanced" style="margin-top:10px">
-        <div class="nucleus-row">
-          <div class="nucleus-cell">
-            <label>Núcleo — Teoria</label>
-            <select x-model="editing.teoria.nucleus">
-              <option value="I">Núcleo I — Formação Geral</option>
-              <option value="II">Núcleo II — Conhecimentos Específicos</option>
-              <option value="IV">Núcleo IV — Estágio</option>
-            </select>
-          </div>
-          <div class="nucleus-cell">
-            <label>Núcleo — Prática</label>
-            <select x-model="editing.pratica.nucleus">
-              <option value="I">Núcleo I — Formação Geral</option>
-              <option value="II">Núcleo II — Conhecimentos Específicos</option>
-              <option value="IV">Núcleo IV — Estágio</option>
-            </select>
-          </div>
-        </div>
-        <div style="margin-top:8px;font-size:12px;color:var(--muted)">
-          Extensão → sempre Núcleo III (fixo por lei).
-        </div>
-      </div>
+    <div class="field">
+      <label>Categoria / Cor</label>
+      <select x-model="editing.color">
+        <template x-for="cat in availableCategories()" :key="cat.value">
+          <option :value="cat.value" x-text="cat.label"></option>
+        </template>
+      </select>
     </div>
     <div class="field">
       <label>Pré-requisitos</label>

@@ -1,3 +1,13 @@
+const CATEGORIES = [
+  { value: 'salmon', label: 'Formação docente',  nuclei: ['I'] },
+  { value: 'blue',   label: 'Computação',         nuclei: ['II'] },
+  { value: 'cyan',   label: 'Mat. / Computação',  nuclei: ['II'] },
+  { value: 'green',  label: 'Matemática',          nuclei: ['II'] },
+  { value: 'gray',   label: 'Optativa',            nuclei: ['II'] },
+  { value: 'purple', label: 'Extensão / Projeto',  nuclei: ['III'] },
+  { value: 'orange', label: 'Estágio',             nuclei: ['IV'] },
+]
+
 function ppc() {
   return {
     disciplines:          JSON.parse(JSON.stringify(DISCIPLINES_DATA)),
@@ -5,7 +15,6 @@ function ppc() {
     ordinals:             ['1º','2º','3º','4º','5º','6º','7º','8º','9º'],
     editing:              null,
     editingId:            null,
-    showAdvanced:         false,
     constraintOpen:       false,
     showArrows:           false,
     _nextId:              100,
@@ -73,9 +82,8 @@ function ppc() {
     openModal(id) {
       const d = this.byId(id)
       if (!d) return
-      this.editingId    = id
-      this.editing      = JSON.parse(JSON.stringify(d))
-      this.showAdvanced = false
+      this.editingId = id
+      this.editing   = JSON.parse(JSON.stringify(d))
       document.getElementById('edit-modal').showModal()
     },
 
@@ -129,6 +137,23 @@ function ppc() {
       const idx = this.editing.prerequisites.indexOf(id)
       if (idx === -1) this.editing.prerequisites.push(id)
       else            this.editing.prerequisites.splice(idx, 1)
+    },
+
+    availableCategories() {
+      if (!this.editing) return CATEGORIES
+      const used = new Set()
+      if (this.editing.teoria.hours   > 0) used.add(this.editing.teoria.nucleus)
+      if (this.editing.pratica.hours  > 0) used.add(this.editing.pratica.nucleus)
+      if (this.editing.extensao.hours > 0) used.add('III')
+      if (used.size === 0) return CATEGORIES
+      return CATEGORIES.filter(c => c.nuclei.some(n => used.has(n)))
+    },
+
+    fixColor() {
+      if (!this.editing) return
+      const avail = this.availableCategories()
+      if (!avail.some(c => c.value === this.editing.color))
+        this.editing.color = avail[0]?.value ?? 'blue'
     },
 
     // ── Arrow overlay ─────────────────────────────────────────────────────────

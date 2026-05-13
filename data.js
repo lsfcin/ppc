@@ -2,10 +2,10 @@ const DISCIPLINES_DATA = [
   // ── Período 1 ──────────────────────────────────────────────────────────────
   { id:'fund-edu',   name:'Fundamentos da Educação',                     period:1, hours:60, order:0,
     teoria:{hours:60,nucleus:'I'},   pratica:{hours:0, nucleus:'I'},  extensao:{hours:0, nucleus:'III'},
-    prerequisites:[], department:'DED',  color:'yellow', isElective:false, eadPercent:0 },
+    prerequisites:[], department:'DED',  color:'salmon', isElective:false, eadPercent:0 },
   { id:'psico-1',    name:'Psicologia I',                                period:1, hours:60, order:1,
     teoria:{hours:60,nucleus:'I'},   pratica:{hours:0, nucleus:'I'},  extensao:{hours:0, nucleus:'III'},
-    prerequisites:[], department:'DED',  color:'yellow', isElective:false, eadPercent:0 },
+    prerequisites:[], department:'DED',  color:'salmon', isElective:false, eadPercent:0 },
   { id:'pens-comp',  name:'Pensamento Computacional',                    period:1, hours:60, order:2,
     teoria:{hours:30,nucleus:'II'},  pratica:{hours:30,nucleus:'II'}, extensao:{hours:0, nucleus:'III'},
     prerequisites:[], department:'DC',   color:'blue',   isElective:false, eadPercent:0 },
@@ -19,10 +19,10 @@ const DISCIPLINES_DATA = [
   // ── Período 2 ──────────────────────────────────────────────────────────────
   { id:'ed-bra',     name:'Educação Brasileira: legislação, organização e políticas', period:2, hours:60, order:0,
     teoria:{hours:60,nucleus:'I'},   pratica:{hours:0, nucleus:'I'},  extensao:{hours:0, nucleus:'III'},
-    prerequisites:[], department:'DED',  color:'yellow', isElective:false, eadPercent:0 },
+    prerequisites:[], department:'DED',  color:'salmon', isElective:false, eadPercent:0 },
   { id:'psico-2',    name:'Psicologia II',                               period:2, hours:60, order:1,
     teoria:{hours:60,nucleus:'I'},   pratica:{hours:0, nucleus:'I'},  extensao:{hours:0, nucleus:'III'},
-    prerequisites:['psico-1'], department:'DED', color:'yellow', isElective:false, eadPercent:0 },
+    prerequisites:['psico-1'], department:'DED', color:'salmon', isElective:false, eadPercent:0 },
   { id:'prog-1',     name:'Programação I',                               period:2, hours:60, order:2,
     teoria:{hours:30,nucleus:'II'},  pratica:{hours:30,nucleus:'II'}, extensao:{hours:0, nucleus:'III'},
     prerequisites:['pens-comp'], department:'DC', color:'blue', isElective:false, eadPercent:0 },
@@ -36,7 +36,7 @@ const DISCIPLINES_DATA = [
   // ── Período 3 ──────────────────────────────────────────────────────────────
   { id:'didatica',   name:'Didática',                                    period:3, hours:60, order:0,
     teoria:{hours:30,nucleus:'I'},   pratica:{hours:30,nucleus:'I'},  extensao:{hours:0, nucleus:'III'},
-    prerequisites:[], department:'DED',  color:'yellow', isElective:false, eadPercent:0 },
+    prerequisites:[], department:'DED',  color:'salmon', isElective:false, eadPercent:0 },
   { id:'ihm',        name:'Interação Homem-Máquina',                     period:3, hours:60, order:1,
     teoria:{hours:30,nucleus:'II'},  pratica:{hours:30,nucleus:'II'}, extensao:{hours:0, nucleus:'III'},
     prerequisites:[], department:'DC',   color:'blue',   isElective:false, eadPercent:0 },
@@ -53,7 +53,7 @@ const DISCIPLINES_DATA = [
   // ── Período 4 ──────────────────────────────────────────────────────────────
   { id:'met-ens',    name:'Metodologia do Ensino da Computação',         period:4, hours:60, order:0,
     teoria:{hours:30,nucleus:'I'},   pratica:{hours:30,nucleus:'I'},  extensao:{hours:0, nucleus:'III'},
-    prerequisites:['didatica'], department:'DED', color:'yellow', isElective:false, eadPercent:0 },
+    prerequisites:['didatica'], department:'DED', color:'salmon', isElective:false, eadPercent:0 },
   { id:'aed',        name:'Algoritmos e Estruturas de Dados',            period:4, hours:60, order:1,
     teoria:{hours:30,nucleus:'II'},  pratica:{hours:30,nucleus:'II'}, extensao:{hours:0, nucleus:'III'},
     prerequisites:['mat-disc-1','prog-1'], department:'DC', color:'blue', isElective:false, eadPercent:0 },
@@ -70,7 +70,7 @@ const DISCIPLINES_DATA = [
   // ── Período 5 ──────────────────────────────────────────────────────────────
   { id:'erer',       name:'Educ. das Relações Étnico-Raciais',           period:5, hours:60, order:0,
     teoria:{hours:60,nucleus:'I'},   pratica:{hours:0, nucleus:'I'},  extensao:{hours:0, nucleus:'III'},
-    prerequisites:[], department:'DLCH', color:'yellow', isElective:false, eadPercent:0 },
+    prerequisites:[], department:'DLCH', color:'salmon', isElective:false, eadPercent:0 },
   { id:'eso-1',      name:'Estágio Supervisionado Obrigatório I',        period:5, hours:90, order:1,
     teoria:{hours:0, nucleus:'IV'},  pratica:{hours:90,nucleus:'IV'}, extensao:{hours:0, nucleus:'III'},
     prerequisites:['ed-bra','met-ens'], department:'DC', color:'orange', isElective:false, eadPercent:0 },
@@ -87,7 +87,7 @@ const DISCIPLINES_DATA = [
   // ── Período 6 ──────────────────────────────────────────────────────────────
   { id:'libras',     name:'Língua Brasileira de Sinais – Libras',        period:6, hours:60, order:0,
     teoria:{hours:60,nucleus:'I'},   pratica:{hours:0, nucleus:'I'},  extensao:{hours:0, nucleus:'III'},
-    prerequisites:[], department:'DL',   color:'yellow', isElective:false, eadPercent:0 },
+    prerequisites:[], department:'DL',   color:'salmon', isElective:false, eadPercent:0 },
   { id:'eso-2',      name:'Estágio Supervisionado Obrigatório II',       period:6, hours:90, order:1,
     teoria:{hours:0, nucleus:'IV'},  pratica:{hours:90,nucleus:'IV'}, extensao:{hours:0, nucleus:'III'},
     prerequisites:['eso-1'], department:'DC', color:'orange', isElective:false, eadPercent:0 },
@@ -104,7 +104,7 @@ const DISCIPLINES_DATA = [
   // ── Período 7 ──────────────────────────────────────────────────────────────
   { id:'prod-tex',   name:'Produção de Textos Acadêmicos I',             period:7, hours:60, order:0,
     teoria:{hours:60,nucleus:'I'},   pratica:{hours:0, nucleus:'I'},  extensao:{hours:0, nucleus:'III'},
-    prerequisites:[], department:'DL',   color:'yellow', isElective:false, eadPercent:0 },
+    prerequisites:[], department:'DL',   color:'salmon', isElective:false, eadPercent:0 },
   { id:'eso-3',      name:'Estágio Supervisionado Obrigatório III',      period:7, hours:90, order:1,
     teoria:{hours:0, nucleus:'IV'},  pratica:{hours:90,nucleus:'IV'}, extensao:{hours:0, nucleus:'III'},
     prerequisites:['eso-2'], department:'DC', color:'orange', isElective:false, eadPercent:0 },
@@ -121,7 +121,7 @@ const DISCIPLINES_DATA = [
   // ── Período 8 ──────────────────────────────────────────────────────────────
   { id:'met-cient',  name:'Metodologia Científica Aplicada à Computação',period:8, hours:60, order:0,
     teoria:{hours:60,nucleus:'II'},  pratica:{hours:0, nucleus:'II'}, extensao:{hours:0, nucleus:'III'},
-    prerequisites:[], department:'DC',   color:'salmon', isElective:false, eadPercent:0 },
+    prerequisites:[], department:'DC',   color:'blue',   isElective:false, eadPercent:0 },
   { id:'eso-4',      name:'Estágio Supervisionado Obrigatório IV',       period:8, hours:135, order:1,
     teoria:{hours:0, nucleus:'IV'},  pratica:{hours:135,nucleus:'IV'},extensao:{hours:0, nucleus:'III'},
     prerequisites:['eso-3'], department:'DC', color:'orange', isElective:false, eadPercent:0 },
@@ -135,7 +135,7 @@ const DISCIPLINES_DATA = [
   // ── Período 9 ──────────────────────────────────────────────────────────────
   { id:'tcc',        name:'Trabalho de Conclusão de Curso — TCC',        period:9, hours:120, order:0,
     teoria:{hours:120,nucleus:'II'}, pratica:{hours:0, nucleus:'II'}, extensao:{hours:0, nucleus:'III'},
-    prerequisites:['met-cient'], department:'DC', color:'salmon', isElective:false, eadPercent:0 },
+    prerequisites:['met-cient'], department:'DC', color:'blue',   isElective:false, eadPercent:0 },
   { id:'opt-3',      name:'Optativa 3',                                  period:9, hours:60, order:1,
     teoria:{hours:60,nucleus:'II'},  pratica:{hours:0, nucleus:'II'}, extensao:{hours:0, nucleus:'III'},
     prerequisites:[], department:'DC',   color:'gray',   isElective:true,  eadPercent:0 },
