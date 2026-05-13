@@ -14,6 +14,27 @@ const TRANSVERSAL_THEMES = [
   { id: 'afro',
     label: 'História e Cultura Afro-Brasileira, Indígena e Combate ao Racismo',
     detail: 'Resolução CNE/CP Nº 4/2024: "das relações étnico-raciais estabelecidas na sociedade brasileira [...] e que garantam a apropriação dos conhecimentos relativos à história e cultura africana, afrobrasileira e dos povos originários do Brasil, bem como de valores e atitudes orientados à desconstruir e combater todas as expressões do racismo." Nota: a UFRPE exige a disciplina específica de Relações Étnico-Raciais, mas as diretrizes exigem que o combate ao racismo seja transversalizado nas práticas educativas.' },
+  { id: 'ava',
+    label: 'Incorporação Curricular de Espaços Virtuais de Aprendizagem (AVAs)',
+    detail: 'Resolução CNE/CP Nº 4/2024, Art. VII: "a incorporação de espaços virtuais de aprendizagem para aprimoramento das práticas de ensino, permitindo dinamicidade e interatividade para exploração de métodos inovadores de ensino que se adaptem às necessidades diversificadas dos alunos, desenvolvendo o pensamento crítico e a habilidade de navegar eficazmente no vasto universo da informação digital."' },
+  { id: 'tdic-competencias',
+    label: 'Desenvolvimento de Competências Digitais Docentes (TDIC)',
+    detail: 'Resolução CNE/CP Nº 4/2024, Art. VI: "o uso das Tecnologias Digitais de Informação e Comunicação - TDIC, possibilitando o desenvolvimento de competências digitais docente, para o aprimoramento da prática pedagógica, e a ampliação da formação cultural dos professores e licenciandos."' },
+  { id: 'midias-didatica',
+    label: 'Domínio e Recontextualização das Mídias no Processo Didático',
+    detail: 'Resolução CNE/CP Nº 4/2024, Art. XIII: "recontextualizar a linguagem dos meios de comunicação à educação, nos processos didático-pedagógicos, demonstrando domínio das tecnologias digitais de informação e comunicação para o desenvolvimento da aprendizagem."' },
+  { id: 'ihc-educacional',
+    label: 'Interação Humano-Computador Educacional',
+    detail: 'Resolução CNE/CES Nº 5/2016, §5º, II: "adquiram capacidade de fazer uso da interdisciplinaridade e introduzir conceitos pedagógicos no desenvolvimento de Tecnologias Educacionais, produzindo uma interação humano-computador inteligente, visando ao ensino e à aprendizagem assistidos por computador."' },
+  { id: 'ead-assistido',
+    label: 'Ensino e Aprendizagem Assistidos por Computador / EaD',
+    detail: 'Resolução CNE/CES Nº 5/2016, §5º, II: "adquiram capacidade de fazer uso da interdisciplinaridade e introduzir conceitos pedagógicos no desenvolvimento de Tecnologias Educacionais [...] visando ao ensino e à aprendizagem assistidos por computador, incluindo a Educação à Distância."' },
+  { id: 'software-ead-avaliacao',
+    label: 'Especificação e Avaliação de Softwares para EaD',
+    detail: 'Resolução CNE/CES Nº 5/2016, Art. 5º, II: "especificar e avaliar softwares e equipamentos para aplicação educacionais e de Educação à Distância."' },
+  { id: 'software-ead-projeto',
+    label: 'Projeto e Desenvolvimento de Tecnologias para EaD',
+    detail: 'Resolução CNE/CES Nº 5/2016, Art. 5º, III: "projetar e desenvolver softwares e hardware educacionais e de Educação à Distância em equipes interdisciplinares."' },
 ]
 
 const MANDATORY_NAMES = [
@@ -49,10 +70,22 @@ function buildConstraints(app) {
     !ds.some(d => d.name.toLowerCase().includes(m.toLowerCase()))
   )
 
-  const totalH = tot + atividadesAutonomas
-  const minN3  = Math.ceil(totalH * 0.10)
+  const totalH  = tot + atividadesAutonomas
+  const minN3   = Math.ceil(totalH * 0.10)
+  const hasEad  = ds.some(d => (d.eadPercent ?? 0) > 0)
+  const eadViol = ds
+    .filter(d => (d.eadPercent ?? 0) > 0 &&
+      (d.teoria.nucleus === 'IV' || d.pratica.nucleus === 'IV' || d.extensao.hours > 0))
+    .map(d => d.name)
 
   return [
+    ...(hasEad ? [{
+      id: 'cw1', warn: true, ok: true,
+      label: 'Uso Obrigatório de TDIC e AVAs em EaD',
+      value: 'O PPC e o Plano de Ensino de cada componente EaD devem prever TDIC, AVA institucional, material didático específico, equipe multidisciplinar, tutoria e experiência docente em EaD.',
+      detail: 'Resolução CEPE/UFRPE Nº 744/2024, Art. 26: "Os cursos de graduação presenciais com oferta de carga horária a distância (parcial ou integral) deverão prever, no PPC e no Plano de Ensino do componente curricular, as estratégias e práticas de ensino-aprendizagem mediadas pelas TDIC, bem como o uso do ambiente virtual institucional, produção de material didático específico, equipe multidisciplinar, tutoria e experiência do corpo docente em Educação a Distância para alcançar os objetivos pedagógicos e atender ao Instrumento de Avaliação dos Cursos de Graduação e o Referencial de Qualidade da Educação a Distância."',
+      detailOpen: false,
+    }] : []),
     { id:'c1',  label:'CH Total ≥ 3200h',
       ok: totalH >= 3200,
       value: `Atual: ${totalH}h (disciplinas ${tot}h + autônomas ${atividadesAutonomas}h)`,
@@ -116,6 +149,13 @@ function buildConstraints(app) {
         : `Violações: ${preqViol.join('; ')}`,
       detail: 'Pré-requisito deve estar alocado em período anterior ao da disciplina que o exige.',
       detailOpen: false },
+    { id:'c12', label:'EaD proibido em Estágio e Extensão (presencialidade obrigatória)',
+      ok: eadViol.length === 0,
+      value: eadViol.length === 0
+        ? 'Sem violações'
+        : `Com EaD indevido: ${eadViol.join(', ')}`,
+      detail: 'Resolução CEPE/UFRPE Nº 744/2024, §5º: "O estágio curricular supervisionado deve ser realizado, integralmente, de forma presencial tanto nos cursos presenciais quanto nos cursos ofertados na modalidade a distância." §6º: "As 320 horas destinadas às atividades de extensão devem ser realizadas, integralmente, de forma presencial."',
+      detailOpen: false },
     ...TRANSVERSAL_THEMES.map((theme, i) => {
       const count = ds.filter(d => (d.tags ?? []).includes(theme.id)).length
       return {
@@ -134,7 +174,7 @@ function buildConstraints(app) {
 
 function buildConstraintSummary(app) {
   const disabled = app.disabledConstraints ?? []
-  const cs   = buildConstraints(app).filter(c => !disabled.includes(c.id))
+  const cs   = buildConstraints(app).filter(c => !disabled.includes(c.id) && !c.warn)
   const ok   = cs.filter(c => c.ok).length
   const fail = cs.length - ok
   return `<span class="badge-ok">${ok} ok</span>`
