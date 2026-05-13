@@ -104,6 +104,59 @@
     .swatch.green  { background: var(--green); }
     .swatch.orange { background: var(--orange); }
     .swatch.gray   { background: var(--gray); }
+
+    /* modal */
+    dialog { border: none; border-radius: 20px; padding: 0; box-shadow: 0 24px 64px rgba(15,23,42,.18);
+      width: 560px; max-width: 96vw; max-height: 90vh; overflow-y: auto; }
+    dialog::backdrop { background: rgba(15,23,42,.35); }
+    .modal-head { display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px 16px; border-bottom: 1px solid #e5e7eb; }
+    .modal-head h3 { margin: 0; font-size: 17px; }
+    .modal-close { background: none; border: none; font-size: 20px; cursor: pointer;
+      color: var(--muted); padding: 4px 8px; border-radius: 8px; }
+    .modal-close:hover { background: #f3f4f6; }
+    .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+    .modal-footer { padding: 14px 24px; border-top: 1px solid #e5e7eb;
+      display: flex; justify-content: flex-end; gap: 10px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 12px; font-weight: 700; color: #374151;
+      letter-spacing: .04em; text-transform: uppercase; }
+    .field input[type=text], .field input[type=number], .field select, .field textarea {
+      border: 1px solid #d1d5db; border-radius: 10px; padding: 8px 12px;
+      font-size: 14px; font-family: inherit; width: 100%; }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: 2px solid #3b82f6; outline-offset: 1px; border-color: transparent; }
+    .hours-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .hours-cell { display: flex; flex-direction: column; gap: 4px; }
+    .hours-cell label { font-size: 11px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .04em; }
+    .hours-cell input { border: 1px solid #d1d5db; border-radius: 8px; padding: 6px 10px;
+      font-size: 14px; width: 100%; text-align: center; }
+    .nucleus-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .nucleus-cell { display: flex; flex-direction: column; gap: 4px; }
+    .nucleus-cell label { font-size: 11px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .04em; }
+    .nucleus-cell select { border: 1px solid #d1d5db; border-radius: 8px; padding: 6px 10px;
+      font-size: 13px; }
+    .hours-warning { font-size: 12px; color: #ef4444; font-weight: 600; }
+    .adv-toggle { font-size: 12px; color: #3b82f6; cursor: pointer; background: none;
+      border: none; padding: 0; text-decoration: underline; }
+    .prereq-list { display: flex; flex-direction: column; gap: 4px; max-height: 160px;
+      overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 10px; padding: 8px; }
+    .prereq-item { display: flex; align-items: center; gap: 8px; font-size: 13px;
+      padding: 4px 6px; border-radius: 6px; }
+    .prereq-item:hover { background: #f9fafb; }
+    .prereq-item input[type=checkbox] { width: 15px; height: 15px; cursor: pointer; }
+    .checks-row { display: flex; gap: 16px; }
+    .check-item { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+    .btn { border: none; border-radius: 10px; padding: 9px 18px; font-size: 14px;
+      font-weight: 700; cursor: pointer; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-danger  { background: #fee2e2; color: #dc2626; }
+    .btn-danger:hover  { background: #fecaca; }
+    .btn-cancel  { background: #f3f4f6; color: #374151; }
+    .btn-cancel:hover  { background: #e5e7eb; }
   </style>
 </head>
 <body x-data="ppc()" x-init="$nextTick(() => initSortable())">
@@ -127,7 +180,7 @@
           </div>
           <div class="cards" :id="`period-${p}`">
             <template x-for="d in disciplinesIn(p)" :key="d.id">
-              <div class="course" :class="d.color" :data-id="d.id">
+              <div class="course" :class="d.color" :data-id="d.id" @click="openModal(d.id)">
                 <div class="hrs" x-text="d.hours + 'h'"></div>
                 <div class="name" x-text="d.name"></div>
                 <div class="meta" x-show="cardMeta(d)" x-text="cardMeta(d)"></div>
@@ -185,7 +238,136 @@
     </div>
   </div>
 
-</div>
+</div><!-- .wrap -->
+
+<!-- ── Edit Modal ──────────────────────────────────────────────────────────── -->
+<dialog id="edit-modal" @click.self="closeModal()">
+  <div class="modal-head">
+    <h3>Editar disciplina</h3>
+    <button class="modal-close" @click="closeModal()">✕</button>
+  </div>
+  <div class="modal-body" x-show="editing">
+
+    <div class="field">
+      <label>Nome</label>
+      <input type="text" x-model="editing.name">
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div class="field">
+        <label>Departamento</label>
+        <select x-model="editing.department">
+          <option>DC</option><option>DED</option><option>DM</option>
+          <option>DL</option><option>DLCH</option><option>Outro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Cor / Categoria</label>
+        <select x-model="editing.color">
+          <option value="yellow">Formação docente</option>
+          <option value="blue">Computação</option>
+          <option value="cyan">Mat./Computação</option>
+          <option value="green">Matemática</option>
+          <option value="purple">Extensão/Projeto</option>
+          <option value="orange">Estágio</option>
+          <option value="salmon">Métodos/TCC</option>
+          <option value="gray">Optativa</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Período</label>
+        <select x-model.number="editing.period">
+          <template x-for="p in 9" :key="p">
+            <option :value="p" x-text="ordinals[p-1]"></option>
+          </template>
+        </select>
+      </div>
+    </div>
+
+    <div class="checks-row">
+      <label class="check-item">
+        <input type="checkbox" x-model="editing.isElective"> Optativa
+      </label>
+      <label class="check-item">
+        <input type="checkbox" x-model="editing.isEAD"> EaD
+      </label>
+    </div>
+
+    <!-- Hours -->
+    <div class="field">
+      <label>Carga horária (múltiplo de 15h)</label>
+      <div class="hours-row">
+        <div class="hours-cell">
+          <label>Teoria</label>
+          <input type="number" min="0" step="15" x-model.number="editing.teoria.hours">
+        </div>
+        <div class="hours-cell">
+          <label>Prática</label>
+          <input type="number" min="0" step="15" x-model.number="editing.pratica.hours">
+        </div>
+        <div class="hours-cell">
+          <label>Extensão</label>
+          <input type="number" min="0" step="15" x-model.number="editing.extensao.hours">
+        </div>
+      </div>
+      <div style="margin-top:6px;font-size:12px;color:var(--muted)">
+        Total: <strong x-text="editing.teoria.hours + editing.pratica.hours + editing.extensao.hours + 'h'"></strong>
+        <span class="hours-warning" x-show="hoursInvalid()" x-text="' — ' + hoursWarning()"></span>
+      </div>
+    </div>
+
+    <!-- Nucleus (advanced) -->
+    <div>
+      <button class="adv-toggle" @click="showAdvanced = !showAdvanced"
+        x-text="showAdvanced ? '▲ Ocultar alocação de núcleo' : '▼ Configuração avançada de núcleo'">
+      </button>
+      <div x-show="showAdvanced" style="margin-top:10px">
+        <div class="nucleus-row">
+          <div class="nucleus-cell">
+            <label>Núcleo — Teoria</label>
+            <select x-model="editing.teoria.nucleus">
+              <option value="I">Núcleo I — Formação Geral</option>
+              <option value="II">Núcleo II — Conhecimentos Específicos</option>
+              <option value="IV">Núcleo IV — Estágio</option>
+            </select>
+          </div>
+          <div class="nucleus-cell">
+            <label>Núcleo — Prática</label>
+            <select x-model="editing.pratica.nucleus">
+              <option value="I">Núcleo I — Formação Geral</option>
+              <option value="II">Núcleo II — Conhecimentos Específicos</option>
+              <option value="IV">Núcleo IV — Estágio</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:var(--muted)">
+          Extensão → sempre Núcleo III (fixo por lei).
+        </div>
+      </div>
+    </div>
+
+    <!-- Prerequisites -->
+    <div class="field">
+      <label>Pré-requisitos</label>
+      <div class="prereq-list">
+        <template x-for="d in otherDisciplines()" :key="d.id">
+          <label class="prereq-item">
+            <input type="checkbox"
+              :checked="editing.prerequisites.includes(d.id)"
+              @change="togglePrereq(d.id)">
+            <span x-text="`${ordinals[d.period-1]} — ${d.name}`"></span>
+          </label>
+        </template>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-danger" @click="deleteEditing()">Excluir</button>
+    <button class="btn btn-cancel" @click="closeModal()">Cancelar</button>
+    <button class="btn btn-primary" @click="saveEditing()" :disabled="hoursInvalid()">Salvar</button>
+  </div>
+</dialog>
 
 <script>
 const DISCIPLINES_DATA = [
@@ -342,6 +524,9 @@ function ppc() {
     disciplines: JSON.parse(JSON.stringify(DISCIPLINES_DATA)),
     atividadesAutonomas: 275,
     ordinals: ['1º','2º','3º','4º','5º','6º','7º','8º','9º'],
+    editing: null,
+    editingId: null,
+    showAdvanced: false,
 
     // ── Queries ──────────────────────────────────────────────────────────────
     disciplinesIn(p) {
@@ -391,6 +576,69 @@ function ppc() {
 
     totalHours() {
       return this.disciplineHours() + this.atividadesAutonomas
+    },
+
+    // ── Modal ─────────────────────────────────────────────────────────────────
+    openModal(id) {
+      const d = this.byId(id)
+      if (!d) return
+      this.editingId   = id
+      this.editing     = JSON.parse(JSON.stringify(d))
+      this.showAdvanced = false
+      document.getElementById('edit-modal').showModal()
+    },
+
+    closeModal() {
+      this.editing = null
+      this.editingId = null
+      document.getElementById('edit-modal').close()
+    },
+
+    saveEditing() {
+      if (this.hoursInvalid()) return
+      const idx = this.disciplines.findIndex(d => d.id === this.editingId)
+      if (idx !== -1) {
+        this.editing.hours = this.editing.teoria.hours + this.editing.pratica.hours + this.editing.extensao.hours
+        this.disciplines[idx] = this.editing
+      }
+      this.closeModal()
+    },
+
+    deleteEditing() {
+      this.disciplines = this.disciplines.filter(d => d.id !== this.editingId)
+      // remove from other disciplines' prerequisites
+      this.disciplines.forEach(d => {
+        d.prerequisites = d.prerequisites.filter(pid => pid !== this.editingId)
+      })
+      this.closeModal()
+    },
+
+    hoursInvalid() {
+      if (!this.editing) return false
+      const total = this.editing.teoria.hours + this.editing.pratica.hours + this.editing.extensao.hours
+      return total <= 0 || total % 15 !== 0
+    },
+
+    hoursWarning() {
+      if (!this.editing) return ''
+      const total = this.editing.teoria.hours + this.editing.pratica.hours + this.editing.extensao.hours
+      if (total <= 0) return 'total deve ser maior que zero'
+      if (total % 15 !== 0) return `${total}h não é múltiplo de 15`
+      return ''
+    },
+
+    otherDisciplines() {
+      if (!this.editingId) return []
+      return this.disciplines
+        .filter(d => d.id !== this.editingId)
+        .sort((a, b) => a.period - b.period || a.name.localeCompare(b.name))
+    },
+
+    togglePrereq(id) {
+      if (!this.editing) return
+      const idx = this.editing.prerequisites.indexOf(id)
+      if (idx === -1) this.editing.prerequisites.push(id)
+      else this.editing.prerequisites.splice(idx, 1)
     },
 
     // ── Drag-and-drop ─────────────────────────────────────────────────────────
