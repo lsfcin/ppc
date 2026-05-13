@@ -9,9 +9,10 @@ function ppc() {
     constraintOpen:       false,
     showArrows:           false,
     _nextId:              100,
+    _dragAnchor:          null,
 
     // ── Queries ───────────────────────────────────────────────────────────────
-    disciplinesIn(p)  { return this.disciplines.filter(d => d.period === p) },
+    disciplinesIn(p)  { return this.disciplines.filter(d => d.period === p).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)) },
     byId(id)          { return this.disciplines.find(d => d.id === id) },
 
     // ── Computed totals ───────────────────────────────────────────────────────
@@ -59,6 +60,7 @@ function ppc() {
         extensao: { hours: 0,  nucleus: 'III' },
         prerequisites: [], department: 'DC',
         color: 'blue', isElective: false, isEAD: false,
+        order: this.disciplines.filter(d => d.period === period).length,
       })
       this.$nextTick(() => this.openModal(id))
     },
@@ -190,7 +192,13 @@ function ppc() {
       reader.onload = e => {
         try {
           const state = JSON.parse(e.target.result)
-          if (state.disciplines)          this.disciplines          = state.disciplines
+          if (state.disciplines) {
+            this.disciplines = state.disciplines
+            for (let p = 1; p <= 9; p++) {
+              const pd = this.disciplines.filter(d => d.period === p)
+              if (pd.some(d => d.order == null)) pd.forEach((d, i) => { d.order = i })
+            }
+          }
           if (state.atividadesAutonomas != null) this.atividadesAutonomas = state.atividadesAutonomas
           this._nextId = Math.max(...this.disciplines.map(d => parseInt(d.id.split('-').pop()) || 0)) + 1
           this.$nextTick(() => {
@@ -211,22 +219,51 @@ function ppc() {
         if (!el || el._sortable) continue
         el._sortable = Sortable.create(el, {
           group: 'disciplines', animation: 0,
+          draggable: '.course',
           ghostClass: 'sortable-ghost', dragClass: 'sortable-drag',
+
+          onStart(evt) {
+            // Capture the sibling that follows the dragged item so we can revert
+            // the DOM after the drop and let Alpine be the sole DOM mover.
+            const courses = [...evt.from.querySelectorAll('[data-id]')]
+            self._dragAnchor = courses[evt.oldIndex + 1] || null
+          },
 
           onEnd(evt) {
             const newPeriod = parseInt(evt.to.id.replace('period-', ''))
-            if (isNaN(newPeriod)) return
+            const oldPeriod = parseInt(evt.from.id.replace('period-', ''))
+            if (isNaN(newPeriod) || isNaN(oldPeriod)) return
 
-            const byId = Object.fromEntries(self.disciplines.map(d => [d.id, d]))
-            const next = []
-            for (let p = 1; p <= 9; p++) {
-              const c = document.getElementById(`period-${p}`)
-              if (c) c.querySelectorAll('[data-id]').forEach(node => {
-                const d = byId[node.dataset.id]
-                if (d) { d.period = p; next.push(d) }
-              })
+            // 1. Revert SortableJS's DOM move so Alpine reconciles from a clean state.
+            evt.from.insertBefore(evt.item, self._dragAnchor)
+
+            // 2. Update the data using evt indices (no DOM reading needed).
+            const movedId = evt.item.dataset.id
+
+            if (newPeriod === oldPeriod) {
+              const periodDiscs = self.disciplines
+                .filter(d => d.period === newPeriod)
+                .sort((a, b) => a.order - b.order)
+              const from = periodDiscs.findIndex(d => d.id === movedId)
+              periodDiscs.splice(evt.newIndex, 0, periodDiscs.splice(from, 1)[0])
+              periodDiscs.forEach((d, i) => { d.order = i })
+            } else {
+              const dstDiscs = self.disciplines
+                .filter(d => d.period === newPeriod)
+                .sort((a, b) => a.order - b.order)
+              const movedDisc = self.disciplines.find(d => d.id === movedId)
+              if (!movedDisc) return
+              self.disciplines
+                .filter(d => d.period === oldPeriod && d.id !== movedId)
+                .sort((a, b) => a.order - b.order)
+                .forEach((d, i) => { d.order = i })
+              movedDisc.period = newPeriod
+              dstDiscs.splice(evt.newIndex, 0, movedDisc)
+              dstDiscs.forEach((d, i) => { d.order = i })
             }
-            self.disciplines = next
+
+            // 3. Replace array reference so Alpine re-renders into the new order.
+            self.disciplines = [...self.disciplines]
           },
         })
       }
