@@ -160,13 +160,13 @@ dialog { border: none; border-radius: 20px; padding: 0;
   box-shadow: 0 24px 64px rgba(15,23,42,.18);
   width: 560px; max-width: 96vw; max-height: 90vh; overflow-y: auto; }
 /* edit modal: wider, two-column, ~16:9 */
-#edit-modal { width: 900px; }
+#edit-modal { width: 1060px; }
 #edit-modal .modal-body { padding: 16px 20px; }
 .modal-cols  { display: flex; gap: 20px; }
-.modal-left  { flex: 0 0 400px; display: flex; flex-direction: column; gap: 14px; }
-.modal-right { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+.modal-left  { flex: 0 0 380px; display: flex; flex-direction: column; gap: 14px; }
+.modal-right { flex: 1; display: flex; flex-direction: row; gap: 14px; }
 .modal-right .field { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-.modal-right .prereq-list { flex: 1; max-height: none; }
+.modal-right .prereq-list { flex: 1; max-height: 380px; }
 dialog::backdrop { background: rgba(15,23,42,.35); }
 .modal-head   { display: flex; align-items: center; justify-content: space-between;
   padding: 20px 24px 16px; border-bottom: 1px solid #e5e7eb; }
