@@ -189,11 +189,16 @@ dialog::backdrop { background: rgba(15,23,42,.35); }
 .btn-cancel:hover  { background: #e5e7eb; }
 .tool-btn:disabled { opacity: .4; cursor: default; pointer-events: none; }
 
+@page { size: A4 landscape; margin: 8mm; }
+
 @media print {
-  .header p    { display: none !important; }
-  .toolbar     { display: none !important; }
-  .add-btn     { display: none !important; }
+  body  { zoom: 0.6; }
+  *     { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .header p       { display: none !important; }
+  .toolbar        { display: none !important; }
+  .add-btn        { display: none !important; }
   .constraint-bar { display: none !important; }
-  .wrap        { width: 100%; padding: 8px; }
-  .card        { box-shadow: none; border: 1px solid #ccc; }
+  .cards          { padding-bottom: 12px; }
+  .wrap           { width: 100%; padding: 8px; }
+  .card           { box-shadow: none; border: 1px solid #ccc; }
 }
