@@ -312,21 +312,14 @@ function ppc() {
     },
 
     // ── Export / Import ───────────────────────────────────────────────────────
-    async exportJSON() {
-      const payload       = JSON.stringify({ disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, numPeriods: this.numPeriods, categories: this.categories, title: this.title, subtitle: this.subtitle }, null, 2)
-      const suggestedName = `grade-lc-${new Date().toISOString().slice(0, 10)}.json`
-      if (window.showSaveFilePicker) {
-        try {
-          const handle   = await window.showSaveFilePicker({ suggestedName, types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }] })
-          const writable = await handle.createWritable()
-          await writable.write(payload)
-          await writable.close()
-          return
-        } catch (e) { if (e.name === 'AbortError') return }
-      }
+    exportJSON() {
+      const defaultName = `grade-lc-${new Date().toISOString().slice(0, 10)}.json`
+      const name = prompt('Nome do arquivo:', defaultName)
+      if (name === null) return
+      const payload = JSON.stringify({ disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, numPeriods: this.numPeriods, categories: this.categories, title: this.title, subtitle: this.subtitle }, null, 2)
       const a = Object.assign(document.createElement('a'), {
         href:     URL.createObjectURL(new Blob([payload], { type: 'application/json' })),
-        download: suggestedName,
+        download: name.endsWith('.json') ? name : name + '.json',
       })
       a.click()
       URL.revokeObjectURL(a.href)
