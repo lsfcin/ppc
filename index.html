@@ -28,7 +28,6 @@
       <div class="toolbar">
         <button class="tool-btn" @click="undo()" :disabled="_history.length === 0">↩ Desfazer</button>
         <button class="tool-btn" @click="redo()" :disabled="_future.length === 0">↪ Refazer</button>
-        <button class="tool-btn" :class="{active: showArrows}" @click="toggleArrows()">⟶ Pré-requisitos</button>
         <label class="tool-btn" style="cursor:pointer">
           ⬆ Importar JSON
           <input class="import-file" type="file" accept=".json" @change="importJSON($event)">
@@ -83,14 +82,6 @@
 
       <!-- ── Grid ─────────────────────────────────────────────────────────── -->
       <div class="card grid-wrap" id="grid-wrap">
-        <svg id="arrow-svg" x-show="showArrows" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-              <polygon points="0 0, 8 3, 0 6" fill="#6366f1" opacity=".7"/>
-            </marker>
-          </defs>
-          <g id="arrows-g"></g>
-        </svg>
         <div class="grid">
           <template x-for="p in 9" :key="p">
             <section class="period">

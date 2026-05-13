@@ -16,7 +16,6 @@ function ppc() {
     editing:              null,
     editingId:            null,
     constraintOpen:       false,
-    showArrows:           false,
     _nextId:              100,
     _dragAnchor:          null,
     _history:             [],
@@ -81,10 +80,7 @@ function ppc() {
       const prev = this._history.pop()
       this.disciplines         = prev.disciplines
       this.atividadesAutonomas = prev.atividadesAutonomas
-      this.$nextTick(() => {
-        this.initSortable()
-        if (this.showArrows) this._drawArrows()
-      })
+      this.$nextTick(() => this.initSortable())
     },
 
     redo() {
@@ -93,10 +89,7 @@ function ppc() {
       const next = this._future.pop()
       this.disciplines         = next.disciplines
       this.atividadesAutonomas = next.atividadesAutonomas
-      this.$nextTick(() => {
-        this.initSortable()
-        if (this.showArrows) this._drawArrows()
-      })
+      this.$nextTick(() => this.initSortable())
     },
 
     printPDF() { window.print() },
@@ -201,46 +194,6 @@ function ppc() {
         this.editing.color = avail[0]?.value ?? 'blue'
     },
 
-    // ── Arrow overlay ─────────────────────────────────────────────────────────
-    toggleArrows() {
-      this.showArrows = !this.showArrows
-      if (this.showArrows) this.$nextTick(() => this._drawArrows())
-    },
-
-    _drawArrows() {
-      const g = document.getElementById('arrows-g')
-      if (!g) return
-      const wrap     = document.getElementById('grid-wrap')
-      const wrapRect = wrap.getBoundingClientRect()
-      const lanes    = {}
-
-      this.disciplines.forEach(d => {
-        d.prerequisites.forEach(pid => {
-          const pre   = this.byId(pid)
-          const srcEl = wrap.querySelector(`[data-id="${pid}"]`)
-          const dstEl = wrap.querySelector(`[data-id="${d.id}"]`)
-          if (!pre || !srcEl || !dstEl) return
-          const key = `${pre.period}-${d.period}`
-          if (!lanes[key]) lanes[key] = []
-          lanes[key].push({ srcR: srcEl.getBoundingClientRect(), dstR: dstEl.getBoundingClientRect() })
-        })
-      })
-
-      let paths = ''
-      Object.values(lanes).forEach(group => {
-        group.forEach(({ srcR, dstR }, i) => {
-          const spread = (i - (group.length - 1) / 2) * 12
-          const x1 = srcR.right  - wrapRect.left
-          const y1 = (srcR.top + srcR.bottom) / 2 - wrapRect.top + spread
-          const x2 = dstR.left   - wrapRect.left
-          const y2 = (dstR.top + dstR.bottom) / 2 - wrapRect.top + spread
-          const cx = (x1 + x2) / 2
-          paths += `<path class="prereq-arrow" d="M${x1},${y1} C${cx},${y1} ${cx},${y2} ${x2},${y2}"/>`
-        })
-      })
-      g.innerHTML = paths
-    },
-
     // ── Export / Import ───────────────────────────────────────────────────────
     exportJSON() {
       const blob = new Blob(
@@ -271,10 +224,7 @@ function ppc() {
           }
           if (state.atividadesAutonomas != null) this.atividadesAutonomas = state.atividadesAutonomas
           this._nextId = Math.max(...this.disciplines.map(d => parseInt(d.id.split('-').pop()) || 0)) + 1
-          this.$nextTick(() => {
-            this.initSortable()
-            if (this.showArrows) this._drawArrows()
-          })
+          this.$nextTick(() => this.initSortable())
         } catch { alert('JSON inválido') }
       }
       reader.readAsText(file)
