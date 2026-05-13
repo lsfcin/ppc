@@ -27,11 +27,8 @@ function ppc() {
     _future:              [],
 
     // ── Bootstrap ─────────────────────────────────────────────────────────────
-    async init() {
-      try {
-        const resp = await fetch('grade-curricular.json')
-        if (resp.ok) this._applyState(await resp.json())
-      } catch { /* no default file — start with blank slate */ }
+    init() {
+      if (typeof GRADE_CURRICULAR !== 'undefined') this._applyState(GRADE_CURRICULAR)
       this.$nextTick(() => this.initSortable())
     },
 
