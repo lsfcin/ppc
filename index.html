@@ -11,7 +11,10 @@
   <script src="app.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
 </head>
-<body x-data="ppc()" x-init="$nextTick(() => initSortable())" @keydown.ctrl.z.window.prevent="undo()">
+<body x-data="ppc()" x-init="$nextTick(() => initSortable())"
+  @keydown.ctrl.z.window.prevent="undo()"
+  @keydown.ctrl.y.window.prevent="redo()"
+  @keydown.ctrl.shift.z.window.prevent="redo()">
 <div class="wrap">
 
   <!-- ── Header ───────────────────────────────────────────────────────────── -->
@@ -24,6 +27,7 @@
       <div class="badge" x-text="`CH Total: ${totalHours()}h`"></div>
       <div class="toolbar">
         <button class="tool-btn" @click="undo()" :disabled="_history.length === 0">↩ Desfazer</button>
+        <button class="tool-btn" @click="redo()" :disabled="_future.length === 0">↪ Refazer</button>
         <button class="tool-btn" :class="{active: showArrows}" @click="toggleArrows()">⟶ Pré-requisitos</button>
         <label class="tool-btn" style="cursor:pointer">
           ⬆ Importar JSON

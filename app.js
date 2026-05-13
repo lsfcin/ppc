@@ -20,6 +20,7 @@ function ppc() {
     _nextId:              100,
     _dragAnchor:          null,
     _history:             [],
+    _future:              [],
 
     // ── Queries ───────────────────────────────────────────────────────────────
     disciplinesIn(p)  { return this.disciplines.filter(d => d.period === p).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)) },
@@ -61,19 +62,37 @@ function ppc() {
     },
 
     // ── Undo ─────────────────────────────────────────────────────────────────
-    _pushHistory() {
-      this._history.push({
+    _snapshot() {
+      return {
         disciplines:         JSON.parse(JSON.stringify(this.disciplines)),
         atividadesAutonomas: this.atividadesAutonomas,
-      })
+      }
+    },
+
+    _pushHistory() {
+      this._history.push(this._snapshot())
       if (this._history.length > 50) this._history.shift()
+      this._future = []
     },
 
     undo() {
       if (this._history.length === 0) return
+      this._future.push(this._snapshot())
       const prev = this._history.pop()
       this.disciplines         = prev.disciplines
       this.atividadesAutonomas = prev.atividadesAutonomas
+      this.$nextTick(() => {
+        this.initSortable()
+        if (this.showArrows) this._drawArrows()
+      })
+    },
+
+    redo() {
+      if (this._future.length === 0) return
+      this._history.push(this._snapshot())
+      const next = this._future.pop()
+      this.disciplines         = next.disciplines
+      this.atividadesAutonomas = next.atividadesAutonomas
       this.$nextTick(() => {
         this.initSortable()
         if (this.showArrows) this._drawArrows()
