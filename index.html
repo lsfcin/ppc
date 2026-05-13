@@ -105,6 +105,22 @@
     .swatch.orange { background: var(--orange); }
     .swatch.gray   { background: var(--gray); }
 
+    /* toolbar */
+    .toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .tool-btn { border: 1px solid #e5e7eb; background: #fff; border-radius: 10px;
+      padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+      color: #374151; transition: all .15s; white-space: nowrap; }
+    .tool-btn:hover { border-color: #3b82f6; color: #2563eb; background: #eff6ff; }
+    .tool-btn.active { border-color: #3b82f6; background: #dbeafe; color: #1d4ed8; }
+    input.import-file { display: none; }
+
+    /* arrow overlay */
+    #arrow-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; overflow: visible; }
+    .grid-wrap { position: relative; }
+    .prereq-arrow { fill: none; stroke: #6366f1; stroke-width: 1.5;
+      stroke-dasharray: 4 3; opacity: .65; marker-end: url(#arrowhead); }
+
     /* add button */
     .add-btn { display: block; width: 100%; margin-top: 4px; border: 1.5px dashed #cbd5e1;
       background: none; border-radius: 10px; padding: 6px; font-size: 18px; color: #94a3b8;
@@ -200,10 +216,30 @@
       <h1>Proposta para a grade de LC</h1>
       <p>Licenciatura em Computação — arraste disciplinas entre períodos para experimentar a grade.</p>
     </div>
-    <div class="badge" x-text="`CH Total: ${totalHours()}h`"></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+      <div class="badge" x-text="`CH Total: ${totalHours()}h`"></div>
+      <div class="toolbar">
+        <button class="tool-btn" :class="{active: showArrows}" @click="toggleArrows()">
+          ⟶ Pré-requisitos
+        </button>
+        <button class="tool-btn" @click="exportJSON()">⬇ Exportar JSON</button>
+        <label class="tool-btn" style="cursor:pointer">
+          ⬆ Importar JSON
+          <input class="import-file" type="file" accept=".json" @change="importJSON($event)">
+        </label>
+      </div>
+    </div>
   </div>
 
-  <div class="card">
+  <div class="card grid-wrap" id="grid-wrap">
+    <svg id="arrow-svg" x-show="showArrows" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#6366f1" opacity=".7"/>
+        </marker>
+      </defs>
+      <g id="arrows-g"></g>
+    </svg>
     <div class="grid">
       <template x-for="p in 9" :key="p">
         <section class="period">
@@ -225,7 +261,7 @@
         </section>
       </template>
     </div>
-  </div>
+  </div><!-- .card.grid-wrap -->
 
   <div class="footer">
     <div class="panel">
@@ -587,6 +623,7 @@ function ppc() {
     editingId: null,
     showAdvanced: false,
     constraintOpen: false,
+    showArrows: false,
     _nextId: 100,
 
     // ── Queries ──────────────────────────────────────────────────────────────
@@ -819,6 +856,91 @@ function ppc() {
       const idx = this.editing.prerequisites.indexOf(id)
       if (idx === -1) this.editing.prerequisites.push(id)
       else this.editing.prerequisites.splice(idx, 1)
+    },
+
+    // ── Arrow overlay ─────────────────────────────────────────────────────────
+    toggleArrows() {
+      this.showArrows = !this.showArrows
+      if (this.showArrows) this.$nextTick(() => this._drawArrows())
+    },
+
+    _computeArrows() {
+      const wrap = document.getElementById('grid-wrap')
+      if (!wrap) return ''
+      const wrapRect = wrap.getBoundingClientRect()
+
+      // Collect all prerequisite pairs: { from: DOMRect, to: DOMRect }
+      // Group by (fromPeriod, toPeriod) to stagger vertical lanes
+      const lanes = {}  // key: `${fromP}-${toP}` → array of arrow rects
+
+      const pairs = []
+      this.disciplines.forEach(d => {
+        d.prerequisites.forEach(pid => {
+          const pre = this.byId(pid)
+          if (!pre) return
+          const srcEl  = wrap.querySelector(`[data-id="${pid}"]`)
+          const dstEl  = wrap.querySelector(`[data-id="${d.id}"]`)
+          if (!srcEl || !dstEl) return
+          const srcR = srcEl.getBoundingClientRect()
+          const dstR = dstEl.getBoundingClientRect()
+          const key  = `${pre.period}-${d.period}`
+          if (!lanes[key]) lanes[key] = []
+          lanes[key].push({ srcR, dstR })
+        })
+      })
+
+      let paths = ''
+      Object.values(lanes).forEach(group => {
+        const total = group.length
+        group.forEach(({ srcR, dstR }, i) => {
+          // Stagger: spread arrows across 30% of card height
+          const spread = (i - (total - 1) / 2) * 12
+          const x1 = srcR.right  - wrapRect.left
+          const y1 = (srcR.top + srcR.bottom) / 2 - wrapRect.top + spread
+          const x2 = dstR.left   - wrapRect.left
+          const y2 = (dstR.top + dstR.bottom) / 2 - wrapRect.top + spread
+          const cx = (x1 + x2) / 2
+          paths += `<path class="prereq-arrow" d="M${x1},${y1} C${cx},${y1} ${cx},${y2} ${x2},${y2}"/>`
+        })
+      })
+      return paths
+    },
+
+    _drawArrows() {
+      const g = document.getElementById('arrows-g')
+      if (g) g.innerHTML = this._computeArrows()
+    },
+
+    // ── Export / Import ───────────────────────────────────────────────────────
+    exportJSON() {
+      const state = { disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas }
+      const blob  = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' })
+      const a     = document.createElement('a')
+      a.href      = URL.createObjectURL(blob)
+      a.download  = `grade-lc-${new Date().toISOString().slice(0,10)}.json`
+      a.click()
+      URL.revokeObjectURL(a.href)
+    },
+
+    importJSON(evt) {
+      const file = evt.target.files[0]
+      if (!file) return
+      const reader = new FileReader()
+      reader.onload = e => {
+        try {
+          const state = JSON.parse(e.target.result)
+          if (state.disciplines) this.disciplines = state.disciplines
+          if (state.atividadesAutonomas != null) this.atividadesAutonomas = state.atividadesAutonomas
+          this._nextId = Math.max(...this.disciplines.map(d => parseInt(d.id.split('-').pop()) || 0)) + 1
+          this.$nextTick(() => {
+            // Re-init sortable for any new period containers
+            this.initSortable()
+            if (this.showArrows) this._drawArrows()
+          })
+        } catch { alert('JSON inválido') }
+      }
+      reader.readAsText(file)
+      evt.target.value = ''
     },
 
     // ── Drag-and-drop ─────────────────────────────────────────────────────────
