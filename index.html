@@ -46,6 +46,12 @@
     <div class="constraint-bar" :class="{open: constraintOpen}">
       <div class="constraint-collapsed" @click="constraintOpen = true">
         <span class="constraint-rotated-label">Verificação de Restrições</span>
+        <div class="constraint-mini-badges">
+          <span class="mini-badge mini-ok"   x-text="constraints().filter(c=>c.ok).length"></span>
+          <span class="mini-badge mini-fail"
+            x-show="constraints().filter(c=>!c.ok).length > 0"
+            x-text="constraints().filter(c=>!c.ok).length"></span>
+        </div>
       </div>
       <div class="constraint-expanded">
         <div class="constraint-bar-head" @click="constraintOpen = false">
