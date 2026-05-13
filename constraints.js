@@ -8,7 +8,7 @@ function buildConstraints(app) {
   const { disciplines: ds, atividadesAutonomas, ordinals } = app
   const nh  = n => app.nucleusHours(n)
   const tot = app.disciplineHours()
-  const ead = ds.filter(d => d.isEAD).reduce((s, d) => s + d.hours, 0)
+  const ead = ds.reduce((s, d) => s + d.hours * ((d.eadPercent ?? 0) / 100), 0)
 
   const periodOver = []
   for (let p = 1; p <= 9; p++) {
@@ -78,7 +78,7 @@ function buildConstraints(app) {
       detailOpen: false },
     { id:'c9',  label:'EaD ≤ 40% da CH total',
       ok: tot === 0 || (ead / tot) <= 0.40,
-      value: `CH EaD: ${ead}h / CH total: ${tot}h = ${tot > 0 ? (ead / tot * 100).toFixed(1) : 0}%`,
+      value: `CH EaD: ${Math.round(ead)}h / CH total: ${tot}h = ${tot > 0 ? (ead / tot * 100).toFixed(1) : 0}%`,
       detail: 'Resolução CEPE/UFRPE Nº 744/2024: "poderão ser ofertados componentes curriculares a distância [...] desde que esta oferta não ultrapasse 40% da carga horária total do curso."',
       detailOpen: false },
     { id:'c10', label:'Disciplinas obrigatórias presentes (10 nominadas)',

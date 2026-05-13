@@ -59,7 +59,7 @@ function ppc() {
         pratica:  { hours: 0,  nucleus: 'II' },
         extensao: { hours: 0,  nucleus: 'III' },
         prerequisites: [], department: 'DC',
-        color: 'blue', isElective: false, isEAD: false,
+        color: 'blue', isElective: false, eadPercent: 0,
         order: this.disciplines.filter(d => d.period === period).length,
       })
       this.$nextTick(() => this.openModal(id))
