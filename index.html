@@ -105,6 +105,39 @@
     .swatch.orange { background: var(--orange); }
     .swatch.gray   { background: var(--gray); }
 
+    /* add button */
+    .add-btn { display: block; width: 100%; margin-top: 4px; border: 1.5px dashed #cbd5e1;
+      background: none; border-radius: 10px; padding: 6px; font-size: 18px; color: #94a3b8;
+      cursor: pointer; transition: all .15s; }
+    .add-btn:hover { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+
+    /* constraint panel */
+    .constraint-bar { margin-top: 16px; background: #fff; border: 1px solid #e5e7eb;
+      border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
+    .constraint-bar-head { display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; cursor: pointer; user-select: none; }
+    .constraint-bar-head:hover { background: #f9fafb; }
+    .constraint-summary { display: flex; gap: 6px; }
+    .badge-ok   { background: #dcfce7; color: #166534; border-radius: 999px;
+      padding: 2px 10px; font-size: 12px; font-weight: 700; }
+    .badge-fail { background: #fee2e2; color: #991b1b; border-radius: 999px;
+      padding: 2px 10px; font-size: 12px; font-weight: 700; }
+    .constraint-rows { border-top: 1px solid #e5e7eb; }
+    .constraint-row { display: grid; grid-template-columns: 28px 1fr auto;
+      grid-template-rows: auto auto; gap: 0 12px; align-items: start;
+      padding: 12px 20px; border-bottom: 1px solid #f3f4f6; flex-wrap: wrap; }
+    .constraint-row:last-child { border-bottom: none; }
+    .constraint-status { width: 28px; height: 28px; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; font-weight: 900; font-size: 14px;
+      flex-shrink: 0; margin-top: 2px; }
+    .constraint-status.ok   { background: #dcfce7; color: #16a34a; }
+    .constraint-status.fail { background: #fee2e2; color: #dc2626; }
+    .constraint-label { font-size: 13px; font-weight: 700; color: #1f2937; }
+    .constraint-value { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .constraint-detail { grid-column: 2 / -1; margin-top: 8px; font-size: 11.5px;
+      color: #374151; background: #f8fafc; border-left: 3px solid #cbd5e1;
+      padding: 8px 12px; border-radius: 0 6px 6px 0; line-height: 1.5; }
+
     /* modal */
     dialog { border: none; border-radius: 20px; padding: 0; box-shadow: 0 24px 64px rgba(15,23,42,.18);
       width: 560px; max-width: 96vw; max-height: 90vh; overflow-y: auto; }
@@ -187,6 +220,7 @@
                 <div class="tag" x-text="d.department + (d.isElective ? ' · Optativa' : '')"></div>
               </div>
             </template>
+            <button class="add-btn" @click="addDiscipline(p)" title="Adicionar disciplina">＋</button>
           </div>
         </section>
       </template>
@@ -235,6 +269,31 @@
         <div class="legend-item"><span class="swatch salmon"></span> Métodos / TCC</div>
         <div class="legend-item"><span class="swatch gray"></span> Optativa</div>
       </div>
+    </div>
+  </div>
+
+  <!-- ── Constraint Panel ──────────────────────────────────────────────────── -->
+  <div class="constraint-bar">
+    <div class="constraint-bar-head" @click="constraintOpen = !constraintOpen">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-weight:800;font-size:14px">Verificação de Restrições</span>
+        <span class="constraint-summary" x-html="constraintSummary()"></span>
+      </div>
+      <span x-text="constraintOpen ? '▼' : '▲'" style="font-size:12px;color:var(--muted)"></span>
+    </div>
+    <div class="constraint-rows" x-show="constraintOpen" x-transition>
+      <template x-for="c in constraints()" :key="c.id">
+        <div class="constraint-row">
+          <div class="constraint-status" :class="c.ok ? 'ok' : 'fail'" x-text="c.ok ? '✓' : '✗'"></div>
+          <div style="flex:1">
+            <div class="constraint-label" x-text="c.label"></div>
+            <div class="constraint-value" x-text="c.value"></div>
+          </div>
+          <button class="adv-toggle" @click="c.detailOpen = !c.detailOpen"
+            x-text="c.detailOpen ? '▲' : 'ver lei'"></button>
+          <div class="constraint-detail" x-show="c.detailOpen" x-text="c.detail"></div>
+        </div>
+      </template>
     </div>
   </div>
 
@@ -527,6 +586,8 @@ function ppc() {
     editing: null,
     editingId: null,
     showAdvanced: false,
+    constraintOpen: false,
+    _nextId: 100,
 
     // ── Queries ──────────────────────────────────────────────────────────────
     disciplinesIn(p) {
@@ -576,6 +637,125 @@ function ppc() {
 
     totalHours() {
       return this.disciplineHours() + this.atividadesAutonomas
+    },
+
+    // ── Add discipline ────────────────────────────────────────────────────────
+    addDiscipline(period) {
+      const id = 'new-' + (this._nextId++)
+      this.disciplines.push({
+        id, name: 'Nova disciplina', period,
+        hours: 60,
+        teoria:   { hours: 60, nucleus: 'II' },
+        pratica:  { hours: 0,  nucleus: 'II' },
+        extensao: { hours: 0,  nucleus: 'III' },
+        prerequisites: [], department: 'DC',
+        color: 'blue', isElective: false, isEAD: false,
+      })
+      this.$nextTick(() => this.openModal(id))
+    },
+
+    // ── Constraints ───────────────────────────────────────────────────────────
+    MANDATORY_NAMES: [
+      'Educação das Relações Étnico-Raciais', 'Libras', 'Produção de Texto',
+      'Fundamentos da Educação', 'Educação Brasileira', 'Didática',
+      'Psicologia I', 'Psicologia II', 'Metodologia do Ensino', 'Estágio',
+    ],
+
+    constraints() {
+      const ds  = this.disciplines
+      const nh  = n => this.nucleusHours(n)
+      const tot = this.disciplineHours()
+      const ead = ds.filter(d=>d.isEAD).reduce((s,d)=>s+d.hours,0)
+
+      const periodOver = []
+      for (let p = 1; p <= 9; p++) {
+        const w = (this.disciplinesIn(p).reduce((s,d)=>s+d.hours,0) / 15)
+        if (w > 28) periodOver.push(`${this.ordinals[p-1]} (${w.toFixed(1)}h/sem)`)
+      }
+
+      const nonMult = ds.filter(d => d.hours % 15 !== 0).map(d=>d.name)
+
+      const preqViol = []
+      ds.forEach(d => {
+        d.prerequisites.forEach(pid => {
+          const pre = this.byId(pid)
+          if (pre && pre.period >= d.period)
+            preqViol.push(`${d.name} ← ${pre.name}`)
+        })
+      })
+
+      const missingMandatory = this.MANDATORY_NAMES.filter(m =>
+        !ds.some(d => d.name.toLowerCase().includes(m.toLowerCase()))
+      )
+
+      return [
+        { id:'c1', label:'CH Total ≥ 3200h',
+          ok: (tot + this.atividadesAutonomas) >= 3200,
+          value: `Atual: ${tot + this.atividadesAutonomas}h (disciplinas ${tot}h + autônomas ${this.atividadesAutonomas}h)`,
+          detail:'Resolução CNE/CP Nº 4/2024, §1º: "Os cursos terão, no mínimo, 3.200 horas."',
+          detailOpen:false },
+        { id:'c2', label:'Núcleo I = 880h (Formação Geral)',
+          ok: nh('I') === 880,
+          value: `Atual: ${nh('I')}h`,
+          detail:'Resolução CNE/CP Nº 4/2024, §1º, I: "880 horas dedicadas às atividades de formação geral."',
+          detailOpen:false },
+        { id:'c3', label:'Núcleo II = 1600h (Conhecimentos Específicos)',
+          ok: nh('II') === 1600,
+          value: `Atual: ${nh('II')}h`,
+          detail:'Resolução CNE/CP Nº 4/2024, §1º, II: "1.600 horas dedicadas ao estudo de aprofundamento de conhecimentos específicos."',
+          detailOpen:false },
+        { id:'c4', label:'Núcleo III = 320h (Extensão)',
+          ok: nh('III') === 320,
+          value: `Atual: ${nh('III')}h — ESO e TCC excluídos da contagem de extensão`,
+          detail:'Resolução CNE/CP Nº 4/2024, §1º, III: "320 horas de atividades acadêmicas de extensão." §6º: "devem ser realizadas integralmente de forma presencial." CEPE/UFRPE 924/2025: ESO, TCC e PFC não contabilizam para extensão.',
+          detailOpen:false },
+        { id:'c5', label:'Núcleo IV = 400h (Estágio Supervisionado)',
+          ok: nh('IV') === 400,
+          value: `Atual: ${nh('IV')}h`,
+          detail:'Resolução CNE/CP Nº 4/2024, §1º, IV: "400 horas dedicadas ao estágio curricular supervisionado." §5º: "deve ser realizado integralmente de forma presencial."',
+          detailOpen:false },
+        { id:'c6', label:'Atividades Autônomas ≥ 120h',
+          ok: this.atividadesAutonomas >= 120,
+          value: `Atual: ${this.atividadesAutonomas}h`,
+          detail:'Resolução CEPE/UFRPE Nº 744/2024: "Nos cursos de Licenciatura, a parcela de carga horária prevista para atividades autônomas deverá alcançar, no mínimo, 120h."',
+          detailOpen:false },
+        { id:'c7', label:'Carga semanal ≤ 28h/sem por período (noturno)',
+          ok: periodOver.length === 0,
+          value: periodOver.length === 0 ? 'Todos os períodos dentro do limite'
+            : `Acima do limite: ${periodOver.join(', ')}`,
+          detail:'Resolução CEPE/UFRPE Nº 744/2024: "O maior valor da carga horária discente semanal é: III - 28 horas em cursos noturnos." Convenção: 15 semanas por semestre.',
+          detailOpen:false },
+        { id:'c8', label:'CH de cada disciplina é múltiplo de 15h',
+          ok: nonMult.length === 0,
+          value: nonMult.length === 0 ? 'Todas as disciplinas em conformidade'
+            : `Violação: ${nonMult.join(', ')}`,
+          detail:'Resolução CEPE/UFRPE Nº 744/2024: "A carga horária total do componente curricular é sempre múltipla de 15 horas."',
+          detailOpen:false },
+        { id:'c9', label:'EaD ≤ 40% da CH total',
+          ok: tot === 0 || (ead / tot) <= 0.40,
+          value: `CH EaD: ${ead}h / CH total: ${tot}h = ${tot>0?(ead/tot*100).toFixed(1):0}%`,
+          detail:'Resolução CEPE/UFRPE Nº 744/2024: "poderão ser ofertados componentes curriculares a distância [...] desde que esta oferta não ultrapasse 40% da carga horária total do curso."',
+          detailOpen:false },
+        { id:'c10', label:'Disciplinas obrigatórias presentes (10 nominadas)',
+          ok: missingMandatory.length === 0,
+          value: missingMandatory.length === 0 ? 'Todas presentes'
+            : `Ausentes: ${missingMandatory.join(', ')}`,
+          detail:'Resolução CEPE/UFRPE Nº 744/2024: "Nos cursos de Licenciatura é obrigatório como componentes curriculares: a) Ed. das Relações Étnico-Raciais; b) Libras; c) Produção de Texto Acadêmico; d) Fundamentos da Educação; e) Educação Brasileira; f) Didática; g) Psicologia I; h) Psicologia II; i) Metodologia de Ensino; j) ESO."',
+          detailOpen:false },
+        { id:'c11', label:'Pré-requisitos em períodos anteriores',
+          ok: preqViol.length === 0,
+          value: preqViol.length === 0 ? 'Nenhuma violação'
+            : `Violações: ${preqViol.join('; ')}`,
+          detail:'Pré-requisito deve estar alocado em período anterior ao da disciplina que o exige.',
+          detailOpen:false },
+      ]
+    },
+
+    constraintSummary() {
+      const cs = this.constraints()
+      const ok = cs.filter(c=>c.ok).length
+      const fail = cs.length - ok
+      return `<span class="badge-ok">${ok} ok</span>${fail > 0 ? ` <span class="badge-fail">${fail} falha${fail>1?'s':''}</span>` : ''}`
     },
 
     // ── Modal ─────────────────────────────────────────────────────────────────
