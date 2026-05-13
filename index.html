@@ -73,10 +73,12 @@
                 <div class="constraint-label" x-text="c.label"></div>
                 <div class="constraint-value" x-text="c.value"></div>
               </div>
-              <button class="adv-toggle" @click="c.detailOpen = !c.detailOpen"
-                x-text="c.detailOpen ? '▲' : 'ver lei'"></button>
-              <button class="pill-toggle" :class="disabledConstraints.includes(c.id) ? '' : 'on'"
-                @click.stop="toggleConstraint(c.id)" title="Ativar/desativar restrição"></button>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+                <button class="pill-toggle" :class="disabledConstraints.includes(c.id) ? '' : 'on'"
+                  @click.stop="toggleConstraint(c.id)" title="Ativar/desativar restrição"></button>
+                <button class="adv-toggle" @click="c.detailOpen = !c.detailOpen"
+                  x-text="c.detailOpen ? '▲' : 'ver lei'"></button>
+              </div>
               <div class="constraint-detail" x-show="c.detailOpen" x-text="c.detail"></div>
             </div>
           </template>
