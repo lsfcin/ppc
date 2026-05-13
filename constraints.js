@@ -14,12 +14,6 @@ const TRANSVERSAL_THEMES = [
   { id: 'afro',
     label: 'História e Cultura Afro-Brasileira, Indígena e Combate ao Racismo',
     detail: 'Resolução CNE/CP Nº 4/2024: "das relações étnico-raciais estabelecidas na sociedade brasileira [...] e que garantam a apropriação dos conhecimentos relativos à história e cultura africana, afrobrasileira e dos povos originários do Brasil, bem como de valores e atitudes orientados à desconstruir e combater todas as expressões do racismo." Nota: a UFRPE exige a disciplina específica de Relações Étnico-Raciais, mas as diretrizes exigem que o combate ao racismo seja transversalizado nas práticas educativas.' },
-  { id: 'metodologia',
-    label: 'Metodologia Científica',
-    detail: 'Resolução CEPE/UFRPE Nº 744/2024, §3º: "Os conteúdos programáticos associados à Metodologia Científica são obrigatórios e transversais para todos os cursos de modo a possibilitar ao/à discente a formação e o instrumental necessário ao seu desenvolvimento acadêmico."' },
-  { id: 'pcc',
-    label: 'Prática como Componente Curricular (PCC)',
-    detail: 'Resolução CEPE/UFRPE Nº 744/2024: "III - Prática como Componente Curricular (PCC) integrada ao perfil curricular, durante todo o curso." Resolução CEPE/UFRPE Nº 924/2025, Art. 39: "A PCC caracteriza-se como uma atividade flexível no âmbito do ensino, podendo ser desenvolvida como componente curricular, parte de um componente curricular ou como atividades formativas relacionadas à formação pedagógica, excetuando-se os fundamentos técnico-científicos específicos de cada área do conhecimento."' },
 ]
 
 const MANDATORY_NAMES = [
