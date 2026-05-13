@@ -210,15 +210,23 @@ function ppc() {
         const el = document.getElementById(`period-${p}`)
         if (!el || el._sortable) continue
         el._sortable = Sortable.create(el, {
-          group: 'disciplines', animation: 150,
+          group: 'disciplines', animation: 0,
           ghostClass: 'sortable-ghost', dragClass: 'sortable-drag',
+
           onEnd(evt) {
-            const id        = evt.item.dataset.id
             const newPeriod = parseInt(evt.to.id.replace('period-', ''))
-            if (evt.from !== evt.to) evt.to.removeChild(evt.item)
-            evt.from.insertBefore(evt.item, evt.from.children[evt.oldIndex] ?? null)
-            const disc = self.disciplines.find(x => x.id === id)
-            if (disc && !isNaN(newPeriod)) disc.period = newPeriod
+            if (isNaN(newPeriod)) return
+
+            const byId = Object.fromEntries(self.disciplines.map(d => [d.id, d]))
+            const next = []
+            for (let p = 1; p <= 9; p++) {
+              const c = document.getElementById(`period-${p}`)
+              if (c) c.querySelectorAll('[data-id]').forEach(node => {
+                const d = byId[node.dataset.id]
+                if (d) { d.period = p; next.push(d) }
+              })
+            }
+            self.disciplines = next
           },
         })
       }
