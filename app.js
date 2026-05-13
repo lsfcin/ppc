@@ -205,7 +205,7 @@ function ppc() {
     otherDisciplines() {
       if (!this.editingId) return []
       return this.disciplines
-        .filter(d => d.id !== this.editingId)
+        .filter(d => d.id !== this.editingId && !d.isElective)
         .sort((a, b) => a.period - b.period || a.name.localeCompare(b.name))
     },
 
