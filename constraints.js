@@ -12,7 +12,7 @@ function buildConstraints(app) {
 
   const periodOver = []
   for (let p = 1; p <= app.numPeriods; p++) {
-    const w = app.disciplinesIn(p).reduce((s, d) => s + d.hours, 0) / 15
+    const w = app.disciplinesIn(p).reduce((s, d) => s + (d.skipWeekly ? 0 : d.hours), 0) / 15
     if (w > 28) periodOver.push(`${ordinals[p-1]} (${w.toFixed(1)}h/sem)`)
   }
 
@@ -70,7 +70,7 @@ function buildConstraints(app) {
       value: periodOver.length === 0
         ? 'Todos os períodos dentro do limite'
         : `Acima do limite: ${periodOver.join(', ')}`,
-      detail: 'Resolução CEPE/UFRPE Nº 744/2024: "O maior valor da carga horária discente semanal é: III - 28 horas em cursos noturnos." Convenção: 15 semanas por semestre.',
+      detail: 'Resolução CEPE/UFRPE Nº 744/2024: "O maior valor da carga horária discente semanal é: III - 28 horas em cursos noturnos." Convenção: 15 semanas por semestre. Disciplinas marcadas como "Excluir do limite semanal" (ESO, TCC) não entram no cômputo.',
       detailOpen: false },
     { id:'c8',  label:'CH de cada disciplina é múltiplo de 15h',
       ok: nonMult.length === 0,
