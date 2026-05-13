@@ -309,32 +309,44 @@ function ppc() {
       const data    = { disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, numPeriods: this.numPeriods, categories: this.categories, title: this.title, subtitle: this.subtitle }
       const payload = 'const GRADE_CURRICULAR = ' + JSON.stringify(data, null, 2) + '\n'
 
-      if (!window.showDirectoryPicker) {
+      const fallback = () => {
         const a = Object.assign(document.createElement('a'), {
           href: URL.createObjectURL(new Blob([payload], { type: 'application/javascript' })),
           download: 'grade-curricular.js',
         })
         a.click(); URL.revokeObjectURL(a.href)
-        return
       }
+
+      if (!window.showDirectoryPicker) { fallback(); return }
 
       // Retrieve or request the app directory handle
       let dir = await _idbGet('ppc-dir')
       if (dir) {
-        const perm = await dir.queryPermission({ mode: 'readwrite' })
-        if (perm === 'prompt')  { if (await dir.requestPermission({ mode: 'readwrite' }) !== 'granted') dir = null }
-        if (perm === 'denied')  dir = null
+        try {
+          const perm = await dir.queryPermission({ mode: 'readwrite' })
+          if (perm === 'prompt' && await dir.requestPermission({ mode: 'readwrite' }) !== 'granted') dir = null
+          if (perm === 'denied') dir = null
+        } catch { dir = null }
       }
       if (!dir) {
-        try   { dir = await window.showDirectoryPicker({ mode: 'readwrite' }); await _idbSet('ppc-dir', dir) }
-        catch (e) { if (e.name === 'AbortError') return; throw e }
+        try {
+          dir = await window.showDirectoryPicker({ mode: 'readwrite' })
+          await _idbSet('ppc-dir', dir)
+        } catch (e) {
+          if (e.name === 'AbortError') return
+          alert('O seletor de pasta foi bloqueado pelo navegador.\nO arquivo será baixado — mova-o manualmente para a pasta do aplicativo.\n\nSe estiver usando Brave, desative o Shields para esta página e tente novamente.')
+          fallback(); return
+        }
       }
 
       try {
         const fh = await dir.getFileHandle('grade-curricular.js', { create: true })
         const w  = await fh.createWritable()
         await w.write(payload); await w.close()
-      } catch (e) { alert('Erro ao salvar: ' + e.message) }
+      } catch (e) {
+        alert('Erro ao gravar o arquivo: ' + e.message)
+        fallback()
+      }
     },
 
     async exportJSON() {
