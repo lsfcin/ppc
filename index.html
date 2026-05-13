@@ -6,7 +6,6 @@
   <title>PPC — Grade LC/UFRPE</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
-  <script src="grade-curricular.js"></script>
   <script src="constraints.js"></script>
   <script src="app.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
@@ -37,7 +36,6 @@
           <input class="import-file" type="file" accept=".json" @change="importJSON($event)">
         </label>
         <button class="tool-btn" @click="exportJSON()">⬇ Exportar JSON</button>
-        <button class="tool-btn" @click="saveAsDefault()">★ Salvar como padrão</button>
         <button class="tool-btn" @click="printPDF()">⎙ Gerar PDF</button>
       </div>
     </div>
@@ -87,6 +85,14 @@
 
       <!-- ── Grid ─────────────────────────────────────────────────────────── -->
       <div class="card grid-wrap" id="grid-wrap">
+        <div class="empty-banner" x-show="disciplines.length === 0">
+          Grade vazia —
+          <label style="cursor:pointer;color:#2563eb;text-decoration:underline">
+            importe um arquivo JSON
+            <input type="file" accept=".json" @change="importJSON($event)" style="display:none">
+          </label>
+          ou adicione disciplinas com os botões ＋ nos períodos abaixo.
+        </div>
         <div class="grid" :style="`grid-template-columns: repeat(${numPeriods}, 1fr)`">
           <template x-for="p in numPeriods" :key="p">
             <section class="period">

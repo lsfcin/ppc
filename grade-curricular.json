@@ -1,4 +1,4 @@
-const GRADE_CURRICULAR = {
+{
   "title": "Proposta para a grade de LC",
   "subtitle": "Licenciatura em Computação — arraste disciplinas entre períodos para experimentar a grade.",
   "numPeriods": 9,

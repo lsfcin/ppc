@@ -1,34 +1,5 @@
 const PALETTE = ['salmon','blue','cyan','green','gray','purple','orange','yellow']
 
-// ── IndexedDB helpers (persist FileSystemDirectoryHandle across sessions) ──────
-function _idbOpen() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open('ppc', 1)
-    req.onupgradeneeded = e => e.target.result.createObjectStore('kv')
-    req.onsuccess = e => resolve(e.target.result)
-    req.onerror   = () => reject(req.error)
-  })
-}
-async function _idbGet(key) {
-  try {
-    const db = await _idbOpen()
-    return await new Promise(resolve => {
-      const r = db.transaction('kv').objectStore('kv').get(key)
-      r.onsuccess = () => resolve(r.result ?? null)
-      r.onerror   = () => resolve(null)
-    })
-  } catch { return null }
-}
-async function _idbSet(key, value) {
-  const db = await _idbOpen()
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction('kv', 'readwrite')
-    tx.objectStore('kv').put(value, key)
-    tx.oncomplete = resolve
-    tx.onerror    = () => reject(tx.error)
-  })
-}
-
 function ppc() {
   return {
     disciplines:          [],
@@ -56,9 +27,26 @@ function ppc() {
     _future:              [],
 
     // ── Bootstrap ─────────────────────────────────────────────────────────────
-    init() {
-      if (typeof GRADE_CURRICULAR !== 'undefined') this._applyState(GRADE_CURRICULAR)
-      this.$nextTick(() => this.initSortable())
+    async init() {
+      // 1. Restore from browser storage (survives reloads)
+      const saved = localStorage.getItem('ppc-state')
+      if (saved) {
+        try { this._applyState(JSON.parse(saved)) } catch {}
+      }
+      // 2. Fetch default grade (works on HTTPS / GitHub Pages; silent on file://)
+      if (this.disciplines.length === 0) {
+        try {
+          const res = await fetch('grade-curricular.json')
+          if (res.ok) this._applyState(await res.json())
+        } catch {}
+      }
+      // 3. Set up sortable + reactive auto-save watchers
+      this.$nextTick(() => {
+        this.initSortable()
+        this.$watch('atividadesAutonomas', () => this.saveProgress())
+        this.$watch('title',               () => this.saveProgress())
+        this.$watch('subtitle',            () => this.saveProgress())
+      })
     },
 
     _applyState(state) {
@@ -70,12 +58,23 @@ function ppc() {
           if (pd.some(d => d.order == null)) pd.forEach((d, i) => { d.order = i })
         })
       }
-      if (state.numPeriods        != null) this.numPeriods          = state.numPeriods
+      if (state.numPeriods          != null) this.numPeriods          = state.numPeriods
       if (state.atividadesAutonomas != null) this.atividadesAutonomas = state.atividadesAutonomas
-      if (state.categories)                this.categories          = state.categories
-      if (state.title)                     this.title               = state.title
-      if (state.subtitle)                  this.subtitle            = state.subtitle
+      if (state.categories)                  this.categories          = state.categories
+      if (state.title)                       this.title               = state.title
+      if (state.subtitle)                    this.subtitle            = state.subtitle
       this._nextId = Math.max(99, ...this.disciplines.map(d => parseInt(d.id.split('-').pop()) || 0)) + 1
+    },
+
+    saveProgress() {
+      localStorage.setItem('ppc-state', JSON.stringify({
+        disciplines:         this.disciplines,
+        atividadesAutonomas: this.atividadesAutonomas,
+        numPeriods:          this.numPeriods,
+        categories:          this.categories,
+        title:               this.title,
+        subtitle:            this.subtitle,
+      }))
     },
 
     // ── Queries ───────────────────────────────────────────────────────────────
@@ -138,6 +137,7 @@ function ppc() {
       this.disciplines         = prev.disciplines
       this.atividadesAutonomas = prev.atividadesAutonomas
       this.$nextTick(() => this.initSortable())
+      this.saveProgress()
     },
 
     redo() {
@@ -147,6 +147,7 @@ function ppc() {
       this.disciplines         = next.disciplines
       this.atividadesAutonomas = next.atividadesAutonomas
       this.$nextTick(() => this.initSortable())
+      this.saveProgress()
     },
 
     printPDF() { window.print() },
@@ -164,6 +165,7 @@ function ppc() {
         color: 'blue', isElective: false, eadPercent: 0, skipWeekly: false, tags: [],
         order: this.disciplines.filter(d => d.period === period).length,
       })
+      this.saveProgress()
       this.$nextTick(() => this.openModal(id))
     },
 
@@ -196,6 +198,7 @@ function ppc() {
         this.disciplines[idx] = this.editing
       }
       this.closeModal()
+      this.saveProgress()
     },
 
     deleteEditing() {
@@ -205,6 +208,7 @@ function ppc() {
         d.prerequisites = d.prerequisites.filter(pid => pid !== this.editingId)
       })
       this.closeModal()
+      this.saveProgress()
     },
 
     hoursInvalid() {
@@ -216,7 +220,7 @@ function ppc() {
     hoursWarning() {
       if (!this.editing) return ''
       const t = this.editing.teoria.hours + this.editing.pratica.hours + this.editing.extensao.hours
-      if (t <= 0)      return 'total deve ser maior que zero'
+      if (t <= 0)       return 'total deve ser maior que zero'
       if (t % 15 !== 0) return `${t}h não é múltiplo de 15`
       return ''
     },
@@ -273,6 +277,7 @@ function ppc() {
       this.categories = this._stagingCategories
       this._stagingCategories = null
       document.getElementById('categories-modal').close()
+      this.saveProgress()
     },
 
     closeCategoriesModal() {
@@ -295,6 +300,7 @@ function ppc() {
       this._pushHistory()
       this.numPeriods++
       this.$nextTick(() => this.initSortable())
+      this.saveProgress()
     },
 
     removeLastPeriod() {
@@ -302,53 +308,10 @@ function ppc() {
       if (this.disciplines.some(d => d.period === this.numPeriods)) return
       this._pushHistory()
       this.numPeriods--
+      this.saveProgress()
     },
 
     // ── Export / Import ───────────────────────────────────────────────────────
-    async saveAsDefault() {
-      const data    = { disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, numPeriods: this.numPeriods, categories: this.categories, title: this.title, subtitle: this.subtitle }
-      const payload = 'const GRADE_CURRICULAR = ' + JSON.stringify(data, null, 2) + '\n'
-
-      const fallback = () => {
-        const a = Object.assign(document.createElement('a'), {
-          href: URL.createObjectURL(new Blob([payload], { type: 'application/javascript' })),
-          download: 'grade-curricular.js',
-        })
-        a.click(); URL.revokeObjectURL(a.href)
-      }
-
-      if (!window.showDirectoryPicker) { fallback(); return }
-
-      // Retrieve or request the app directory handle
-      let dir = await _idbGet('ppc-dir')
-      if (dir) {
-        try {
-          const perm = await dir.queryPermission({ mode: 'readwrite' })
-          if (perm === 'prompt' && await dir.requestPermission({ mode: 'readwrite' }) !== 'granted') dir = null
-          if (perm === 'denied') dir = null
-        } catch { dir = null }
-      }
-      if (!dir) {
-        try {
-          dir = await window.showDirectoryPicker({ mode: 'readwrite' })
-          await _idbSet('ppc-dir', dir)
-        } catch (e) {
-          if (e.name === 'AbortError') return
-          alert('O seletor de pasta foi bloqueado pelo navegador.\nO arquivo será baixado — mova-o manualmente para a pasta do aplicativo.\n\nSe estiver usando Brave, desative o Shields para esta página e tente novamente.')
-          fallback(); return
-        }
-      }
-
-      try {
-        const fh = await dir.getFileHandle('grade-curricular.js', { create: true })
-        const w  = await fh.createWritable()
-        await w.write(payload); await w.close()
-      } catch (e) {
-        alert('Erro ao gravar o arquivo: ' + e.message)
-        fallback()
-      }
-    },
-
     async exportJSON() {
       const payload       = JSON.stringify({ disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, numPeriods: this.numPeriods, categories: this.categories, title: this.title, subtitle: this.subtitle }, null, 2)
       const suggestedName = `grade-lc-${new Date().toISOString().slice(0, 10)}.json`
@@ -378,6 +341,7 @@ function ppc() {
           this._pushHistory()
           this._applyState(JSON.parse(e.target.result))
           this.$nextTick(() => this.initSortable())
+          this.saveProgress()
         } catch { alert('JSON inválido') }
       }
       reader.readAsText(file)
@@ -439,6 +403,7 @@ function ppc() {
 
             // 3. Replace array reference so Alpine re-renders into the new order.
             self.disciplines = [...self.disciplines]
+            self.saveProgress()
           },
         })
       }
