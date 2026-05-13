@@ -133,7 +133,8 @@ function buildConstraints(app) {
 }
 
 function buildConstraintSummary(app) {
-  const cs   = buildConstraints(app)
+  const disabled = app.disabledConstraints ?? []
+  const cs   = buildConstraints(app).filter(c => !disabled.includes(c.id))
   const ok   = cs.filter(c => c.ok).length
   const fail = cs.length - ok
   return `<span class="badge-ok">${ok} ok</span>`

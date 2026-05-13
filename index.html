@@ -49,10 +49,10 @@
       <div class="constraint-collapsed" @click="constraintOpen = true">
         <span class="constraint-rotated-label">Verificação de Restrições</span>
         <div class="constraint-mini-badges">
-          <span class="mini-badge mini-ok"   x-text="constraints().filter(c=>c.ok).length"></span>
+          <span class="mini-badge mini-ok"   x-text="constraints().filter(c=>!disabledConstraints.includes(c.id)&&c.ok).length"></span>
           <span class="mini-badge mini-fail"
-            x-show="constraints().filter(c=>!c.ok).length > 0"
-            x-text="constraints().filter(c=>!c.ok).length"></span>
+            x-show="constraints().filter(c=>!disabledConstraints.includes(c.id)&&!c.ok).length > 0"
+            x-text="constraints().filter(c=>!disabledConstraints.includes(c.id)&&!c.ok).length"></span>
         </div>
       </div>
       <div class="constraint-expanded">
@@ -65,14 +65,18 @@
         </div>
         <div class="constraint-rows">
           <template x-for="c in constraints()" :key="c.id">
-            <div class="constraint-row">
-              <div class="constraint-status" :class="c.ok ? 'ok' : 'fail'" x-text="c.ok ? '✓' : '✗'"></div>
+            <div class="constraint-row" :class="disabledConstraints.includes(c.id) ? 'constraint-disabled' : ''">
+              <div class="constraint-status"
+                :class="disabledConstraints.includes(c.id) ? 'neutral' : (c.ok ? 'ok' : 'fail')"
+                x-text="disabledConstraints.includes(c.id) ? '—' : (c.ok ? '✓' : '✗')"></div>
               <div>
                 <div class="constraint-label" x-text="c.label"></div>
                 <div class="constraint-value" x-text="c.value"></div>
               </div>
               <button class="adv-toggle" @click="c.detailOpen = !c.detailOpen"
                 x-text="c.detailOpen ? '▲' : 'ver lei'"></button>
+              <button class="pill-toggle" :class="disabledConstraints.includes(c.id) ? '' : 'on'"
+                @click.stop="toggleConstraint(c.id)" title="Ativar/desativar restrição"></button>
               <div class="constraint-detail" x-show="c.detailOpen" x-text="c.detail"></div>
             </div>
           </template>

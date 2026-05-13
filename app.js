@@ -25,6 +25,7 @@ function ppc() {
     _dragAnchor:          null,
     _history:             [],
     _future:              [],
+    disabledConstraints:  [],
 
     // ── Bootstrap ─────────────────────────────────────────────────────────────
     async init() {
@@ -63,18 +64,27 @@ function ppc() {
       if (state.categories)                  this.categories          = state.categories
       if (state.title)                       this.title               = state.title
       if (state.subtitle)                    this.subtitle            = state.subtitle
+      if (state.disabledConstraints)         this.disabledConstraints = state.disabledConstraints
       this._nextId = Math.max(99, ...this.disciplines.map(d => parseInt(d.id.split('-').pop()) || 0)) + 1
     },
 
     saveProgress() {
       localStorage.setItem('ppc-state', JSON.stringify({
-        disciplines:         this.disciplines,
-        atividadesAutonomas: this.atividadesAutonomas,
-        numPeriods:          this.numPeriods,
-        categories:          this.categories,
-        title:               this.title,
-        subtitle:            this.subtitle,
+        disciplines:          this.disciplines,
+        atividadesAutonomas:  this.atividadesAutonomas,
+        numPeriods:           this.numPeriods,
+        categories:           this.categories,
+        title:                this.title,
+        subtitle:             this.subtitle,
+        disabledConstraints:  this.disabledConstraints,
       }))
+    },
+
+    toggleConstraint(id) {
+      const idx = this.disabledConstraints.indexOf(id)
+      if (idx === -1) this.disabledConstraints.push(id)
+      else            this.disabledConstraints.splice(idx, 1)
+      this.saveProgress()
     },
 
     // ── Queries ───────────────────────────────────────────────────────────────
@@ -313,7 +323,7 @@ function ppc() {
 
     // ── Export / Import ───────────────────────────────────────────────────────
     exportJSON() {
-      const defaultName = `grade-lc-${new Date().toISOString().slice(0, 10)}.json`
+      const defaultName = `grade-${new Date().toISOString().slice(0, 10)}.json`
       const name = prompt('Nome do arquivo:', defaultName)
       if (name === null) return
       const payload = JSON.stringify({ disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, numPeriods: this.numPeriods, categories: this.categories, title: this.title, subtitle: this.subtitle }, null, 2)
