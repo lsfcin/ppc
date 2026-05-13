@@ -11,7 +11,7 @@
   <script src="app.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
 </head>
-<body x-data="ppc()" x-init="$nextTick(() => initSortable())">
+<body x-data="ppc()" x-init="$nextTick(() => initSortable())" @keydown.ctrl.z.window.prevent="undo()">
 <div class="wrap">
 
   <!-- ── Header ───────────────────────────────────────────────────────────── -->
@@ -23,12 +23,14 @@
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
       <div class="badge" x-text="`CH Total: ${totalHours()}h`"></div>
       <div class="toolbar">
+        <button class="tool-btn" @click="undo()" :disabled="_history.length === 0">↩ Desfazer</button>
         <button class="tool-btn" :class="{active: showArrows}" @click="toggleArrows()">⟶ Pré-requisitos</button>
-        <button class="tool-btn" @click="exportJSON()">⬇ Exportar JSON</button>
         <label class="tool-btn" style="cursor:pointer">
           ⬆ Importar JSON
           <input class="import-file" type="file" accept=".json" @change="importJSON($event)">
         </label>
+        <button class="tool-btn" @click="exportJSON()">⬇ Exportar JSON</button>
+        <button class="tool-btn" @click="printPDF()">⎙ Gerar PDF</button>
       </div>
     </div>
   </div>
@@ -81,6 +83,7 @@
       <div class="note">
         Atividades Autônomas:
         <input type="number" min="0" step="15" x-model.number="atividadesAutonomas"
+          @focus="_pushHistory()"
           style="width:60px;margin:0 4px;border:1px solid #d1d5db;border-radius:6px;padding:2px 6px;font-size:12px;">
         h (mín. 120h)
       </div>

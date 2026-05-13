@@ -19,6 +19,7 @@ function ppc() {
     showArrows:           false,
     _nextId:              100,
     _dragAnchor:          null,
+    _history:             [],
 
     // ── Queries ───────────────────────────────────────────────────────────────
     disciplinesIn(p)  { return this.disciplines.filter(d => d.period === p).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)) },
@@ -59,8 +60,31 @@ function ppc() {
       return parts.join(' · ')
     },
 
+    // ── Undo ─────────────────────────────────────────────────────────────────
+    _pushHistory() {
+      this._history.push({
+        disciplines:         JSON.parse(JSON.stringify(this.disciplines)),
+        atividadesAutonomas: this.atividadesAutonomas,
+      })
+      if (this._history.length > 50) this._history.shift()
+    },
+
+    undo() {
+      if (this._history.length === 0) return
+      const prev = this._history.pop()
+      this.disciplines         = prev.disciplines
+      this.atividadesAutonomas = prev.atividadesAutonomas
+      this.$nextTick(() => {
+        this.initSortable()
+        if (this.showArrows) this._drawArrows()
+      })
+    },
+
+    printPDF() { window.print() },
+
     // ── Add discipline ────────────────────────────────────────────────────────
     addDiscipline(period) {
+      this._pushHistory()
       const id = 'new-' + (this._nextId++)
       this.disciplines.push({
         id, name: 'Nova disciplina', period, hours: 60,
@@ -95,6 +119,7 @@ function ppc() {
 
     saveEditing() {
       if (this.hoursInvalid()) return
+      this._pushHistory()
       const idx = this.disciplines.findIndex(d => d.id === this.editingId)
       if (idx !== -1) {
         this.editing.hours = this.editing.teoria.hours + this.editing.pratica.hours + this.editing.extensao.hours
@@ -104,6 +129,7 @@ function ppc() {
     },
 
     deleteEditing() {
+      this._pushHistory()
       this.disciplines = this.disciplines.filter(d => d.id !== this.editingId)
       this.disciplines.forEach(d => {
         d.prerequisites = d.prerequisites.filter(pid => pid !== this.editingId)
@@ -258,6 +284,8 @@ function ppc() {
             const newPeriod = parseInt(evt.to.id.replace('period-', ''))
             const oldPeriod = parseInt(evt.from.id.replace('period-', ''))
             if (isNaN(newPeriod) || isNaN(oldPeriod)) return
+
+            self._pushHistory()
 
             // 1. Revert SortableJS's DOM move so Alpine reconciles from a clean state.
             evt.from.insertBefore(evt.item, self._dragAnchor)
