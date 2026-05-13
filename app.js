@@ -4,7 +4,8 @@ function ppc() {
   return {
     disciplines:          JSON.parse(JSON.stringify(DISCIPLINES_DATA)),
     atividadesAutonomas:  275,
-    ordinals:             ['1º','2º','3º','4º','5º','6º','7º','8º','9º'],
+    numPeriods:           9,
+    ordinals:             ['1º','2º','3º','4º','5º','6º','7º','8º','9º','10º','11º','12º','13º','14º','15º'],
     editing:              null,
     editingId:            null,
     constraintOpen:       false,
@@ -226,10 +227,24 @@ function ppc() {
 
     inUseCount(value) { return this.disciplines.filter(d => d.color === value).length },
 
+    // ── Period management ─────────────────────────────────────────────────────
+    addPeriod() {
+      this._pushHistory()
+      this.numPeriods++
+      this.$nextTick(() => this.initSortable())
+    },
+
+    removeLastPeriod() {
+      if (this.numPeriods <= 1) return
+      if (this.disciplines.some(d => d.period === this.numPeriods)) return
+      this._pushHistory()
+      this.numPeriods--
+    },
+
     // ── Export / Import ───────────────────────────────────────────────────────
     exportJSON() {
       const blob = new Blob(
-        [JSON.stringify({ disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, categories: this.categories, title: this.title, subtitle: this.subtitle }, null, 2)],
+        [JSON.stringify({ disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, numPeriods: this.numPeriods, categories: this.categories, title: this.title, subtitle: this.subtitle }, null, 2)],
         { type: 'application/json' }
       )
       const a    = Object.assign(document.createElement('a'), {
@@ -249,11 +264,13 @@ function ppc() {
           const state = JSON.parse(e.target.result)
           if (state.disciplines) {
             this.disciplines = state.disciplines
-            for (let p = 1; p <= 9; p++) {
+            const periods = [...new Set(this.disciplines.map(d => d.period))]
+            periods.forEach(p => {
               const pd = this.disciplines.filter(d => d.period === p)
               if (pd.some(d => d.order == null)) pd.forEach((d, i) => { d.order = i })
-            }
+            })
           }
+          if (state.numPeriods != null)          this.numPeriods          = state.numPeriods
           if (state.atividadesAutonomas != null) this.atividadesAutonomas = state.atividadesAutonomas
           if (state.categories) this.categories = state.categories
           if (state.title)      this.title      = state.title
@@ -269,7 +286,7 @@ function ppc() {
     // ── Drag-and-drop ─────────────────────────────────────────────────────────
     initSortable() {
       const self = this
-      for (let p = 1; p <= 9; p++) {
+      for (let p = 1; p <= self.numPeriods; p++) {
         const el = document.getElementById(`period-${p}`)
         if (!el || el._sortable) continue
         el._sortable = Sortable.create(el, {

@@ -11,7 +11,7 @@ function buildConstraints(app) {
   const ead = ds.reduce((s, d) => s + d.hours * ((d.eadPercent ?? 0) / 100), 0)
 
   const periodOver = []
-  for (let p = 1; p <= 9; p++) {
+  for (let p = 1; p <= app.numPeriods; p++) {
     const w = app.disciplinesIn(p).reduce((s, d) => s + d.hours, 0) / 15
     if (w > 28) periodOver.push(`${ordinals[p-1]} (${w.toFixed(1)}h/sem)`)
   }

@@ -38,7 +38,7 @@ input.import-file { display: none; }
 /* grid */
 .card { background: var(--card); border: 1px solid #e5e7eb; border-radius: 22px;
   box-shadow: var(--shadow); overflow: hidden; }
-.grid { display: grid; grid-template-columns: repeat(9, 1fr); align-items: stretch; }
+.grid { display: grid; align-items: stretch; }
 .period { border-right: 1px solid var(--line); min-height: 505px;
   background: linear-gradient(180deg,#fff 0%,#fafcff 100%); position: relative; }
 .period:last-child { border-right: none; }

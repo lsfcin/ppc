@@ -28,6 +28,10 @@
       <div class="toolbar">
         <button class="tool-btn" @click="undo()" :disabled="_history.length === 0">↩ Desfazer</button>
         <button class="tool-btn" @click="redo()" :disabled="_future.length === 0">↪ Refazer</button>
+        <button class="tool-btn" @click="addPeriod()" :disabled="numPeriods >= 15">＋ Período</button>
+        <button class="tool-btn" @click="removeLastPeriod()"
+          :disabled="numPeriods <= 1 || disciplines.some(d => d.period === numPeriods)"
+          :title="disciplines.some(d => d.period === numPeriods) ? 'Mova as disciplinas do último período antes de remover' : ''">− Período</button>
         <label class="tool-btn" style="cursor:pointer">
           ⬆ Importar JSON
           <input class="import-file" type="file" accept=".json" @change="importJSON($event)">
@@ -82,8 +86,8 @@
 
       <!-- ── Grid ─────────────────────────────────────────────────────────── -->
       <div class="card grid-wrap" id="grid-wrap">
-        <div class="grid">
-          <template x-for="p in 9" :key="p">
+        <div class="grid" :style="`grid-template-columns: repeat(${numPeriods}, 1fr)`">
+          <template x-for="p in numPeriods" :key="p">
             <section class="period">
               <div class="period-head">
                 <div class="title" x-text="ordinals[p-1] + ' Período'"></div>
@@ -169,7 +173,7 @@
       <div class="field">
         <label>Período</label>
         <select x-model.number="editing.period">
-          <template x-for="p in 9" :key="p">
+          <template x-for="p in numPeriods" :key="p">
             <option :value="p" x-text="ordinals[p-1]"></option>
           </template>
         </select>
