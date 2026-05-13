@@ -8,7 +8,8 @@
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--text);
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  zoom: 0.75; }
 .wrap { width: 1880px; margin: 0 auto; padding: 24px; }
 
 /* header */
