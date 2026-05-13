@@ -237,6 +237,19 @@
         </template>
       </div>
     </div>
+    <div class="field">
+      <label>Temas Transversais</label>
+      <div class="prereq-list">
+        <template x-for="theme in transversalThemes()" :key="theme.id">
+          <label class="prereq-item">
+            <input type="checkbox"
+              :checked="(editing.tags ?? []).includes(theme.id)"
+              @change="toggleTag(theme.id)">
+            <span x-text="theme.label"></span>
+          </label>
+        </template>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button class="btn btn-danger"  @click="deleteEditing()">Excluir</button>

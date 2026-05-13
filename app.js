@@ -132,7 +132,7 @@ function ppc() {
         pratica:  { hours: 0,  nucleus: 'II' },
         extensao: { hours: 0,  nucleus: 'III' },
         prerequisites: [], department: 'DC',
-        color: 'blue', isElective: false, eadPercent: 0, skipWeekly: false,
+        color: 'blue', isElective: false, eadPercent: 0, skipWeekly: false, tags: [],
         order: this.disciplines.filter(d => d.period === period).length,
       })
       this.$nextTick(() => this.openModal(id))
@@ -163,6 +163,7 @@ function ppc() {
       const idx = this.disciplines.findIndex(d => d.id === this.editingId)
       if (idx !== -1) {
         this.editing.hours = this.editing.teoria.hours + this.editing.pratica.hours + this.editing.extensao.hours
+        this.editing.tags  = this.editing.tags ?? []
         this.disciplines[idx] = this.editing
       }
       this.closeModal()
@@ -189,6 +190,16 @@ function ppc() {
       if (t <= 0)      return 'total deve ser maior que zero'
       if (t % 15 !== 0) return `${t}h não é múltiplo de 15`
       return ''
+    },
+
+    transversalThemes() { return TRANSVERSAL_THEMES },
+
+    toggleTag(id) {
+      if (!this.editing) return
+      if (!this.editing.tags) this.editing.tags = []
+      const idx = this.editing.tags.indexOf(id)
+      if (idx === -1) this.editing.tags.push(id)
+      else            this.editing.tags.splice(idx, 1)
     },
 
     otherDisciplines() {

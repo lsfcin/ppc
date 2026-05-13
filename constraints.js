@@ -1,3 +1,27 @@
+const TRANSVERSAL_THEMES = [
+  { id: 'ambiental',
+    label: 'Educação Ambiental e Direitos Humanos',
+    detail: 'Resolução CEPE/UFRPE Nº 744/2024, §4º: "Os temas Educação ambiental e Direitos humanos são obrigatórios para as Licenciaturas [...] e poderão ser abordados de modo transversal e interdisciplinar."' },
+  { id: 'diversidade',
+    label: 'Diversidades, Ed. Inclusiva e Direitos Socioeducativos',
+    detail: 'Resolução CEPE/UFRPE Nº 744/2024, §5º: "Nos cursos de Licenciatura é obrigatório: II - como componentes curriculares ou temas transversais: a) diversidade de gênero e sexualidade; b) diversidade religiosa; c) diversidade de faixa geracional; d) educação inclusiva; e) direitos educacionais de adolescentes e jovens em cumprimento de medidas socioeducativas e gestão educacional." BNCC (Base Nacional Comum Curricular) também enfatiza esses temas."' },
+  { id: 'violencia',
+    label: 'Prevenção da Violência (Criança, Adolescente e Mulher)',
+    detail: 'LDB (Lei nº 9.394/1996), §9º: "Conteúdos relativos aos direitos humanos e à prevenção de todas as formas de violência contra a criança, o adolescente e a mulher serão incluídos, como temas transversais, nos currículos."' },
+  { id: 'feminino',
+    label: 'Experiências, Perspectivas e Conquistas Femininas',
+    detail: 'LDB (Lei nº 9.394/1996) e Resolução CNE/CP Nº 4/2024: "as abordagens devem incluir aspectos da história, ciência, artes e cultura a partir das experiências e perspectivas femininas" e "múltiplas formas de participação e atuação das mulheres na sociedade brasileira, bem como de conhecimentos, valores e atitudes orientados à prevenção e combate a todas as formas de violência contra a mulher."' },
+  { id: 'afro',
+    label: 'História e Cultura Afro-Brasileira, Indígena e Combate ao Racismo',
+    detail: 'Resolução CNE/CP Nº 4/2024: "das relações étnico-raciais estabelecidas na sociedade brasileira [...] e que garantam a apropriação dos conhecimentos relativos à história e cultura africana, afrobrasileira e dos povos originários do Brasil, bem como de valores e atitudes orientados à desconstruir e combater todas as expressões do racismo." Nota: a UFRPE exige a disciplina específica de Relações Étnico-Raciais, mas as diretrizes exigem que o combate ao racismo seja transversalizado nas práticas educativas.' },
+  { id: 'metodologia',
+    label: 'Metodologia Científica',
+    detail: 'Resolução CEPE/UFRPE Nº 744/2024, §3º: "Os conteúdos programáticos associados à Metodologia Científica são obrigatórios e transversais para todos os cursos de modo a possibilitar ao/à discente a formação e o instrumental necessário ao seu desenvolvimento acadêmico."' },
+  { id: 'pcc',
+    label: 'Prática como Componente Curricular (PCC)',
+    detail: 'Resolução CEPE/UFRPE Nº 744/2024: "III - Prática como Componente Curricular (PCC) integrada ao perfil curricular, durante todo o curso." Resolução CEPE/UFRPE Nº 924/2025, Art. 39: "A PCC caracteriza-se como uma atividade flexível no âmbito do ensino, podendo ser desenvolvida como componente curricular, parte de um componente curricular ou como atividades formativas relacionadas à formação pedagógica, excetuando-se os fundamentos técnico-científicos específicos de cada área do conhecimento."' },
+]
+
 const MANDATORY_NAMES = [
   'Educação das Relações Étnico-Raciais', 'Libras', 'Produção de Texto',
   'Fundamentos da Educação', 'Educação Brasileira', 'Didática',
@@ -98,6 +122,19 @@ function buildConstraints(app) {
         : `Violações: ${preqViol.join('; ')}`,
       detail: 'Pré-requisito deve estar alocado em período anterior ao da disciplina que o exige.',
       detailOpen: false },
+    ...TRANSVERSAL_THEMES.map((theme, i) => {
+      const count = ds.filter(d => (d.tags ?? []).includes(theme.id)).length
+      return {
+        id: `ct${i + 1}`,
+        label: `[Transversal] ${theme.label}`,
+        ok: count >= 2,
+        value: count === 0 ? 'Nenhuma disciplina contempla este tema (mínimo: 2)'
+             : count === 1 ? '1 disciplina contempla este tema (mínimo: 2)'
+             :               `${count} disciplinas contemplam este tema`,
+        detail: theme.detail,
+        detailOpen: false,
+      }
+    }),
   ]
 }
 
