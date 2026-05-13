@@ -6,12 +6,11 @@
   <title>PPC — Grade LC/UFRPE</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
-  <script src="data.js"></script>
   <script src="constraints.js"></script>
   <script src="app.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
 </head>
-<body x-data="ppc()" x-init="$nextTick(() => initSortable())"
+<body x-data="ppc()"
   @keydown.ctrl.z.window.prevent="undo()"
   @keydown.ctrl.y.window.prevent="redo()"
   @keydown.ctrl.shift.z.window.prevent="redo()">

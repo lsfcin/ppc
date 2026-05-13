@@ -2,7 +2,7 @@ const PALETTE = ['salmon','blue','cyan','green','gray','purple','orange','yellow
 
 function ppc() {
   return {
-    disciplines:          JSON.parse(JSON.stringify(DISCIPLINES_DATA)),
+    disciplines:          [],
     atividadesAutonomas:  275,
     numPeriods:           9,
     ordinals:             ['1º','2º','3º','4º','5º','6º','7º','8º','9º','10º','11º','12º','13º','14º','15º'],
@@ -25,6 +25,32 @@ function ppc() {
     _dragAnchor:          null,
     _history:             [],
     _future:              [],
+
+    // ── Bootstrap ─────────────────────────────────────────────────────────────
+    async init() {
+      try {
+        const resp = await fetch('grade-curricular.json')
+        if (resp.ok) this._applyState(await resp.json())
+      } catch { /* no default file — start with blank slate */ }
+      this.$nextTick(() => this.initSortable())
+    },
+
+    _applyState(state) {
+      if (state.disciplines) {
+        this.disciplines = state.disciplines
+        const periods = [...new Set(this.disciplines.map(d => d.period))]
+        periods.forEach(p => {
+          const pd = this.disciplines.filter(d => d.period === p)
+          if (pd.some(d => d.order == null)) pd.forEach((d, i) => { d.order = i })
+        })
+      }
+      if (state.numPeriods        != null) this.numPeriods          = state.numPeriods
+      if (state.atividadesAutonomas != null) this.atividadesAutonomas = state.atividadesAutonomas
+      if (state.categories)                this.categories          = state.categories
+      if (state.title)                     this.title               = state.title
+      if (state.subtitle)                  this.subtitle            = state.subtitle
+      this._nextId = Math.max(99, ...this.disciplines.map(d => parseInt(d.id.split('-').pop()) || 0)) + 1
+    },
 
     // ── Queries ───────────────────────────────────────────────────────────────
     disciplinesIn(p)  { return this.disciplines.filter(d => d.period === p).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)) },
@@ -242,14 +268,21 @@ function ppc() {
     },
 
     // ── Export / Import ───────────────────────────────────────────────────────
-    exportJSON() {
-      const blob = new Blob(
-        [JSON.stringify({ disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, numPeriods: this.numPeriods, categories: this.categories, title: this.title, subtitle: this.subtitle }, null, 2)],
-        { type: 'application/json' }
-      )
-      const a    = Object.assign(document.createElement('a'), {
-        href:     URL.createObjectURL(blob),
-        download: `grade-lc-${new Date().toISOString().slice(0, 10)}.json`,
+    async exportJSON() {
+      const payload       = JSON.stringify({ disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, numPeriods: this.numPeriods, categories: this.categories, title: this.title, subtitle: this.subtitle }, null, 2)
+      const suggestedName = `grade-lc-${new Date().toISOString().slice(0, 10)}.json`
+      if (window.showSaveFilePicker) {
+        try {
+          const handle   = await window.showSaveFilePicker({ suggestedName, types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }] })
+          const writable = await handle.createWritable()
+          await writable.write(payload)
+          await writable.close()
+          return
+        } catch (e) { if (e.name === 'AbortError') return }
+      }
+      const a = Object.assign(document.createElement('a'), {
+        href:     URL.createObjectURL(new Blob([payload], { type: 'application/json' })),
+        download: suggestedName,
       })
       a.click()
       URL.revokeObjectURL(a.href)
@@ -261,21 +294,8 @@ function ppc() {
       const reader = new FileReader()
       reader.onload = e => {
         try {
-          const state = JSON.parse(e.target.result)
-          if (state.disciplines) {
-            this.disciplines = state.disciplines
-            const periods = [...new Set(this.disciplines.map(d => d.period))]
-            periods.forEach(p => {
-              const pd = this.disciplines.filter(d => d.period === p)
-              if (pd.some(d => d.order == null)) pd.forEach((d, i) => { d.order = i })
-            })
-          }
-          if (state.numPeriods != null)          this.numPeriods          = state.numPeriods
-          if (state.atividadesAutonomas != null) this.atividadesAutonomas = state.atividadesAutonomas
-          if (state.categories) this.categories = state.categories
-          if (state.title)      this.title      = state.title
-          if (state.subtitle)   this.subtitle   = state.subtitle
-          this._nextId = Math.max(...this.disciplines.map(d => parseInt(d.id.split('-').pop()) || 0)) + 1
+          this._pushHistory()
+          this._applyState(JSON.parse(e.target.result))
           this.$nextTick(() => this.initSortable())
         } catch { alert('JSON inválido') }
       }
