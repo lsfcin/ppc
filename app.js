@@ -1,5 +1,34 @@
 const PALETTE = ['salmon','blue','cyan','green','gray','purple','orange','yellow']
 
+// ── IndexedDB helpers (persist FileSystemDirectoryHandle across sessions) ──────
+function _idbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('ppc', 1)
+    req.onupgradeneeded = e => e.target.result.createObjectStore('kv')
+    req.onsuccess = e => resolve(e.target.result)
+    req.onerror   = () => reject(req.error)
+  })
+}
+async function _idbGet(key) {
+  try {
+    const db = await _idbOpen()
+    return await new Promise(resolve => {
+      const r = db.transaction('kv').objectStore('kv').get(key)
+      r.onsuccess = () => resolve(r.result ?? null)
+      r.onerror   = () => resolve(null)
+    })
+  } catch { return null }
+}
+async function _idbSet(key, value) {
+  const db = await _idbOpen()
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('kv', 'readwrite')
+    tx.objectStore('kv').put(value, key)
+    tx.oncomplete = resolve
+    tx.onerror    = () => reject(tx.error)
+  })
+}
+
 function ppc() {
   return {
     disciplines:          [],
@@ -279,21 +308,33 @@ function ppc() {
     async saveAsDefault() {
       const data    = { disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, numPeriods: this.numPeriods, categories: this.categories, title: this.title, subtitle: this.subtitle }
       const payload = 'const GRADE_CURRICULAR = ' + JSON.stringify(data, null, 2) + '\n'
-      if (window.showSaveFilePicker) {
-        try {
-          const handle   = await window.showSaveFilePicker({ suggestedName: 'grade-curricular.js', types: [{ description: 'JavaScript', accept: { 'application/javascript': ['.js'] } }] })
-          const writable = await handle.createWritable()
-          await writable.write(payload)
-          await writable.close()
-          return
-        } catch (e) { if (e.name === 'AbortError') return }
+
+      if (!window.showDirectoryPicker) {
+        const a = Object.assign(document.createElement('a'), {
+          href: URL.createObjectURL(new Blob([payload], { type: 'application/javascript' })),
+          download: 'grade-curricular.js',
+        })
+        a.click(); URL.revokeObjectURL(a.href)
+        return
       }
-      const a = Object.assign(document.createElement('a'), {
-        href:     URL.createObjectURL(new Blob([payload], { type: 'application/javascript' })),
-        download: 'grade-curricular.js',
-      })
-      a.click()
-      URL.revokeObjectURL(a.href)
+
+      // Retrieve or request the app directory handle
+      let dir = await _idbGet('ppc-dir')
+      if (dir) {
+        const perm = await dir.queryPermission({ mode: 'readwrite' })
+        if (perm === 'prompt')  { if (await dir.requestPermission({ mode: 'readwrite' }) !== 'granted') dir = null }
+        if (perm === 'denied')  dir = null
+      }
+      if (!dir) {
+        try   { dir = await window.showDirectoryPicker({ mode: 'readwrite' }); await _idbSet('ppc-dir', dir) }
+        catch (e) { if (e.name === 'AbortError') return; throw e }
+      }
+
+      try {
+        const fh = await dir.getFileHandle('grade-curricular.js', { create: true })
+        const w  = await fh.createWritable()
+        await w.write(payload); await w.close()
+      } catch (e) { alert('Erro ao salvar: ' + e.message) }
     },
 
     async exportJSON() {
