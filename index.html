@@ -37,6 +37,7 @@
           <input class="import-file" type="file" accept=".json" @change="importJSON($event)">
         </label>
         <button class="tool-btn" @click="exportJSON()">⬇ Exportar JSON</button>
+        <button class="tool-btn" @click="saveAsDefault()">★ Salvar como padrão</button>
         <button class="tool-btn" @click="printPDF()">⎙ Gerar PDF</button>
       </div>
     </div>

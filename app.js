@@ -276,6 +276,26 @@ function ppc() {
     },
 
     // ── Export / Import ───────────────────────────────────────────────────────
+    async saveAsDefault() {
+      const data    = { disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, numPeriods: this.numPeriods, categories: this.categories, title: this.title, subtitle: this.subtitle }
+      const payload = 'const GRADE_CURRICULAR = ' + JSON.stringify(data, null, 2) + '\n'
+      if (window.showSaveFilePicker) {
+        try {
+          const handle   = await window.showSaveFilePicker({ suggestedName: 'grade-curricular.js', types: [{ description: 'JavaScript', accept: { 'application/javascript': ['.js'] } }] })
+          const writable = await handle.createWritable()
+          await writable.write(payload)
+          await writable.close()
+          return
+        } catch (e) { if (e.name === 'AbortError') return }
+      }
+      const a = Object.assign(document.createElement('a'), {
+        href:     URL.createObjectURL(new Blob([payload], { type: 'application/javascript' })),
+        download: 'grade-curricular.js',
+      })
+      a.click()
+      URL.revokeObjectURL(a.href)
+    },
+
     async exportJSON() {
       const payload       = JSON.stringify({ disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, numPeriods: this.numPeriods, categories: this.categories, title: this.title, subtitle: this.subtitle }, null, 2)
       const suggestedName = `grade-lc-${new Date().toISOString().slice(0, 10)}.json`
