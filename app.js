@@ -1,12 +1,4 @@
-const CATEGORIES = [
-  { value: 'salmon', label: 'Formação docente',  nuclei: ['I'] },
-  { value: 'blue',   label: 'Computação',         nuclei: ['II'] },
-  { value: 'cyan',   label: 'Mat. / Computação',  nuclei: ['II'] },
-  { value: 'green',  label: 'Matemática',          nuclei: ['II'] },
-  { value: 'gray',   label: 'Optativa',            nuclei: ['II'] },
-  { value: 'purple', label: 'Extensão / Projeto',  nuclei: ['III'] },
-  { value: 'orange', label: 'Estágio',             nuclei: ['IV'] },
-]
+const PALETTE = ['salmon','blue','cyan','green','gray','purple','orange','yellow']
 
 function ppc() {
   return {
@@ -16,6 +8,18 @@ function ppc() {
     editing:              null,
     editingId:            null,
     constraintOpen:       false,
+    title:    'Proposta para a grade de LC',
+    subtitle: 'Licenciatura em Computação — arraste disciplinas entre períodos para experimentar a grade.',
+    categories: [
+      { value:'salmon', label:'Formação docente',  nucleus:'I'   },
+      { value:'blue',   label:'Computação',         nucleus:'II'  },
+      { value:'cyan',   label:'Mat. / Computação',  nucleus:'II'  },
+      { value:'green',  label:'Matemática',          nucleus:'II'  },
+      { value:'gray',   label:'Optativa',            nucleus:'II'  },
+      { value:'purple', label:'Extensão / Projeto',  nucleus:'III' },
+      { value:'orange', label:'Estágio',             nucleus:'IV'  },
+    ],
+    _stagingCategories: null,
     _nextId:              100,
     _dragAnchor:          null,
     _history:             [],
@@ -178,13 +182,13 @@ function ppc() {
     },
 
     availableCategories() {
-      if (!this.editing) return CATEGORIES
+      if (!this.editing) return this.categories
       const used = new Set()
       if (this.editing.teoria.hours   > 0) used.add(this.editing.teoria.nucleus)
       if (this.editing.pratica.hours  > 0) used.add(this.editing.pratica.nucleus)
       if (this.editing.extensao.hours > 0) used.add('III')
-      if (used.size === 0) return CATEGORIES
-      return CATEGORIES.filter(c => c.nuclei.some(n => used.has(n)))
+      if (used.size === 0) return this.categories
+      return this.categories.filter(c => used.has(c.nucleus))
     },
 
     fixColor() {
@@ -194,10 +198,38 @@ function ppc() {
         this.editing.color = avail[0]?.value ?? 'blue'
     },
 
+    // ── Categories modal ──────────────────────────────────────────────────────
+    openCategoriesModal() {
+      this._stagingCategories = JSON.parse(JSON.stringify(this.categories))
+      document.getElementById('categories-modal').showModal()
+    },
+
+    saveCategoriesModal() {
+      this._pushHistory()
+      this.categories = this._stagingCategories
+      this._stagingCategories = null
+      document.getElementById('categories-modal').close()
+    },
+
+    closeCategoriesModal() {
+      this._stagingCategories = null
+      document.getElementById('categories-modal').close()
+    },
+
+    addStagingCategory() {
+      const used  = new Set(this._stagingCategories.map(c => c.value))
+      const color = PALETTE.find(c => !used.has(c)) ?? 'blue'
+      this._stagingCategories.push({ value: color, label: 'Nova categoria', nucleus: 'II' })
+    },
+
+    deleteStagingCategory(idx) { this._stagingCategories.splice(idx, 1) },
+
+    inUseCount(value) { return this.disciplines.filter(d => d.color === value).length },
+
     // ── Export / Import ───────────────────────────────────────────────────────
     exportJSON() {
       const blob = new Blob(
-        [JSON.stringify({ disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas }, null, 2)],
+        [JSON.stringify({ disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas, categories: this.categories, title: this.title, subtitle: this.subtitle }, null, 2)],
         { type: 'application/json' }
       )
       const a    = Object.assign(document.createElement('a'), {
@@ -223,6 +255,9 @@ function ppc() {
             }
           }
           if (state.atividadesAutonomas != null) this.atividadesAutonomas = state.atividadesAutonomas
+          if (state.categories) this.categories = state.categories
+          if (state.title)      this.title      = state.title
+          if (state.subtitle)   this.subtitle   = state.subtitle
           this._nextId = Math.max(...this.disciplines.map(d => parseInt(d.id.split('-').pop()) || 0)) + 1
           this.$nextTick(() => this.initSortable())
         } catch { alert('JSON inválido') }

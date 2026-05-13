@@ -20,8 +20,8 @@
   <!-- ── Header ───────────────────────────────────────────────────────────── -->
   <div class="header">
     <div>
-      <h1>Proposta para a grade de LC</h1>
-      <p>Licenciatura em Computação — arraste disciplinas entre períodos para experimentar a grade.</p>
+      <input class="editable-title" type="text" x-model="title" spellcheck="false">
+      <input class="editable-subtitle" type="text" x-model="subtitle" spellcheck="false">
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
       <div class="badge" x-text="`CH Total: ${totalHours()}h`"></div>
@@ -126,15 +126,17 @@
           </div>
         </div>
         <div class="panel">
-          <h2>Legenda</h2>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <h2 style="margin:0">Legenda</h2>
+            <button class="tool-btn" style="font-size:11px;padding:4px 10px" @click="openCategoriesModal()">✎ Editar</button>
+          </div>
           <div class="legend">
-            <div class="legend-item"><span class="swatch salmon"></span> Núcleo I — Formação docente</div>
-            <div class="legend-item"><span class="swatch blue"></span>   Núcleo II — Computação</div>
-            <div class="legend-item"><span class="swatch cyan"></span>   Núcleo II — Mat. / Computação</div>
-            <div class="legend-item"><span class="swatch green"></span>  Núcleo II — Matemática</div>
-            <div class="legend-item"><span class="swatch gray"></span>   Núcleo II — Optativa</div>
-            <div class="legend-item"><span class="swatch purple"></span> Núcleo III — Extensão</div>
-            <div class="legend-item"><span class="swatch orange"></span> Núcleo IV — Estágio</div>
+            <template x-for="cat in categories" :key="cat.value">
+              <div class="legend-item">
+                <span class="swatch" :class="cat.value"></span>
+                <span x-text="`Núcleo ${cat.nucleus} — ${cat.label}`"></span>
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -235,6 +237,42 @@
     <button class="btn btn-danger"  @click="deleteEditing()">Excluir</button>
     <button class="btn btn-cancel"  @click="closeModal()">Cancelar</button>
     <button class="btn btn-primary" @click="saveEditing()" :disabled="hoursInvalid()">Salvar</button>
+  </div>
+</dialog>
+
+<!-- ── Categories modal ─────────────────────────────────────────────────────── -->
+<dialog id="categories-modal" @click.self="closeCategoriesModal()">
+  <div class="modal-head">
+    <h3>Categorias / Cores</h3>
+    <button class="modal-close" @click="closeCategoriesModal()">✕</button>
+  </div>
+  <div class="modal-body" x-show="_stagingCategories">
+    <template x-for="(cat, idx) in _stagingCategories" :key="idx">
+      <div class="cat-row">
+        <div class="cat-colors">
+          <template x-for="c in ['salmon','blue','cyan','green','gray','purple','orange','yellow']" :key="c">
+            <button class="cat-color-btn" :class="c"
+              :style="cat.value === c ? 'outline:2px solid #374151;outline-offset:2px' : ''"
+              @click="cat.value = c" :title="c"></button>
+          </template>
+        </div>
+        <input type="text" class="cat-label-input" x-model="cat.label" placeholder="Nome">
+        <select class="cat-nucleus-select" x-model="cat.nucleus">
+          <option value="I">Núcleo I</option>
+          <option value="II">Núcleo II</option>
+          <option value="III">Núcleo III</option>
+          <option value="IV">Núcleo IV</option>
+        </select>
+        <button class="cat-del-btn" @click="deleteStagingCategory(idx)"
+          :disabled="inUseCount(cat.value) > 0"
+          :title="inUseCount(cat.value) > 0 ? `Em uso por ${inUseCount(cat.value)} disciplina(s)` : 'Excluir'">✕</button>
+      </div>
+    </template>
+    <button class="btn btn-cancel" style="width:100%;margin-top:12px" @click="addStagingCategory()">＋ Adicionar categoria</button>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-cancel" @click="closeCategoriesModal()">Cancelar</button>
+    <button class="btn btn-primary" @click="saveCategoriesModal()">Salvar</button>
   </div>
 </dialog>
 

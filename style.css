@@ -14,8 +14,14 @@ body { margin: 0; background: var(--bg); color: var(--text);
 /* header */
 .header { display: flex; justify-content: space-between; align-items: flex-end;
   gap: 16px; margin-bottom: 16px; }
-.header h1 { margin: 0; font-size: 28px; line-height: 1.1; letter-spacing: -.02em; }
-.header p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+.editable-title { font-size: 28px; font-weight: 800; letter-spacing: -.02em;
+  line-height: 1.1; border: none; background: transparent; width: 100%;
+  color: var(--text); font-family: inherit; padding: 0; margin: 0; display: block; }
+.editable-title:focus { outline: 2px dashed #cbd5e1; outline-offset: 2px; border-radius: 4px; }
+.editable-subtitle { font-size: 14px; color: var(--muted); border: none;
+  background: transparent; width: 100%; font-family: inherit;
+  padding: 0; margin-top: 6px; display: block; }
+.editable-subtitle:focus { outline: 2px dashed #cbd5e1; outline-offset: 2px; border-radius: 4px; }
 .badge { border: 1px solid var(--line); background: rgba(255,255,255,.9);
   border-radius: 999px; padding: 8px 14px; font-size: 12px; color: #37516f;
   box-shadow: var(--shadow); white-space: nowrap; align-self: flex-start; }
@@ -209,12 +215,29 @@ dialog::backdrop { background: rgba(15,23,42,.35); }
 .btn-cancel:hover  { background: #e5e7eb; }
 .tool-btn:disabled { opacity: .4; cursor: default; pointer-events: none; }
 
+/* categories modal */
+.cat-row  { display: flex; align-items: center; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
+.cat-row:last-of-type { border-bottom: none; }
+.cat-colors { display: flex; gap: 4px; flex-shrink: 0; }
+.cat-color-btn { width: 22px; height: 22px; border-radius: 6px; border: none;
+  cursor: pointer; padding: 0; flex-shrink: 0; transition: transform .1s; }
+.cat-color-btn:hover { transform: scale(1.15); }
+.cat-label-input { flex: 1; min-width: 0; border: 1px solid #d1d5db; border-radius: 8px;
+  padding: 6px 10px; font-size: 13px; font-family: inherit; }
+.cat-nucleus-select { border: 1px solid #d1d5db; border-radius: 8px;
+  padding: 6px 8px; font-size: 12px; font-family: inherit; flex-shrink: 0; }
+.cat-del-btn { background: none; border: none; cursor: pointer;
+  color: #9ca3af; font-size: 15px; padding: 4px 6px; border-radius: 6px; flex-shrink: 0; }
+.cat-del-btn:hover:not(:disabled) { background: #fee2e2; color: #dc2626; }
+.cat-del-btn:disabled { opacity: .35; cursor: not-allowed; }
+
 @page { size: A4 landscape; margin: 8mm; }
 
 @media print {
   body  { zoom: 0.6; }
   *     { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .header p       { display: none !important; }
+  .editable-subtitle { display: none !important; }
   .toolbar        { display: none !important; }
   .add-btn        { display: none !important; }
   .constraint-bar { display: none !important; }
