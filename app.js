@@ -227,7 +227,6 @@ function ppc() {
       if (idx !== -1) {
         this.editing.isElective = this.isOptativaColor(this.editing.color)
         if (this.editing.isElective) {
-          this.editing.teoria.nucleus = 'II'
           this.editing.pratica  = { hours: 0, nucleus: 'II' }
           this.editing.extensao = { hours: 0, nucleus: 'III' }
           this.editing.prerequisites = []
@@ -300,6 +299,13 @@ function ppc() {
       return this.categories.filter(c => used.has(c.nucleus))
     },
 
+    onElectiveNucleusChange(nucleus) {
+      if (!this.editing) return
+      const match = this.categories.find(c => c.nucleus === nucleus && c.label !== 'Optativa')
+      if (match) this.editing.color = match.value
+      this.onColorChange()
+    },
+
     fixColor() {
       if (!this.editing) return
       const avail = this.availableCategories()
@@ -317,7 +323,8 @@ function ppc() {
         this.editing.name = 'Optativa'
         this.editing.isElective = true
         const total = this.editing.teoria.hours + this.editing.pratica.hours + this.editing.extensao.hours
-        this.editing.teoria   = { hours: total || 60, nucleus: 'II' }
+        const prevNucleus = this.editing.teoria.nucleus || 'II'
+        this.editing.teoria   = { hours: total || 60, nucleus: prevNucleus }
         this.editing.pratica  = { hours: 0, nucleus: 'II' }
         this.editing.extensao = { hours: 0, nucleus: 'III' }
         this.editing.prerequisites = []
@@ -336,12 +343,14 @@ function ppc() {
 
     saveCategoriesModal() {
       this._pushHistory()
-      // Remap discipline colors for any category whose color (value) changed, matched by stable id
+      // Build full old→new color map first, then apply in one pass to avoid chained-swap corruption
+      const colorMap = {}
       this._stagingCategories.forEach(cat => {
         const orig = this.categories.find(c => c.id === cat.id)
-        if (orig && orig.value !== cat.value)
-          this.disciplines.forEach(d => { if (d.color === orig.value) d.color = cat.value })
+        if (orig && orig.value !== cat.value) colorMap[orig.value] = cat.value
       })
+      if (Object.keys(colorMap).length)
+        this.disciplines.forEach(d => { if (colorMap[d.color]) d.color = colorMap[d.color] })
       const order = { I: 0, II: 1, III: 2, IV: 3 }
       this.categories = this._stagingCategories.sort((a, b) => (order[a.nucleus] ?? 9) - (order[b.nucleus] ?? 9))
       this._stagingCategories = null

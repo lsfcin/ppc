@@ -215,7 +215,14 @@
             <label>CH Total (múltiplo de 15h)</label>
             <div style="display:flex;align-items:center;gap:10px">
               <input type="number" min="15" step="15" x-model.number="editing.teoria.hours" style="width:90px">
-              <span style="font-size:12px;color:var(--muted)">Núcleo II (fixo)</span>
+              <select class="nucleus-inline" style="width:auto"
+                :value="editing.teoria.nucleus"
+                @change="onElectiveNucleusChange($event.target.value)">
+                <option value="I">Núcleo I</option>
+                <option value="II">Núcleo II</option>
+                <option value="III">Núcleo III</option>
+                <option value="IV">Núcleo IV</option>
+              </select>
             </div>
             <span class="hours-warning" x-show="hoursInvalid()" x-text="hoursWarning()" style="margin-top:4px;display:block"></span>
           </div>
