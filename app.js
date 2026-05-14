@@ -225,9 +225,17 @@ function ppc() {
       this._pushHistory()
       const idx = this.disciplines.findIndex(d => d.id === this.editingId)
       if (idx !== -1) {
+        this.editing.isElective = this.isOptativaColor(this.editing.color)
+        if (this.editing.isElective) {
+          this.editing.teoria.nucleus = 'II'
+          this.editing.pratica  = { hours: 0, nucleus: 'II' }
+          this.editing.extensao = { hours: 0, nucleus: 'III' }
+          this.editing.prerequisites = []
+          this.editing.tags          = []
+          this.editing.skipWeekly    = false
+        }
         this.editing.hours = this.editing.teoria.hours + this.editing.pratica.hours + this.editing.extensao.hours
         this.editing.tags  = this.editing.tags ?? []
-        this.editing.isElective = this.isOptativaColor(this.editing.color)
         this.disciplines[idx] = this.editing
       }
       this.closeModal()
@@ -308,6 +316,13 @@ function ppc() {
       if (this.isOptativaColor(this.editing.color)) {
         this.editing.name = 'Optativa'
         this.editing.isElective = true
+        const total = this.editing.teoria.hours + this.editing.pratica.hours + this.editing.extensao.hours
+        this.editing.teoria   = { hours: total || 60, nucleus: 'II' }
+        this.editing.pratica  = { hours: 0, nucleus: 'II' }
+        this.editing.extensao = { hours: 0, nucleus: 'III' }
+        this.editing.prerequisites = []
+        this.editing.tags          = []
+        this.editing.skipWeekly    = false
       } else {
         this.editing.isElective = false
       }

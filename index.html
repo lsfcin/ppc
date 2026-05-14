@@ -207,41 +207,53 @@
           </div>
         </div>
         <div class="checks-row">
-          <label class="check-item"><input type="checkbox" x-model="editing.skipWeekly"> Excluir do limite semanal</label>
+          <label class="check-item" x-show="!editing.isElective"><input type="checkbox" x-model="editing.skipWeekly"> Excluir do limite semanal</label>
           <label class="check-item">EaD <input type="number" min="0" max="100" step="5" x-model.number="editing.eadPercent" style="width:52px;margin:0 4px;border:1px solid #d1d5db;border-radius:6px;padding:2px 6px;font-size:13px;text-align:center"> %</label>
         </div>
-        <div class="field">
-          <label>Carga horária (múltiplo de 15h)</label>
-          <div class="hours-row">
-            <div class="hours-cell">
-              <label>Teoria</label>
-              <input type="number" min="0" step="15" x-model.number="editing.teoria.hours" @change="fixColor()">
-              <select x-show="editing.teoria.hours > 0" x-model="editing.teoria.nucleus" class="nucleus-inline" @change="fixColor()">
-                <option value="I">Núcleo I</option>
-                <option value="II">Núcleo II</option>
-                <option value="IV">Núcleo IV</option>
-              </select>
+        <template x-if="editing.isElective">
+          <div class="field">
+            <label>CH Total (múltiplo de 15h)</label>
+            <div style="display:flex;align-items:center;gap:10px">
+              <input type="number" min="15" step="15" x-model.number="editing.teoria.hours" style="width:90px">
+              <span style="font-size:12px;color:var(--muted)">Núcleo II (fixo)</span>
             </div>
-            <div class="hours-cell">
-              <label>Prática</label>
-              <input type="number" min="0" step="15" x-model.number="editing.pratica.hours" @change="fixColor()">
-              <select x-show="editing.pratica.hours > 0" x-model="editing.pratica.nucleus" class="nucleus-inline" @change="fixColor()">
-                <option value="I">Núcleo I</option>
-                <option value="II">Núcleo II</option>
-                <option value="IV">Núcleo IV</option>
-              </select>
+            <span class="hours-warning" x-show="hoursInvalid()" x-text="hoursWarning()" style="margin-top:4px;display:block"></span>
+          </div>
+        </template>
+        <template x-if="!editing.isElective">
+          <div class="field">
+            <label>Carga horária (múltiplo de 15h)</label>
+            <div class="hours-row">
+              <div class="hours-cell">
+                <label>Teoria</label>
+                <input type="number" min="0" step="15" x-model.number="editing.teoria.hours" @change="fixColor()">
+                <select x-show="editing.teoria.hours > 0" x-model="editing.teoria.nucleus" class="nucleus-inline" @change="fixColor()">
+                  <option value="I">Núcleo I</option>
+                  <option value="II">Núcleo II</option>
+                  <option value="IV">Núcleo IV</option>
+                </select>
+              </div>
+              <div class="hours-cell">
+                <label>Prática</label>
+                <input type="number" min="0" step="15" x-model.number="editing.pratica.hours" @change="fixColor()">
+                <select x-show="editing.pratica.hours > 0" x-model="editing.pratica.nucleus" class="nucleus-inline" @change="fixColor()">
+                  <option value="I">Núcleo I</option>
+                  <option value="II">Núcleo II</option>
+                  <option value="IV">Núcleo IV</option>
+                </select>
+              </div>
+              <div class="hours-cell">
+                <label>Extensão</label>
+                <input type="number" min="0" step="15" x-model.number="editing.extensao.hours" @change="fixColor()">
+                <div x-show="editing.extensao.hours > 0" class="nucleus-fixed">Núcleo III (fixo)</div>
+              </div>
             </div>
-            <div class="hours-cell">
-              <label>Extensão</label>
-              <input type="number" min="0" step="15" x-model.number="editing.extensao.hours" @change="fixColor()">
-              <div x-show="editing.extensao.hours > 0" class="nucleus-fixed">Núcleo III (fixo)</div>
+            <div style="margin-top:6px;font-size:12px;color:var(--muted)">
+              Total: <strong x-text="editing.teoria.hours + editing.pratica.hours + editing.extensao.hours + 'h'"></strong>
+              <span class="hours-warning" x-show="hoursInvalid()" x-text="' — ' + hoursWarning()"></span>
             </div>
           </div>
-          <div style="margin-top:6px;font-size:12px;color:var(--muted)">
-            Total: <strong x-text="editing.teoria.hours + editing.pratica.hours + editing.extensao.hours + 'h'"></strong>
-            <span class="hours-warning" x-show="hoursInvalid()" x-text="' — ' + hoursWarning()"></span>
-          </div>
-        </div>
+        </template>
         <div class="field">
           <label>Categoria / Cor</label>
           <select x-model="editing.color" @change="onColorChange()">
@@ -251,7 +263,7 @@
           </select>
         </div>
       </div><!-- .modal-left -->
-      <div class="modal-right">
+      <div class="modal-right" :style="editing.isElective ? 'opacity:0.25;pointer-events:none' : ''">
         <div class="field">
           <label>Pré-requisitos</label>
           <div class="prereq-list">
