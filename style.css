@@ -68,12 +68,10 @@ input.import-file { display: none; }
 .course .meta { margin-top: 6px; font-size: 10.5px; line-height: 1.2;
   color: rgba(31,41,55,.82); word-break: break-word; }
 .course .hrs-split { position: absolute; top: 6px; right: 8px;
-  background: inherit; border: 1px solid rgba(15,23,42,.15); border-radius: 999px;
-  padding: 2px 8px; font-size: 10px; font-weight: 800; letter-spacing: .05em;
+  font-size: 10px; font-weight: 800; letter-spacing: .05em;
   text-transform: uppercase; color: rgba(31,41,55,.68); white-space: nowrap; }
 .course .tag  { position: absolute; bottom: 6px; right: 8px;
-  background: inherit; border: 1px solid rgba(15,23,42,.15); border-radius: 999px;
-  padding: 2px 8px; font-size: 10px; font-weight: 800; letter-spacing: .05em;
+  font-size: 10px; font-weight: 800; letter-spacing: .05em;
   text-transform: uppercase; color: rgba(31,41,55,.68); white-space: nowrap; }
 .blue   { background: var(--blue); }   .cyan   { background: var(--cyan); }
 .purple { background: var(--purple); } .yellow { background: var(--yellow); }
