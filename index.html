@@ -5,8 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PPC — Grade LC/UFRPE</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="modal.css">
+  <link rel="stylesheet" href="constraints.css">
+  <script>window.MODALS = {}</script>
+  <script src="partials/constraint-panel.js"></script>
+  <script src="partials/edit-modal.js"></script>
+  <script src="partials/categories-modal.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+  <script src="transversal-themes.js"></script>
   <script src="constraints.js"></script>
+  <script src="history.js"></script>
+  <script src="sortable.js"></script>
+  <script src="disciplines.js"></script>
+  <script src="categories.js"></script>
   <script src="app.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
 </head>
@@ -16,7 +27,6 @@
   @keydown.ctrl.shift.z.window.prevent="redo()">
 <div class="wrap">
 
-  <!-- ── Header ───────────────────────────────────────────────────────────── -->
   <div class="header">
     <div style="flex:1;min-width:0">
       <input class="editable-title" type="text" x-model="title" spellcheck="false">
@@ -40,56 +50,10 @@
     </div>
   </div>
 
-  <!-- ── Main area ───────────────────────────────────────────────────────── -->
   <div class="main-area">
+    <div id="constraint-mount" style="display:contents"></div>
 
-    <!-- Constraint sidebar (left) -->
-    <div class="constraint-bar" :class="{open: constraintOpen}">
-      <div class="constraint-collapsed" @click="constraintOpen = true">
-        <span class="constraint-rotated-label">Verificação de Restrições</span>
-        <div class="constraint-mini-badges">
-          <span class="mini-badge mini-ok"   x-text="constraints().filter(c=>!c.warn&&!disabledConstraints.includes(c.id)&&c.ok).length"></span>
-          <span class="mini-badge mini-fail"
-            x-show="constraints().filter(c=>!c.warn&&!disabledConstraints.includes(c.id)&&!c.ok).length > 0"
-            x-text="constraints().filter(c=>!c.warn&&!disabledConstraints.includes(c.id)&&!c.ok).length"></span>
-        </div>
-      </div>
-      <div class="constraint-expanded">
-        <div class="constraint-bar-head" @click="constraintOpen = false">
-          <div style="display:flex;align-items:center;gap:10px">
-            <span style="font-weight:800;font-size:14px">Verificação de Restrições</span>
-            <span class="constraint-summary" x-html="constraintSummary()"></span>
-          </div>
-          <span style="font-size:12px;color:var(--muted)">✕</span>
-        </div>
-        <div class="constraint-rows">
-          <template x-for="c in constraints()" :key="c.id">
-            <div class="constraint-row"
-              :class="{'constraint-disabled': disabledConstraints.includes(c.id), 'warn-row': c.warn && !disabledConstraints.includes(c.id)}">
-              <div class="constraint-status"
-                :class="disabledConstraints.includes(c.id) ? 'neutral' : (c.warn ? 'warn' : (c.ok ? 'ok' : 'fail'))"
-                x-text="disabledConstraints.includes(c.id) ? '—' : (c.warn ? '⚠' : (c.ok ? '✓' : '✗'))"></div>
-              <div>
-                <div class="constraint-label" x-text="c.label"></div>
-                <div class="constraint-value" x-text="c.value"></div>
-              </div>
-              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
-                <button class="pill-toggle" :class="disabledConstraints.includes(c.id) ? '' : 'on'"
-                  @click.stop="toggleConstraint(c.id)" title="Ativar/desativar restrição"></button>
-                <button class="adv-toggle" @click="c.detailOpen = !c.detailOpen"
-                  x-text="c.detailOpen ? '▲' : 'ver lei'"></button>
-              </div>
-              <div class="constraint-detail" x-show="c.detailOpen" x-text="c.detail"></div>
-            </div>
-          </template>
-        </div>
-      </div>
-    </div>
-
-    <!-- Content area -->
     <div class="content-area">
-
-      <!-- ── Grid ─────────────────────────────────────────────────────────── -->
       <div class="card grid-wrap" id="grid-wrap">
         <div class="empty-banner" x-show="disciplines.length === 0">
           Grade vazia —
@@ -123,7 +87,6 @@
         </div>
       </div>
 
-      <!-- ── Summary footer ───────────────────────────────────────────────── -->
       <div class="footer">
         <div class="panel">
           <h2>Resumo da proposta</h2>
@@ -168,193 +131,14 @@
           </div>
         </div>
       </div>
-
-    </div><!-- .content-area -->
-
-  </div><!-- .main-area -->
-
-</div><!-- .wrap -->
-
-<!-- ── Edit modal ───────────────────────────────────────────────────────────── -->
-<dialog id="edit-modal" @click.self="closeModal()">
-  <div class="modal-head">
-    <h3>Editar disciplina</h3>
-    <button class="modal-close" @click="closeModal()">✕</button>
+    </div>
   </div>
-  <template x-if="editing">
-  <div class="modal-body">
-    <div class="modal-cols">
-      <div class="modal-left">
-        <div class="field">
-          <label>Nome</label>
-          <input type="text" x-model="editing.name" :disabled="editing && isOptativaColor(editing.color)">
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div class="field">
-            <label>Departamento</label>
-            <select x-model="editing.department">
-              <option>DC</option><option>DED</option><option>DM</option>
-              <option>DL</option><option>DLCH</option><option>Outro</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Período</label>
-            <select x-model.number="editing.period">
-              <template x-for="p in numPeriods" :key="p">
-                <option :value="p" x-text="ordinals[p-1]"></option>
-              </template>
-            </select>
-          </div>
-        </div>
-        <div class="checks-row">
-          <label class="check-item" x-show="!editing.isElective"><input type="checkbox" x-model="editing.skipWeekly"> Excluir do limite semanal</label>
-          <label class="check-item">EaD <input type="number" min="0" max="100" step="5" x-model.number="editing.eadPercent" style="width:52px;margin:0 4px;border:1px solid #d1d5db;border-radius:6px;padding:2px 6px;font-size:13px;text-align:center"> %</label>
-        </div>
-        <template x-if="editing.isElective">
-          <div class="field">
-            <label>CH Total (múltiplo de 15h)</label>
-            <div style="display:flex;align-items:center;gap:10px">
-              <input type="number" min="15" step="15" x-model.number="editing.teoria.hours" style="width:90px">
-              <select class="nucleus-inline" style="width:auto"
-                :value="editing.teoria.nucleus"
-                @change="onElectiveNucleusChange($event.target.value)">
-                <option value="I">Núcleo I</option>
-                <option value="II">Núcleo II</option>
-                <option value="III">Núcleo III</option>
-                <option value="IV">Núcleo IV</option>
-              </select>
-            </div>
-            <span class="hours-warning" x-show="hoursInvalid()" x-text="hoursWarning()" style="margin-top:4px;display:block"></span>
-          </div>
-        </template>
-        <template x-if="!editing.isElective">
-          <div class="field">
-            <label>Carga horária (múltiplo de 15h)</label>
-            <div class="hours-row">
-              <div class="hours-cell">
-                <label>Teoria</label>
-                <input type="number" min="0" step="15" x-model.number="editing.teoria.hours" @change="fixColor()">
-                <select x-show="editing.teoria.hours > 0" x-model="editing.teoria.nucleus" class="nucleus-inline" @change="fixColor()">
-                  <option value="I">Núcleo I</option>
-                  <option value="II">Núcleo II</option>
-                  <option value="IV">Núcleo IV</option>
-                </select>
-              </div>
-              <div class="hours-cell">
-                <label>Prática</label>
-                <input type="number" min="0" step="15" x-model.number="editing.pratica.hours" @change="fixColor()">
-                <select x-show="editing.pratica.hours > 0" x-model="editing.pratica.nucleus" class="nucleus-inline" @change="fixColor()">
-                  <option value="I">Núcleo I</option>
-                  <option value="II">Núcleo II</option>
-                  <option value="IV">Núcleo IV</option>
-                </select>
-              </div>
-              <div class="hours-cell">
-                <label>Extensão</label>
-                <input type="number" min="0" step="15" x-model.number="editing.extensao.hours" @change="fixColor()">
-                <div x-show="editing.extensao.hours > 0" class="nucleus-fixed">Núcleo III (fixo)</div>
-              </div>
-            </div>
-            <div style="margin-top:6px;font-size:12px;color:var(--muted)">
-              Total: <strong x-text="editing.teoria.hours + editing.pratica.hours + editing.extensao.hours + 'h'"></strong>
-              <span class="hours-warning" x-show="hoursInvalid()" x-text="' — ' + hoursWarning()"></span>
-            </div>
-          </div>
-        </template>
-        <div class="field">
-          <label>Categoria / Cor</label>
-          <select @change="editing.color = $event.target.value; onColorChange()">
-            <template x-for="cat in availableCategories()" :key="cat.id">
-              <option :value="cat.value" :selected="cat.value === editing.color" x-text="cat.label"></option>
-            </template>
-          </select>
-        </div>
-      </div><!-- .modal-left -->
-      <div class="modal-right" :style="editing.isElective ? 'opacity:0.25;pointer-events:none' : ''">
-        <div class="field">
-          <label>Pré-requisitos</label>
-          <div class="prereq-list">
-            <template x-for="d in otherDisciplines()" :key="d.id">
-              <label class="prereq-item">
-                <input type="checkbox"
-                  :checked="editing.prerequisites.includes(d.id)"
-                  @change="togglePrereq(d.id)">
-                <span x-text="`${ordinals[d.period-1]} — ${d.name}`"></span>
-              </label>
-            </template>
-          </div>
-        </div>
-        <div class="field">
-          <label>Temas Transversais</label>
-          <div class="prereq-list">
-            <template x-for="theme in transversalThemes()" :key="theme.id">
-              <label class="prereq-item">
-                <input type="checkbox"
-                  :checked="(editing.tags ?? []).includes(theme.id)"
-                  @change="toggleTag(theme.id)">
-                <span x-text="theme.label"></span>
-              </label>
-            </template>
-          </div>
-        </div>
-      </div><!-- .modal-right -->
-    </div><!-- .modal-cols -->
-  </div>
-  </template>
-  <template x-if="editing">
-  <div class="modal-footer">
-    <button class="btn btn-danger"  @click="deleteEditing()">Excluir</button>
-    <button class="btn btn-cancel"  @click="closeModal()">Cancelar</button>
-    <button class="btn btn-primary" @click="saveEditing()" :disabled="hoursInvalid()">Salvar</button>
-  </div>
-  </template>
-</dialog>
 
-<!-- ── Categories modal ─────────────────────────────────────────────────────── -->
-<dialog id="categories-modal" @click.self="closeCategoriesModal()">
-  <div class="modal-head">
-    <h3>Categorias / Cores</h3>
-    <button class="modal-close" @click="closeCategoriesModal()">✕</button>
-  </div>
-  <div class="modal-body" x-show="_stagingCategories">
-    <template x-for="(cat, idx) in _stagingCategories" :key="cat.id">
-      <div class="cat-row">
-        <div class="cat-colors">
-          <template x-for="c in ['blue','sapphire','cyan','green','purple','pink','red','orange','salmon','yellow','gray']" :key="c">
-            <button class="cat-color-btn" :class="c"
-              :style="cat.value === c ? 'outline:2px solid #374151;outline-offset:2px' : ''"
-              @click="cat.value = c" :title="c"></button>
-          </template>
-        </div>
-        <template x-if="cat.locked">
-          <span class="cat-label-input" style="display:flex;align-items:center;font-size:13px;color:var(--muted);font-style:italic" x-text="cat.label"></span>
-        </template>
-        <template x-if="!cat.locked">
-          <input type="text" class="cat-label-input" x-model="cat.label" placeholder="Nome">
-        </template>
-        <template x-if="cat.locked">
-          <span class="cat-nucleus-select" style="display:flex;align-items:center;font-size:13px;color:var(--muted)" x-text="{ I: 'Núcleo I', II: 'Núcleo II', III: 'Núcleo III', IV: 'Núcleo IV' }[cat.nucleus]"></span>
-        </template>
-        <template x-if="!cat.locked">
-          <select class="cat-nucleus-select" x-model="cat.nucleus">
-            <option value="I">Núcleo I</option>
-            <option value="II">Núcleo II</option>
-            <option value="III">Núcleo III</option>
-            <option value="IV">Núcleo IV</option>
-          </select>
-        </template>
-        <button class="cat-del-btn" @click="deleteStagingCategory(idx)"
-          :disabled="cat.locked || inUseCount(cat.value) > 0"
-          :title="cat.locked ? 'Categoria fixa' : (inUseCount(cat.value) > 0 ? `Em uso por ${inUseCount(cat.value)} disciplina(s)` : 'Excluir')">✕</button>
-      </div>
-    </template>
-    <button class="btn btn-cancel" style="width:100%;margin-top:12px" @click="addStagingCategory()">＋ Adicionar categoria</button>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-cancel" @click="closeCategoriesModal()">Cancelar</button>
-    <button class="btn btn-primary" @click="saveCategoriesModal()">Salvar</button>
-  </div>
-</dialog>
-
+</div>
+<div id="modal-mount"></div>
+<script>
+  document.getElementById('modal-mount').innerHTML = MODALS.edit + MODALS.cats
+  document.getElementById('constraint-mount').innerHTML = MODALS.constraint
+</script>
 </body>
 </html>

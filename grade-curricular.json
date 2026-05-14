@@ -70,7 +70,7 @@
       },
       "prerequisites": [],
       "department": "DC",
-      "color": "blue",
+      "color": "sapphire",
       "isElective": false,
       "eadPercent": 0,
       "skipWeekly": false,
@@ -122,7 +122,7 @@
       },
       "prerequisites": [],
       "department": "DC",
-      "color": "pink",
+      "color": "purple",
       "isElective": false,
       "eadPercent": 0,
       "skipWeekly": false,
@@ -208,10 +208,11 @@
         "pens-comp"
       ],
       "department": "DC",
-      "color": "blue",
+      "color": "sapphire",
       "isElective": false,
       "eadPercent": 0,
-      "skipWeekly": false
+      "skipWeekly": false,
+      "tags": []
     },
     {
       "id": "mat-disc-2",
@@ -311,7 +312,7 @@
       },
       "prerequisites": [],
       "department": "DC",
-      "color": "blue",
+      "color": "sapphire",
       "isElective": false,
       "eadPercent": 0,
       "skipWeekly": false,
@@ -341,10 +342,11 @@
         "prog-1"
       ],
       "department": "DC",
-      "color": "blue",
+      "color": "sapphire",
       "isElective": false,
       "eadPercent": 0,
-      "skipWeekly": false
+      "skipWeekly": false,
+      "tags": []
     },
     {
       "id": "teoria-comp",
@@ -449,10 +451,11 @@
         "prog-1"
       ],
       "department": "DC",
-      "color": "blue",
+      "color": "sapphire",
       "isElective": false,
       "eadPercent": 0,
-      "skipWeekly": false
+      "skipWeekly": false,
+      "tags": []
     },
     {
       "id": "circ-dig",
@@ -474,10 +477,11 @@
       },
       "prerequisites": [],
       "department": "DC",
-      "color": "blue",
+      "color": "sapphire",
       "isElective": false,
       "eadPercent": 0,
-      "skipWeekly": false
+      "skipWeekly": false,
+      "tags": []
     },
     {
       "id": "estat",
@@ -498,8 +502,8 @@
         "nucleus": "III"
       },
       "prerequisites": [],
-      "department": "DC",
-      "color": "cyan",
+      "department": "DM",
+      "color": "green",
       "isElective": false,
       "eadPercent": 0,
       "skipWeekly": false,
@@ -609,10 +613,11 @@
         "aed"
       ],
       "department": "DC",
-      "color": "blue",
+      "color": "sapphire",
       "isElective": false,
       "eadPercent": 0,
-      "skipWeekly": false
+      "skipWeekly": false,
+      "tags": []
     },
     {
       "id": "bd",
@@ -636,10 +641,11 @@
         "aed"
       ],
       "department": "DC",
-      "color": "blue",
+      "color": "sapphire",
       "isElective": false,
       "eadPercent": 0,
-      "skipWeekly": false
+      "skipWeekly": false,
+      "tags": []
     },
     {
       "id": "redes",
@@ -663,10 +669,11 @@
         "prog-2"
       ],
       "department": "DC",
-      "color": "blue",
+      "color": "sapphire",
       "isElective": false,
       "eadPercent": 0,
-      "skipWeekly": false
+      "skipWeekly": false,
+      "tags": []
     },
     {
       "id": "libras",
@@ -728,7 +735,7 @@
       "hours": 60,
       "order": 2,
       "teoria": {
-        "hours": 30,
+        "hours": 15,
         "nucleus": "I"
       },
       "pratica": {
@@ -736,14 +743,14 @@
         "nucleus": "II"
       },
       "extensao": {
-        "hours": 30,
+        "hours": 45,
         "nucleus": "III"
       },
       "prerequisites": [
         "prog-2"
       ],
       "department": "DC",
-      "color": "pink",
+      "color": "purple",
       "isElective": false,
       "eadPercent": 0,
       "skipWeekly": false,
@@ -779,10 +786,11 @@
         "prog-2"
       ],
       "department": "DC",
-      "color": "blue",
+      "color": "sapphire",
       "isElective": false,
       "eadPercent": 0,
-      "skipWeekly": false
+      "skipWeekly": false,
+      "tags": []
     },
     {
       "id": "ia",
@@ -806,10 +814,11 @@
         "prog-2"
       ],
       "department": "DC",
-      "color": "blue",
+      "color": "sapphire",
       "isElective": false,
       "eadPercent": 0,
-      "skipWeekly": false
+      "skipWeekly": false,
+      "tags": []
     },
     {
       "id": "prod-tex",
@@ -886,7 +895,7 @@
         "es"
       ],
       "department": "DC",
-      "color": "pink",
+      "color": "purple",
       "isElective": false,
       "eadPercent": 0,
       "skipWeekly": false,
@@ -928,10 +937,11 @@
         "aed"
       ],
       "department": "DC",
-      "color": "blue",
+      "color": "sapphire",
       "isElective": false,
       "eadPercent": 0,
-      "skipWeekly": false
+      "skipWeekly": false,
+      "tags": []
     },
     {
       "id": "met-cient",
@@ -1009,7 +1019,7 @@
         "proj-1"
       ],
       "department": "DC",
-      "color": "pink",
+      "color": "purple",
       "isElective": false,
       "eadPercent": 0,
       "skipWeekly": false,
@@ -1032,11 +1042,11 @@
       "id": "tcc",
       "name": "Trabalho de Conclusão de Curso — TCC",
       "period": 9,
-      "hours": 120,
-      "order": 4,
+      "hours": 150,
+      "order": 0,
       "teoria": {
-        "hours": 120,
-        "nucleus": "II"
+        "hours": 150,
+        "nucleus": "I"
       },
       "pratica": {
         "hours": 0,
@@ -1050,7 +1060,7 @@
         "met-cient"
       ],
       "department": "DC",
-      "color": "blue",
+      "color": "salmon",
       "isElective": false,
       "eadPercent": 0,
       "skipWeekly": true,
@@ -1136,16 +1146,16 @@
     },
     {
       "id": "new-101",
-      "name": "Optativa",
+      "name": "Práticas Educativas com Inteligência Artificial",
       "period": 9,
       "hours": 60,
       "teoria": {
-        "hours": 60,
-        "nucleus": "II"
+        "hours": 30,
+        "nucleus": "I"
       },
       "pratica": {
-        "hours": 0,
-        "nucleus": "II"
+        "hours": 30,
+        "nucleus": "I"
       },
       "extensao": {
         "hours": 0,
@@ -1153,25 +1163,25 @@
       },
       "prerequisites": [],
       "department": "DC",
-      "color": "gray",
-      "isElective": true,
+      "color": "salmon",
+      "isElective": false,
       "eadPercent": 0,
       "skipWeekly": false,
       "tags": [],
-      "order": 0
+      "order": 2
     },
     {
       "id": "new-102",
-      "name": "Optativa",
+      "name": "Educação à Distância",
       "period": 9,
       "hours": 60,
       "teoria": {
-        "hours": 60,
-        "nucleus": "II"
+        "hours": 30,
+        "nucleus": "I"
       },
       "pratica": {
-        "hours": 0,
-        "nucleus": "II"
+        "hours": 30,
+        "nucleus": "I"
       },
       "extensao": {
         "hours": 0,
@@ -1179,8 +1189,8 @@
       },
       "prerequisites": [],
       "department": "DC",
-      "color": "gray",
-      "isElective": true,
+      "color": "salmon",
+      "isElective": false,
       "eadPercent": 0,
       "skipWeekly": false,
       "tags": [],
@@ -1210,7 +1220,7 @@
       "eadPercent": 0,
       "skipWeekly": false,
       "tags": [],
-      "order": 2
+      "order": 3
     },
     {
       "id": "new-110",
@@ -1236,10 +1246,114 @@
       "eadPercent": 0,
       "skipWeekly": false,
       "tags": [],
-      "order": 3
+      "order": 4
+    },
+    {
+      "id": "new-111",
+      "name": "Laboratório de Programação I",
+      "period": 3,
+      "hours": 30,
+      "teoria": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 100,
+      "skipWeekly": false,
+      "tags": [],
+      "order": 5
+    },
+    {
+      "id": "new-112",
+      "name": "Laboratório de Programação II",
+      "period": 4,
+      "hours": 30,
+      "teoria": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 100,
+      "skipWeekly": false,
+      "tags": [],
+      "order": 5
+    },
+    {
+      "id": "new-113",
+      "name": "Optativa",
+      "period": 5,
+      "hours": 60,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "gray",
+      "isElective": true,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": [],
+      "order": 5
+    },
+    {
+      "id": "new-114",
+      "name": "Optativa",
+      "period": 6,
+      "hours": 60,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "gray",
+      "isElective": true,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": [],
+      "order": 5
     }
   ],
-  "atividadesAutonomas": 165,
+  "atividadesAutonomas": 120,
   "numPeriods": 9,
   "categories": [
     {
@@ -1250,7 +1364,7 @@
       "id": "cat-1"
     },
     {
-      "value": "blue",
+      "value": "sapphire",
       "label": "Computação",
       "nucleus": "II",
       "id": "cat-2"
@@ -1275,13 +1389,13 @@
       "id": "cat-5"
     },
     {
-      "value": "sapphire",
+      "value": "blue",
       "label": "EaD",
       "nucleus": "II",
       "id": "cat-6"
     },
     {
-      "value": "pink",
+      "value": "purple",
       "label": "Extensão",
       "nucleus": "III",
       "locked": true,
