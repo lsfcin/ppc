@@ -117,12 +117,21 @@ function ppc() {
       return `${ds.length} disc. &bull; ${h}h &bull; ${(h / 15).toFixed(1)}h/sem<br>Prática: ${pr}h &bull; Extensão: ${ex}h`
     },
 
+    // ── Card chip ─────────────────────────────────────────────────────────────
+    hrsChip(d) {
+      const parts = []
+      if (d.teoria.hours   > 0) parts.push(`T${d.teoria.hours}`)
+      if (d.pratica.hours  > 0) parts.push(`P${d.pratica.hours}`)
+      if (d.extensao.hours > 0) parts.push(`E${d.extensao.hours}`)
+      const breakdown = parts.join(' ')
+      const mode = d.eadPercent > 0 ? `${d.eadPercent}% ead` : 'presencial'
+      const suffix = breakdown ? `${breakdown} | ${mode}` : mode
+      return `${d.hours}h<span style="font-weight:400"> | ${suffix}</span>`
+    },
+
     // ── Card body text ────────────────────────────────────────────────────────
     cardMeta(d) {
       const parts = []
-      if (d.teoria.hours   > 0) parts.push(`Teoria: ${d.teoria.hours}h`)
-      if (d.pratica.hours  > 0) parts.push(`Prática: ${d.pratica.hours}h`)
-      if (d.extensao.hours > 0) parts.push(`Extensão: ${d.extensao.hours}h`)
       if (d.prerequisites.length > 0) {
         const names = d.prerequisites.map(id => this.byId(id)?.name ?? id)
         parts.push(`Pré-req.: ${names.join(', ')}`)
