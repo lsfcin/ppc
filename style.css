@@ -110,7 +110,8 @@ input.import-file { display: none; }
 /* constraint sidebar */
 .constraint-bar { flex-shrink: 0; width: 36px; background: #fff; border: 1px solid #e5e7eb;
   border-radius: 18px; box-shadow: var(--shadow); overflow: hidden;
-  transition: width 0.25s ease; display: flex; flex-direction: column; }
+  transition: width 0.25s ease; display: flex; flex-direction: column;
+  position: sticky; top: 16px; align-self: flex-start; max-height: calc(100vh - 32px); }
 .constraint-bar.open { width: 360px; }
 
 .constraint-collapsed { display: flex; flex-direction: column; align-items: center;
