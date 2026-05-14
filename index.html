@@ -256,9 +256,9 @@
         </template>
         <div class="field">
           <label>Categoria / Cor</label>
-          <select x-model="editing.color" @change="onColorChange()">
+          <select @change="editing.color = $event.target.value; onColorChange()">
             <template x-for="cat in availableCategories()" :key="cat.id">
-              <option :value="cat.value" x-text="cat.label"></option>
+              <option :value="cat.value" :selected="cat.value === editing.color" x-text="cat.label"></option>
             </template>
           </select>
         </div>
