@@ -109,7 +109,8 @@
               <div class="cards" :id="`period-${p}`">
                 <template x-for="d in disciplinesIn(p)" :key="d.id">
                   <div class="course" :class="d.color" :data-id="d.id" @click="openModal(d.id)">
-                    <div class="hrs"  x-html="hrsChip(d)"></div>
+                    <div class="hrs"       x-text="hrsChip(d)"></div>
+                    <div class="hrs-split" x-show="hrsBreakdown(d)" x-text="hrsBreakdown(d)"></div>
                     <div class="name" x-text="d.name"></div>
                     <div class="meta" x-show="cardMeta(d)" x-text="cardMeta(d)"></div>
                     <div class="tag"  x-text="d.department"></div>
