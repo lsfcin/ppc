@@ -1,4 +1,4 @@
-const PALETTE = ['salmon','blue','cyan','green','gray','purple','orange','yellow']
+const PALETTE = ['salmon','blue','cyan','green','gray','purple','orange','yellow','pink','red','sapphire']
 
 function ppc() {
   return {
@@ -309,11 +309,17 @@ function ppc() {
     // ── Categories modal ──────────────────────────────────────────────────────
     openCategoriesModal() {
       this._stagingCategories = JSON.parse(JSON.stringify(this.categories))
+      this._stagingCategories.forEach(c => { c._orig = c.value })
       document.getElementById('categories-modal').showModal()
     },
 
     saveCategoriesModal() {
       this._pushHistory()
+      this._stagingCategories.forEach(cat => {
+        if (cat._orig && cat._orig !== cat.value)
+          this.disciplines.forEach(d => { if (d.color === cat._orig) d.color = cat.value })
+        delete cat._orig
+      })
       const order = { I: 0, II: 1, III: 2, IV: 3 }
       this.categories = this._stagingCategories.sort((a, b) => (order[a.nucleus] ?? 9) - (order[b.nucleus] ?? 9))
       this._stagingCategories = null
