@@ -125,10 +125,10 @@ function ppc() {
 
     hrsBreakdown(d) {
       const parts = []
-      if (d.teoria.hours   > 0) parts.push(`T${d.teoria.hours}`)
-      if (d.pratica.hours  > 0) parts.push(`P${d.pratica.hours}`)
-      if (d.extensao.hours > 0) parts.push(`E${d.extensao.hours}`)
-      return parts.length > 1 ? parts.join(' ') : ''
+      if (d.teoria.hours   > 0) parts.push(`T:${d.teoria.hours}`)
+      if (d.pratica.hours  > 0) parts.push(`P:${d.pratica.hours}`)
+      if (d.extensao.hours > 0) parts.push(`E:${d.extensao.hours}`)
+      return parts.length > 0 ? parts.join(' ') : ''
     },
 
     // ── Card body text ────────────────────────────────────────────────────────
@@ -136,7 +136,7 @@ function ppc() {
       const parts = []
       if (d.prerequisites.length > 0) {
         const names = d.prerequisites.map(id => this.byId(id)?.name ?? id)
-        parts.push(`Pré-req.: ${names.join(', ')}`)
+        parts.push(`${names.join(', ')}`)
       }
       return parts.join(' · ')
     },
@@ -314,7 +314,8 @@ function ppc() {
 
     saveCategoriesModal() {
       this._pushHistory()
-      this.categories = this._stagingCategories
+      const order = { I: 0, II: 1, III: 2, IV: 3 }
+      this.categories = this._stagingCategories.sort((a, b) => (order[a.nucleus] ?? 9) - (order[b.nucleus] ?? 9))
       this._stagingCategories = null
       document.getElementById('categories-modal').close()
       this.saveProgress()
