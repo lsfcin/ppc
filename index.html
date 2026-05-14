@@ -148,12 +148,22 @@
             <button class="tool-btn" style="font-size:11px;padding:4px 10px" @click="openCategoriesModal()">✎ Editar</button>
           </div>
           <div class="legend">
-            <template x-for="cat in categories" :key="cat.value">
-              <div class="legend-item">
-                <span class="swatch" :class="cat.value"></span>
-                <span x-text="`Núcleo ${cat.nucleus} — ${cat.label}`"></span>
-              </div>
-            </template>
+            <div class="legend-col">
+              <template x-for="cat in categories.slice(0, Math.ceil(categories.length/2))" :key="cat.value">
+                <div class="legend-item">
+                  <span class="swatch" :class="cat.value"></span>
+                  <span x-text="`Núcleo ${cat.nucleus} — ${cat.label}`"></span>
+                </div>
+              </template>
+            </div>
+            <div class="legend-col">
+              <template x-for="cat in categories.slice(Math.ceil(categories.length/2))" :key="cat.value">
+                <div class="legend-item">
+                  <span class="swatch" :class="cat.value"></span>
+                  <span x-text="`Núcleo ${cat.nucleus} — ${cat.label}`"></span>
+                </div>
+              </template>
+            </div>
           </div>
         </div>
       </div>
