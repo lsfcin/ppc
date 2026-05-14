@@ -1,154 +1,1300 @@
 {
-  "title": "Proposta para a grade de LC",
-  "subtitle": "Licenciatura em Computação — arraste disciplinas entre períodos para experimentar a grade.",
-  "numPeriods": 9,
-  "atividadesAutonomas": 275,
-  "categories": [
-    { "value": "salmon", "label": "Formação docente",  "nucleus": "I"   },
-    { "value": "blue",   "label": "Computação",         "nucleus": "II"  },
-    { "value": "cyan",   "label": "Mat. / Computação",  "nucleus": "II"  },
-    { "value": "green",  "label": "Matemática",          "nucleus": "II"  },
-    { "value": "gray",   "label": "Optativa",            "nucleus": "II"  },
-    { "value": "purple", "label": "Extensão / Projeto",  "nucleus": "III" },
-    { "value": "orange", "label": "Estágio",             "nucleus": "IV"  }
-  ],
   "disciplines": [
-    { "id": "fund-edu",    "name": "Fundamentos da Educação",                              "period": 1, "hours": 60,  "order": 0,
-      "teoria":   { "hours": 60,  "nucleus": "I"   }, "pratica":  { "hours": 0,   "nucleus": "I"   }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DED",  "color": "salmon", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "psico-1",     "name": "Psicologia I",                                         "period": 1, "hours": 60,  "order": 1,
-      "teoria":   { "hours": 60,  "nucleus": "I"   }, "pratica":  { "hours": 0,   "nucleus": "I"   }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DED",  "color": "salmon", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "pens-comp",   "name": "Pensamento Computacional",                              "period": 1, "hours": 60,  "order": 2,
-      "teoria":   { "hours": 30,  "nucleus": "II"  }, "pratica":  { "hours": 30,  "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DC",   "color": "blue",   "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "mat-disc-1",  "name": "Matemática Discreta I",                                "period": 1, "hours": 60,  "order": 3,
-      "teoria":   { "hours": 60,  "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DC",   "color": "cyan",   "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "inf-soc",     "name": "Informática e Sociedade",                              "period": 1, "hours": 60,  "order": 4,
-      "teoria":   { "hours": 0,   "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 60,  "nucleus": "III" },
-      "prerequisites": [], "department": "DC",   "color": "purple", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-
-    { "id": "ed-bra",      "name": "Educação Brasileira: legislação, organização e políticas", "period": 2, "hours": 60, "order": 0,
-      "teoria":   { "hours": 60,  "nucleus": "I"   }, "pratica":  { "hours": 0,   "nucleus": "I"   }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DED",  "color": "salmon", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "psico-2",     "name": "Psicologia II",                                        "period": 2, "hours": 60,  "order": 1,
-      "teoria":   { "hours": 60,  "nucleus": "I"   }, "pratica":  { "hours": 0,   "nucleus": "I"   }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["psico-1"], "department": "DED", "color": "salmon", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "prog-1",      "name": "Programação I",                                        "period": 2, "hours": 60,  "order": 2,
-      "teoria":   { "hours": 30,  "nucleus": "II"  }, "pratica":  { "hours": 30,  "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["pens-comp"], "department": "DC", "color": "blue", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "mat-disc-2",  "name": "Matemática Discreta II",                               "period": 2, "hours": 60,  "order": 3,
-      "teoria":   { "hours": 60,  "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["mat-disc-1"], "department": "DC", "color": "cyan", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "calc-1",      "name": "Cálculo NI",                                           "period": 2, "hours": 60,  "order": 4,
-      "teoria":   { "hours": 60,  "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DM",   "color": "green",  "isElective": false, "eadPercent": 0, "skipWeekly": false },
-
-    { "id": "didatica",    "name": "Didática",                                             "period": 3, "hours": 60,  "order": 0,
-      "teoria":   { "hours": 30,  "nucleus": "I"   }, "pratica":  { "hours": 30,  "nucleus": "I"   }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DED",  "color": "salmon", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "ihm",         "name": "Interação Homem-Máquina",                              "period": 3, "hours": 60,  "order": 1,
-      "teoria":   { "hours": 30,  "nucleus": "II"  }, "pratica":  { "hours": 30,  "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DC",   "color": "blue",   "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "prog-2",      "name": "Programação II",                                       "period": 3, "hours": 60,  "order": 2,
-      "teoria":   { "hours": 30,  "nucleus": "II"  }, "pratica":  { "hours": 30,  "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["prog-1"], "department": "DC", "color": "blue", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "teoria-comp", "name": "Teoria da Computação",                                 "period": 3, "hours": 60,  "order": 3,
-      "teoria":   { "hours": 60,  "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["mat-disc-2"], "department": "DC", "color": "cyan", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "calc-2",      "name": "Cálculo NII",                                          "period": 3, "hours": 60,  "order": 4,
-      "teoria":   { "hours": 60,  "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DM",   "color": "green",  "isElective": false, "eadPercent": 0, "skipWeekly": false },
-
-    { "id": "met-ens",     "name": "Metodologia do Ensino da Computação",                  "period": 4, "hours": 60,  "order": 0,
-      "teoria":   { "hours": 30,  "nucleus": "I"   }, "pratica":  { "hours": 30,  "nucleus": "I"   }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["didatica"], "department": "DED", "color": "salmon", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "aed",         "name": "Algoritmos e Estruturas de Dados",                     "period": 4, "hours": 60,  "order": 1,
-      "teoria":   { "hours": 30,  "nucleus": "II"  }, "pratica":  { "hours": 30,  "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["mat-disc-1", "prog-1"], "department": "DC", "color": "blue", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "circ-dig",    "name": "Circuitos Digitais",                                   "period": 4, "hours": 60,  "order": 2,
-      "teoria":   { "hours": 30,  "nucleus": "II"  }, "pratica":  { "hours": 30,  "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DC",   "color": "blue",   "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "estat",       "name": "Estatística Exploratória",                             "period": 4, "hours": 60,  "order": 3,
-      "teoria":   { "hours": 60,  "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DC",   "color": "cyan",   "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "alg-lin",     "name": "Álgebra Linear NI",                                   "period": 4, "hours": 60,  "order": 4,
-      "teoria":   { "hours": 60,  "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DM",   "color": "green",  "isElective": false, "eadPercent": 0, "skipWeekly": false },
-
-    { "id": "erer",        "name": "Educ. das Relações Étnico-Raciais",                    "period": 5, "hours": 60,  "order": 0,
-      "teoria":   { "hours": 60,  "nucleus": "I"   }, "pratica":  { "hours": 0,   "nucleus": "I"   }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DLCH", "color": "salmon", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "eso-1",       "name": "Estágio Supervisionado Obrigatório I",                 "period": 5, "hours": 90,  "order": 1,
-      "teoria":   { "hours": 0,   "nucleus": "IV"  }, "pratica":  { "hours": 90,  "nucleus": "IV"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["ed-bra", "met-ens"], "department": "DC", "color": "orange", "isElective": false, "eadPercent": 0, "skipWeekly": true },
-    { "id": "arq-comp",    "name": "Arquitetura de Computadores",                          "period": 5, "hours": 60,  "order": 2,
-      "teoria":   { "hours": 30,  "nucleus": "II"  }, "pratica":  { "hours": 30,  "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["circ-dig", "aed"], "department": "DC", "color": "blue", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "bd",          "name": "Banco de Dados",                                       "period": 5, "hours": 60,  "order": 3,
-      "teoria":   { "hours": 30,  "nucleus": "II"  }, "pratica":  { "hours": 30,  "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["aed"], "department": "DC", "color": "blue", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "redes",       "name": "Redes de Computadores",                                "period": 5, "hours": 60,  "order": 4,
-      "teoria":   { "hours": 30,  "nucleus": "II"  }, "pratica":  { "hours": 30,  "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["prog-2"], "department": "DC", "color": "blue", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-
-    { "id": "libras",      "name": "Língua Brasileira de Sinais – Libras",                 "period": 6, "hours": 60,  "order": 0,
-      "teoria":   { "hours": 60,  "nucleus": "I"   }, "pratica":  { "hours": 0,   "nucleus": "I"   }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DL",   "color": "salmon", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "eso-2",       "name": "Estágio Supervisionado Obrigatório II",                "period": 6, "hours": 90,  "order": 1,
-      "teoria":   { "hours": 0,   "nucleus": "IV"  }, "pratica":  { "hours": 90,  "nucleus": "IV"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["eso-1"], "department": "DC", "color": "orange", "isElective": false, "eadPercent": 0, "skipWeekly": true },
-    { "id": "tec-edu",     "name": "Tecnologias na Educação",                              "period": 6, "hours": 60,  "order": 2,
-      "teoria":   { "hours": 20,  "nucleus": "II"  }, "pratica":  { "hours": 20,  "nucleus": "II"  }, "extensao": { "hours": 20,  "nucleus": "III" },
-      "prerequisites": ["prog-2"], "department": "DC", "color": "purple", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "es",          "name": "Engenharia de Software",                               "period": 6, "hours": 60,  "order": 3,
-      "teoria":   { "hours": 30,  "nucleus": "II"  }, "pratica":  { "hours": 30,  "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["prog-2"], "department": "DC", "color": "blue", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "ia",          "name": "Inteligência Artificial",                              "period": 6, "hours": 60,  "order": 4,
-      "teoria":   { "hours": 30,  "nucleus": "II"  }, "pratica":  { "hours": 30,  "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["prog-2"], "department": "DC", "color": "blue", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-
-    { "id": "prod-tex",    "name": "Produção de Textos Acadêmicos I",                      "period": 7, "hours": 60,  "order": 0,
-      "teoria":   { "hours": 60,  "nucleus": "I"   }, "pratica":  { "hours": 0,   "nucleus": "I"   }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DL",   "color": "salmon", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "eso-3",       "name": "Estágio Supervisionado Obrigatório III",               "period": 7, "hours": 90,  "order": 1,
-      "teoria":   { "hours": 0,   "nucleus": "IV"  }, "pratica":  { "hours": 90,  "nucleus": "IV"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["eso-2"], "department": "DC", "color": "orange", "isElective": false, "eadPercent": 0, "skipWeekly": true },
-    { "id": "proj-1",      "name": "Projeto Integrador em Desenv. de Software I",          "period": 7, "hours": 120, "order": 2,
-      "teoria":   { "hours": 0,   "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 120, "nucleus": "III" },
-      "prerequisites": ["es"], "department": "DC", "color": "purple", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "so",          "name": "Sistemas Operacionais",                                "period": 7, "hours": 60,  "order": 3,
-      "teoria":   { "hours": 30,  "nucleus": "II"  }, "pratica":  { "hours": 30,  "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["circ-dig", "aed"], "department": "DC", "color": "blue", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "opt-1",       "name": "Optativa 1",                                           "period": 7, "hours": 60,  "order": 4,
-      "teoria":   { "hours": 60,  "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DC",   "color": "gray",   "isElective": true,  "eadPercent": 0, "skipWeekly": false },
-
-    { "id": "met-cient",   "name": "Metodologia Científica Aplicada à Computação",         "period": 8, "hours": 60,  "order": 0,
-      "teoria":   { "hours": 60,  "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DC",   "color": "blue",   "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "eso-4",       "name": "Estágio Supervisionado Obrigatório IV",                "period": 8, "hours": 135, "order": 1,
-      "teoria":   { "hours": 0,   "nucleus": "IV"  }, "pratica":  { "hours": 135, "nucleus": "IV"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["eso-3"], "department": "DC", "color": "orange", "isElective": false, "eadPercent": 0, "skipWeekly": true },
-    { "id": "proj-2",      "name": "Projeto Integrador em Desenv. de Software II",         "period": 8, "hours": 120, "order": 2,
-      "teoria":   { "hours": 0,   "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 120, "nucleus": "III" },
-      "prerequisites": ["proj-1"], "department": "DC", "color": "purple", "isElective": false, "eadPercent": 0, "skipWeekly": false },
-    { "id": "opt-2",       "name": "Optativa 2",                                           "period": 8, "hours": 60,  "order": 3,
-      "teoria":   { "hours": 60,  "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DC",   "color": "gray",   "isElective": true,  "eadPercent": 0, "skipWeekly": false },
-
-    { "id": "tcc",         "name": "Trabalho de Conclusão de Curso — TCC",                 "period": 9, "hours": 120, "order": 0,
-      "teoria":   { "hours": 120, "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": ["met-cient"], "department": "DC", "color": "blue", "isElective": false, "eadPercent": 0, "skipWeekly": true },
-    { "id": "opt-3",       "name": "Optativa 3",                                           "period": 9, "hours": 60,  "order": 1,
-      "teoria":   { "hours": 60,  "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DC",   "color": "gray",   "isElective": true,  "eadPercent": 0, "skipWeekly": false },
-    { "id": "opt-4",       "name": "Optativa 4",                                           "period": 9, "hours": 60,  "order": 2,
-      "teoria":   { "hours": 60,  "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DC",   "color": "gray",   "isElective": true,  "eadPercent": 0, "skipWeekly": false },
-    { "id": "opt-5",       "name": "Optativa 5",                                           "period": 9, "hours": 60,  "order": 3,
-      "teoria":   { "hours": 60,  "nucleus": "II"  }, "pratica":  { "hours": 0,   "nucleus": "II"  }, "extensao": { "hours": 0,   "nucleus": "III" },
-      "prerequisites": [], "department": "DC",   "color": "gray",   "isElective": true,  "eadPercent": 0, "skipWeekly": false }
-  ]
+    {
+      "id": "fund-edu",
+      "name": "Fundamentos da Educação",
+      "period": 1,
+      "hours": 60,
+      "order": 0,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "I"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "I"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DED",
+      "color": "salmon",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "psico-1",
+      "name": "Psicologia I",
+      "period": 1,
+      "hours": 60,
+      "order": 1,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "I"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "I"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DED",
+      "color": "salmon",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "pens-comp",
+      "name": "Pensamento Computacional",
+      "period": 1,
+      "hours": 60,
+      "order": 2,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": []
+    },
+    {
+      "id": "mat-disc-1",
+      "name": "Matemática Discreta I",
+      "period": 1,
+      "hours": 60,
+      "order": 3,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "cyan",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": []
+    },
+    {
+      "id": "inf-soc",
+      "name": "Informática e Sociedade",
+      "period": 1,
+      "hours": 60,
+      "order": 4,
+      "teoria": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 60,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "pink",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": [
+        "ambiental",
+        "diversidade",
+        "violencia",
+        "feminino",
+        "afro"
+      ]
+    },
+    {
+      "id": "ed-bra",
+      "name": "Educação Brasileira: legislação, organização e políticas",
+      "period": 2,
+      "hours": 60,
+      "order": 0,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "I"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "I"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DED",
+      "color": "salmon",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "psico-2",
+      "name": "Psicologia II",
+      "period": 2,
+      "hours": 60,
+      "order": 1,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "I"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "I"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "psico-1"
+      ],
+      "department": "DED",
+      "color": "salmon",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "prog-1",
+      "name": "Programação I",
+      "period": 2,
+      "hours": 60,
+      "order": 2,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "pens-comp"
+      ],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "mat-disc-2",
+      "name": "Matemática Discreta II",
+      "period": 2,
+      "hours": 60,
+      "order": 3,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "mat-disc-1"
+      ],
+      "department": "DC",
+      "color": "cyan",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": []
+    },
+    {
+      "id": "calc-1",
+      "name": "Cálculo NI",
+      "period": 2,
+      "hours": 60,
+      "order": 4,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DM",
+      "color": "green",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "didatica",
+      "name": "Didática",
+      "period": 3,
+      "hours": 60,
+      "order": 0,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "I"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "I"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DED",
+      "color": "salmon",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "ihm",
+      "name": "Interação Homem-Máquina",
+      "period": 3,
+      "hours": 60,
+      "order": 1,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": [
+        "ihc-educacional"
+      ]
+    },
+    {
+      "id": "prog-2",
+      "name": "Programação II",
+      "period": 3,
+      "hours": 60,
+      "order": 2,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "prog-1"
+      ],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "teoria-comp",
+      "name": "Teoria da Computação",
+      "period": 3,
+      "hours": 60,
+      "order": 3,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "mat-disc-2"
+      ],
+      "department": "DC",
+      "color": "cyan",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": []
+    },
+    {
+      "id": "calc-2",
+      "name": "Cálculo NII",
+      "period": 3,
+      "hours": 60,
+      "order": 4,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DM",
+      "color": "green",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "met-ens",
+      "name": "Metodologia do Ensino da Computação",
+      "period": 4,
+      "hours": 60,
+      "order": 0,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "I"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "I"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "didatica"
+      ],
+      "department": "DED",
+      "color": "salmon",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "aed",
+      "name": "Algoritmos e Estruturas de Dados",
+      "period": 4,
+      "hours": 60,
+      "order": 1,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "mat-disc-1",
+        "prog-1"
+      ],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "circ-dig",
+      "name": "Circuitos Digitais",
+      "period": 4,
+      "hours": 60,
+      "order": 2,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "estat",
+      "name": "Estatística Exploratória",
+      "period": 4,
+      "hours": 60,
+      "order": 3,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "cyan",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": []
+    },
+    {
+      "id": "alg-lin",
+      "name": "Álgebra Linear NI",
+      "period": 4,
+      "hours": 60,
+      "order": 4,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DM",
+      "color": "green",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "erer",
+      "name": "Educação das Relações Étnico-Raciais",
+      "period": 5,
+      "hours": 60,
+      "order": 0,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "I"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "I"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DLCH",
+      "color": "salmon",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": [
+        "afro"
+      ]
+    },
+    {
+      "id": "eso-1",
+      "name": "Estágio Supervisionado Obrigatório I",
+      "period": 5,
+      "hours": 90,
+      "order": 1,
+      "teoria": {
+        "hours": 0,
+        "nucleus": "IV"
+      },
+      "pratica": {
+        "hours": 90,
+        "nucleus": "IV"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "ed-bra",
+        "met-ens"
+      ],
+      "department": "DC",
+      "color": "orange",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": true
+    },
+    {
+      "id": "arq-comp",
+      "name": "Arquitetura de Computadores",
+      "period": 5,
+      "hours": 60,
+      "order": 2,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "circ-dig",
+        "aed"
+      ],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "bd",
+      "name": "Banco de Dados",
+      "period": 5,
+      "hours": 60,
+      "order": 3,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "aed"
+      ],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "redes",
+      "name": "Redes de Computadores",
+      "period": 5,
+      "hours": 60,
+      "order": 4,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "prog-2"
+      ],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "libras",
+      "name": "Língua Brasileira de Sinais – Libras",
+      "period": 6,
+      "hours": 60,
+      "order": 0,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "I"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "I"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DL",
+      "color": "salmon",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "eso-2",
+      "name": "Estágio Supervisionado Obrigatório II",
+      "period": 6,
+      "hours": 90,
+      "order": 1,
+      "teoria": {
+        "hours": 0,
+        "nucleus": "IV"
+      },
+      "pratica": {
+        "hours": 90,
+        "nucleus": "IV"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "eso-1"
+      ],
+      "department": "DC",
+      "color": "orange",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": true,
+      "tags": []
+    },
+    {
+      "id": "tec-edu",
+      "name": "Tecnologias na Educação",
+      "period": 6,
+      "hours": 60,
+      "order": 2,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "I"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 30,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "prog-2"
+      ],
+      "department": "DC",
+      "color": "pink",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": [
+        "tdic-competencias",
+        "midias-didatica",
+        "ihc-educacional",
+        "ead-assistido",
+        "software-ead-projeto",
+        "software-ead-avaliacao",
+        "ava"
+      ]
+    },
+    {
+      "id": "es",
+      "name": "Engenharia de Software",
+      "period": 6,
+      "hours": 60,
+      "order": 3,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "prog-2"
+      ],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "ia",
+      "name": "Inteligência Artificial",
+      "period": 6,
+      "hours": 60,
+      "order": 4,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "prog-2"
+      ],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "prod-tex",
+      "name": "Produção de Textos Acadêmicos I",
+      "period": 7,
+      "hours": 60,
+      "order": 0,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "I"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "I"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DL",
+      "color": "salmon",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "eso-3",
+      "name": "Estágio Supervisionado Obrigatório III",
+      "period": 7,
+      "hours": 90,
+      "order": 1,
+      "teoria": {
+        "hours": 0,
+        "nucleus": "IV"
+      },
+      "pratica": {
+        "hours": 90,
+        "nucleus": "IV"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "eso-2"
+      ],
+      "department": "DC",
+      "color": "orange",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": true,
+      "tags": []
+    },
+    {
+      "id": "proj-1",
+      "name": "Projeto Integrador em Desenv. de Software I",
+      "period": 7,
+      "hours": 120,
+      "order": 2,
+      "teoria": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 120,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "es"
+      ],
+      "department": "DC",
+      "color": "pink",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": [
+        "ead-assistido",
+        "software-ead-projeto",
+        "software-ead-avaliacao",
+        "ava",
+        "ihc-educacional",
+        "midias-didatica",
+        "tdic-competencias",
+        "ambiental",
+        "diversidade",
+        "violencia",
+        "feminino",
+        "afro"
+      ]
+    },
+    {
+      "id": "so",
+      "name": "Sistemas Operacionais",
+      "period": 7,
+      "hours": 60,
+      "order": 3,
+      "teoria": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 30,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "circ-dig",
+        "aed"
+      ],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false
+    },
+    {
+      "id": "met-cient",
+      "name": "Metodologia Científica Aplicada à Computação",
+      "period": 8,
+      "hours": 60,
+      "order": 0,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "I"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "salmon",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": []
+    },
+    {
+      "id": "eso-4",
+      "name": "Estágio Supervisionado Obrigatório IV",
+      "period": 8,
+      "hours": 135,
+      "order": 1,
+      "teoria": {
+        "hours": 0,
+        "nucleus": "IV"
+      },
+      "pratica": {
+        "hours": 135,
+        "nucleus": "IV"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "eso-3"
+      ],
+      "department": "DC",
+      "color": "orange",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": true,
+      "tags": []
+    },
+    {
+      "id": "proj-2",
+      "name": "Projeto Integrador em Desenv. de Software II",
+      "period": 8,
+      "hours": 120,
+      "order": 2,
+      "teoria": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 120,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "proj-1"
+      ],
+      "department": "DC",
+      "color": "pink",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": [
+        "ihc-educacional",
+        "ead-assistido",
+        "software-ead-projeto",
+        "software-ead-avaliacao",
+        "ava",
+        "midias-didatica",
+        "tdic-competencias",
+        "ambiental",
+        "diversidade",
+        "violencia",
+        "feminino",
+        "afro"
+      ]
+    },
+    {
+      "id": "tcc",
+      "name": "Trabalho de Conclusão de Curso — TCC",
+      "period": 9,
+      "hours": 120,
+      "order": 4,
+      "teoria": {
+        "hours": 120,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [
+        "met-cient"
+      ],
+      "department": "DC",
+      "color": "blue",
+      "isElective": false,
+      "eadPercent": 0,
+      "skipWeekly": true,
+      "tags": []
+    },
+    {
+      "id": "opt-3",
+      "name": "Optativa",
+      "period": 7,
+      "hours": 60,
+      "order": 4,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "gray",
+      "isElective": true,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": []
+    },
+    {
+      "id": "opt-4",
+      "name": "Optativa",
+      "period": 8,
+      "hours": 60,
+      "order": 3,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "gray",
+      "isElective": true,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": []
+    },
+    {
+      "id": "opt-5",
+      "name": "Optativa",
+      "period": 8,
+      "hours": 60,
+      "order": 4,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "gray",
+      "isElective": true,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": []
+    },
+    {
+      "id": "new-101",
+      "name": "Optativa",
+      "period": 9,
+      "hours": 60,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "gray",
+      "isElective": true,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": [],
+      "order": 0
+    },
+    {
+      "id": "new-102",
+      "name": "Optativa",
+      "period": 9,
+      "hours": 60,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "gray",
+      "isElective": true,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": [],
+      "order": 1
+    },
+    {
+      "id": "new-109",
+      "name": "Optativa",
+      "period": 9,
+      "hours": 60,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "gray",
+      "isElective": true,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": [],
+      "order": 2
+    },
+    {
+      "id": "new-110",
+      "name": "Optativa",
+      "period": 9,
+      "hours": 60,
+      "teoria": {
+        "hours": 60,
+        "nucleus": "II"
+      },
+      "pratica": {
+        "hours": 0,
+        "nucleus": "II"
+      },
+      "extensao": {
+        "hours": 0,
+        "nucleus": "III"
+      },
+      "prerequisites": [],
+      "department": "DC",
+      "color": "gray",
+      "isElective": true,
+      "eadPercent": 0,
+      "skipWeekly": false,
+      "tags": [],
+      "order": 3
+    }
+  ],
+  "atividadesAutonomas": 165,
+  "numPeriods": 9,
+  "categories": [
+    {
+      "value": "salmon",
+      "label": "Formação docente",
+      "nucleus": "I",
+      "locked": true,
+      "id": "cat-1"
+    },
+    {
+      "value": "blue",
+      "label": "Computação",
+      "nucleus": "II",
+      "id": "cat-2"
+    },
+    {
+      "value": "cyan",
+      "label": "Mat. / Computação",
+      "nucleus": "II",
+      "id": "cat-3"
+    },
+    {
+      "value": "green",
+      "label": "Matemática",
+      "nucleus": "II",
+      "id": "cat-4"
+    },
+    {
+      "value": "gray",
+      "label": "Optativa",
+      "nucleus": "II",
+      "locked": true,
+      "id": "cat-5"
+    },
+    {
+      "value": "sapphire",
+      "label": "EaD",
+      "nucleus": "II",
+      "id": "cat-6"
+    },
+    {
+      "value": "pink",
+      "label": "Extensão",
+      "nucleus": "III",
+      "locked": true,
+      "id": "cat-7"
+    },
+    {
+      "value": "orange",
+      "label": "Estágio",
+      "nucleus": "IV",
+      "locked": true,
+      "id": "cat-8"
+    }
+  ],
+  "title": "Grade Curricular de LC",
+  "subtitle": "Curso de Licenciatura em Computação — DC / UFRPE"
 }

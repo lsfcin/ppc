@@ -1,20 +1,20 @@
 const TRANSVERSAL_THEMES = [
   // ── Diversidade, Inclusão e Direitos ────────────────────────────────────────
-  { id: 'diversidade',
-    label: 'Diversidades, Ed. Inclusiva e Direitos Socioeducativos',
-    detail: 'Resolução CEPE/UFRPE Nº 744/2024, §5º: "Nos cursos de Licenciatura é obrigatório: II - como componentes curriculares ou temas transversais: a) diversidade de gênero e sexualidade; b) diversidade religiosa; c) diversidade de faixa geracional; d) educação inclusiva; e) direitos educacionais de adolescentes e jovens em cumprimento de medidas socioeducativas e gestão educacional." BNCC (Base Nacional Comum Curricular) também enfatiza esses temas."' },
-  { id: 'afro',
-    label: 'História e Cultura Afro-Brasileira, Indígena e Combate ao Racismo',
-    detail: 'Resolução CNE/CP Nº 4/2024: "das relações étnico-raciais estabelecidas na sociedade brasileira [...] e que garantam a apropriação dos conhecimentos relativos à história e cultura africana, afrobrasileira e dos povos originários do Brasil, bem como de valores e atitudes orientados à desconstruir e combater todas as expressões do racismo." Nota: a UFRPE exige a disciplina específica de Relações Étnico-Raciais, mas as diretrizes exigem que o combate ao racismo seja transversalizado nas práticas educativas.' },
-  { id: 'feminino',
-    label: 'Experiências, Perspectivas e Conquistas Femininas',
-    detail: 'LDB (Lei nº 9.394/1996) e Resolução CNE/CP Nº 4/2024: "as abordagens devem incluir aspectos da história, ciência, artes e cultura a partir das experiências e perspectivas femininas" e "múltiplas formas de participação e atuação das mulheres na sociedade brasileira, bem como de conhecimentos, valores e atitudes orientados à prevenção e combate a todas as formas de violência contra a mulher."' },
-  { id: 'violencia',
-    label: 'Prevenção da Violência (Criança, Adolescente e Mulher)',
-    detail: 'LDB (Lei nº 9.394/1996), §9º: "Conteúdos relativos aos direitos humanos e à prevenção de todas as formas de violência contra a criança, o adolescente e a mulher serão incluídos, como temas transversais, nos currículos."' },
   { id: 'ambiental',
     label: 'Educação Ambiental e Direitos Humanos',
     detail: 'Resolução CEPE/UFRPE Nº 744/2024, §4º: "Os temas Educação ambiental e Direitos humanos são obrigatórios para as Licenciaturas [...] e poderão ser abordados de modo transversal e interdisciplinar."' },
+  { id: 'diversidade',
+    label: 'Diversidades, Ed. Inclusiva e Direitos Socioeducativos',
+    detail: 'Resolução CEPE/UFRPE Nº 744/2024, §5º: "Nos cursos de Licenciatura é obrigatório: II - como componentes curriculares ou temas transversais: a) diversidade de gênero e sexualidade; b) diversidade religiosa; c) diversidade de faixa geracional; d) educação inclusiva; e) direitos educacionais de adolescentes e jovens em cumprimento de medidas socioeducativas e gestão educacional." BNCC (Base Nacional Comum Curricular) também enfatiza esses temas."' },
+  { id: 'violencia',
+    label: 'Prevenção da Violência (Criança, Adolescente e Mulher)',
+    detail: 'LDB (Lei nº 9.394/1996), §9º: "Conteúdos relativos aos direitos humanos e à prevenção de todas as formas de violência contra a criança, o adolescente e a mulher serão incluídos, como temas transversais, nos currículos."' },
+  { id: 'feminino',
+    label: 'Experiências, Perspectivas e Conquistas Femininas',
+    detail: 'LDB (Lei nº 9.394/1996) e Resolução CNE/CP Nº 4/2024: "as abordagens devem incluir aspectos da história, ciência, artes e cultura a partir das experiências e perspectivas femininas" e "múltiplas formas de participação e atuação das mulheres na sociedade brasileira, bem como de conhecimentos, valores e atitudes orientados à prevenção e combate a todas as formas de violência contra a mulher."' },
+  { id: 'afro',
+    label: 'História e Cultura Afro-Brasileira, Indígena e Combate ao Racismo',
+    detail: 'Resolução CNE/CP Nº 4/2024: "das relações étnico-raciais estabelecidas na sociedade brasileira [...] e que garantam a apropriação dos conhecimentos relativos à história e cultura africana, afrobrasileira e dos povos originários do Brasil, bem como de valores e atitudes orientados à desconstruir e combater todas as expressões do racismo." Nota: a UFRPE exige a disciplina específica de Relações Étnico-Raciais, mas as diretrizes exigem que o combate ao racismo seja transversalizado nas práticas educativas.' },
   // ── Tecnologia, Ensino e EaD ─────────────────────────────────────────────────
   { id: 'tdic-competencias',
     label: 'Desenvolvimento de Competências Digitais Docentes (TDIC)',
@@ -22,21 +22,21 @@ const TRANSVERSAL_THEMES = [
   { id: 'midias-didatica',
     label: 'Domínio e Recontextualização das Mídias no Processo Didático',
     detail: 'Resolução CNE/CP Nº 4/2024, Art. XIII: "recontextualizar a linguagem dos meios de comunicação à educação, nos processos didático-pedagógicos, demonstrando domínio das tecnologias digitais de informação e comunicação para o desenvolvimento da aprendizagem."' },
-  { id: 'ava',
-    label: 'Incorporação Curricular de Espaços Virtuais de Aprendizagem (AVAs)',
-    detail: 'Resolução CNE/CP Nº 4/2024, Art. VII: "a incorporação de espaços virtuais de aprendizagem para aprimoramento das práticas de ensino, permitindo dinamicidade e interatividade para exploração de métodos inovadores de ensino que se adaptem às necessidades diversificadas dos alunos, desenvolvendo o pensamento crítico e a habilidade de navegar eficazmente no vasto universo da informação digital."' },
   { id: 'ihc-educacional',
     label: 'Interação Humano-Computador Educacional',
     detail: 'Resolução CNE/CES Nº 5/2016, §5º, II: "adquiram capacidade de fazer uso da interdisciplinaridade e introduzir conceitos pedagógicos no desenvolvimento de Tecnologias Educacionais, produzindo uma interação humano-computador inteligente, visando ao ensino e à aprendizagem assistidos por computador."' },
   { id: 'ead-assistido',
     label: 'Ensino e Aprendizagem Assistidos por Computador / EaD',
     detail: 'Resolução CNE/CES Nº 5/2016, §5º, II: "adquiram capacidade de fazer uso da interdisciplinaridade e introduzir conceitos pedagógicos no desenvolvimento de Tecnologias Educacionais [...] visando ao ensino e à aprendizagem assistidos por computador, incluindo a Educação à Distância."' },
-  { id: 'software-ead-avaliacao',
-    label: 'Especificação e Avaliação de Softwares para EaD',
-    detail: 'Resolução CNE/CES Nº 5/2016, Art. 5º, II: "especificar e avaliar softwares e equipamentos para aplicação educacionais e de Educação à Distância."' },
   { id: 'software-ead-projeto',
     label: 'Projeto e Desenvolvimento de Tecnologias para EaD',
     detail: 'Resolução CNE/CES Nº 5/2016, Art. 5º, III: "projetar e desenvolver softwares e hardware educacionais e de Educação à Distância em equipes interdisciplinares."' },
+  { id: 'software-ead-avaliacao',
+    label: 'Especificação e Avaliação de Softwares para EaD',
+    detail: 'Resolução CNE/CES Nº 5/2016, Art. 5º, II: "especificar e avaliar softwares e equipamentos para aplicação educacionais e de Educação à Distância."' },
+  { id: 'ava',
+    label: 'Incorporação Curricular de Espaços Virtuais de Aprendizagem (AVAs)',
+    detail: 'Resolução CNE/CP Nº 4/2024, Art. VII: "a incorporação de espaços virtuais de aprendizagem para aprimoramento das práticas de ensino, permitindo dinamicidade e interatividade para exploração de métodos inovadores de ensino que se adaptem às necessidades diversificadas dos alunos, desenvolvendo o pensamento crítico e a habilidade de navegar eficazmente no vasto universo da informação digital."' },
 ]
 
 const MANDATORY_NAMES = [
@@ -162,10 +162,10 @@ function buildConstraints(app) {
       const count = ds.filter(d => (d.tags ?? []).includes(theme.id)).length
       return {
         id: `ct${i + 1}`,
-        label: `[Transversal] ${theme.label}`,
+        label: `[ transversal | multidisciplinar ]\n ${theme.label}`,
         ok: count >= 2,
-        value: count === 0 ? 'Nenhuma disciplina contempla este tema (mínimo: 2)'
-             : count === 1 ? '1 disciplina contempla este tema (mínimo: 2)'
+        value: count === 0 ? 'Nenhuma disciplina contém este tema (mínimo: 2)'
+             : count === 1 ? '1 disciplina contém este tema (mínimo: 2)'
              :               `${count} disciplinas contemplam este tema`,
         detail: theme.detail,
         detailOpen: false,
