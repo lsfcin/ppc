@@ -150,7 +150,7 @@
           </div>
           <div class="legend">
             <div class="legend-col">
-              <template x-for="cat in categories.slice(0, Math.ceil(categories.length/2))" :key="cat.value">
+              <template x-for="cat in categories.slice(0, Math.ceil(categories.length/2))" :key="cat.id">
                 <div class="legend-item">
                   <span class="swatch" :class="cat.value"></span>
                   <span x-text="`Núcleo ${cat.nucleus} — ${cat.label}`"></span>
@@ -158,7 +158,7 @@
               </template>
             </div>
             <div class="legend-col">
-              <template x-for="cat in categories.slice(Math.ceil(categories.length/2))" :key="cat.value">
+              <template x-for="cat in categories.slice(Math.ceil(categories.length/2))" :key="cat.id">
                 <div class="legend-item">
                   <span class="swatch" :class="cat.value"></span>
                   <span x-text="`Núcleo ${cat.nucleus} — ${cat.label}`"></span>
@@ -181,7 +181,8 @@
     <h3>Editar disciplina</h3>
     <button class="modal-close" @click="closeModal()">✕</button>
   </div>
-  <div class="modal-body" x-show="editing">
+  <template x-if="editing">
+  <div class="modal-body">
     <div class="modal-cols">
       <div class="modal-left">
         <div class="field">
@@ -244,7 +245,7 @@
         <div class="field">
           <label>Categoria / Cor</label>
           <select x-model="editing.color" @change="onColorChange()">
-            <template x-for="cat in availableCategories()" :key="cat.value">
+            <template x-for="cat in availableCategories()" :key="cat.id">
               <option :value="cat.value" x-text="cat.label"></option>
             </template>
           </select>
@@ -280,11 +281,14 @@
       </div><!-- .modal-right -->
     </div><!-- .modal-cols -->
   </div>
+  </template>
+  <template x-if="editing">
   <div class="modal-footer">
     <button class="btn btn-danger"  @click="deleteEditing()">Excluir</button>
     <button class="btn btn-cancel"  @click="closeModal()">Cancelar</button>
     <button class="btn btn-primary" @click="saveEditing()" :disabled="hoursInvalid()">Salvar</button>
   </div>
+  </template>
 </dialog>
 
 <!-- ── Categories modal ─────────────────────────────────────────────────────── -->
@@ -294,10 +298,10 @@
     <button class="modal-close" @click="closeCategoriesModal()">✕</button>
   </div>
   <div class="modal-body" x-show="_stagingCategories">
-    <template x-for="(cat, idx) in _stagingCategories" :key="idx">
+    <template x-for="(cat, idx) in _stagingCategories" :key="cat.id">
       <div class="cat-row">
         <div class="cat-colors">
-          <template x-for="c in ['salmon','blue','cyan','green','gray','purple','orange','yellow']" :key="c">
+          <template x-for="c in ['blue','sapphire','cyan','green','purple','pink','red','orange','salmon','yellow','gray']" :key="c">
             <button class="cat-color-btn" :class="c"
               :style="cat.value === c ? 'outline:2px solid #374151;outline-offset:2px' : ''"
               @click="cat.value = c" :title="c"></button>

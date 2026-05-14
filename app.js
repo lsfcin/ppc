@@ -12,14 +12,15 @@ function ppc() {
     title:    'Proposta para a grade de LC',
     subtitle: 'Licenciatura em Computação — arraste disciplinas entre períodos para experimentar a grade.',
     categories: [
-      { value:'salmon', label:'Formação docente', nucleus:'I',   locked: true },
-      { value:'blue',   label:'Computação',        nucleus:'II'  },
-      { value:'cyan',   label:'Mat. / Computação', nucleus:'II'  },
-      { value:'green',  label:'Matemática',         nucleus:'II'  },
-      { value:'gray',   label:'Optativa',           nucleus:'II',  locked: true },
-      { value:'purple', label:'Extensão',           nucleus:'III', locked: true },
-      { value:'orange', label:'Estágio',            nucleus:'IV',  locked: true },
+      { id:'cat-1', value:'salmon', label:'Formação docente', nucleus:'I',   locked: true },
+      { id:'cat-2', value:'blue',   label:'Computação',        nucleus:'II'  },
+      { id:'cat-3', value:'cyan',   label:'Mat. / Computação', nucleus:'II'  },
+      { id:'cat-4', value:'green',  label:'Matemática',         nucleus:'II'  },
+      { id:'cat-5', value:'gray',   label:'Optativa',           nucleus:'II',  locked: true },
+      { id:'cat-6', value:'purple', label:'Extensão',           nucleus:'III', locked: true },
+      { id:'cat-7', value:'orange', label:'Estágio',            nucleus:'IV',  locked: true },
     ],
+    _nextCatId: 8,
     _stagingCategories: null,
     _nextId:              100,
     _dragAnchor:          null,
@@ -63,8 +64,14 @@ function ppc() {
       if (state.atividadesAutonomas != null) this.atividadesAutonomas = state.atividadesAutonomas
       if (state.categories) {
         this.categories = state.categories
-        const LOCKED = { salmon: true, gray: true, purple: true, orange: true }
-        this.categories.forEach(c => { if (LOCKED[c.value]) c.locked = true })
+        // Backfill stable ids for data saved before this field existed
+        const maxId = Math.max(0, ...this.categories.map(c => parseInt(c.id?.replace('cat-','')) || 0))
+        let nextId = maxId + 1
+        this.categories.forEach(c => { if (!c.id) c.id = `cat-${nextId++}` })
+        this._nextCatId = nextId
+        // Enforce locked by label (label is the stable locked property)
+        const LOCKED_LABELS = new Set(['Formação docente', 'Optativa', 'Extensão', 'Estágio'])
+        this.categories.forEach(c => { if (LOCKED_LABELS.has(c.label)) c.locked = true })
       }
       if (state.title)                       this.title               = state.title
       if (state.subtitle)                    this.subtitle            = state.subtitle
@@ -309,16 +316,16 @@ function ppc() {
     // ── Categories modal ──────────────────────────────────────────────────────
     openCategoriesModal() {
       this._stagingCategories = JSON.parse(JSON.stringify(this.categories))
-      this._stagingCategories.forEach(c => { c._orig = c.value })
       document.getElementById('categories-modal').showModal()
     },
 
     saveCategoriesModal() {
       this._pushHistory()
+      // Remap discipline colors for any category whose color (value) changed, matched by stable id
       this._stagingCategories.forEach(cat => {
-        if (cat._orig && cat._orig !== cat.value)
-          this.disciplines.forEach(d => { if (d.color === cat._orig) d.color = cat.value })
-        delete cat._orig
+        const orig = this.categories.find(c => c.id === cat.id)
+        if (orig && orig.value !== cat.value)
+          this.disciplines.forEach(d => { if (d.color === orig.value) d.color = cat.value })
       })
       const order = { I: 0, II: 1, III: 2, IV: 3 }
       this.categories = this._stagingCategories.sort((a, b) => (order[a.nucleus] ?? 9) - (order[b.nucleus] ?? 9))
@@ -335,7 +342,8 @@ function ppc() {
     addStagingCategory() {
       const used  = new Set(this._stagingCategories.map(c => c.value))
       const color = PALETTE.find(c => !used.has(c)) ?? 'blue'
-      this._stagingCategories.push({ value: color, label: 'Nova categoria', nucleus: 'II' })
+      const id    = `cat-${this._nextCatId++}`
+      this._stagingCategories.push({ id, value: color, label: 'Nova categoria', nucleus: 'II' })
     },
 
     deleteStagingCategory(idx) { this._stagingCategories.splice(idx, 1) },
