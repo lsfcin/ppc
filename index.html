@@ -23,7 +23,6 @@
       <input class="editable-subtitle" type="text" x-model="subtitle" spellcheck="false">
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-      <div class="badge" x-text="`CH Total: ${totalHours()}h`"></div>
       <div class="toolbar">
         <button class="tool-btn" @click="undo()" :disabled="_history.length === 0">↩ Desfazer</button>
         <button class="tool-btn" @click="redo()" :disabled="_future.length === 0">↪ Refazer</button>
