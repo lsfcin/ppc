@@ -296,7 +296,7 @@
   <div class="modal-body" x-show="_stagingCategories">
     <template x-for="(cat, idx) in _stagingCategories" :key="idx">
       <div class="cat-row">
-        <div class="cat-colors" :style="cat.locked ? 'opacity:.4;pointer-events:none' : ''">
+        <div class="cat-colors">
           <template x-for="c in ['salmon','blue','cyan','green','gray','purple','orange','yellow']" :key="c">
             <button class="cat-color-btn" :class="c"
               :style="cat.value === c ? 'outline:2px solid #374151;outline-offset:2px' : ''"
