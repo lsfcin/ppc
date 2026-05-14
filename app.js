@@ -12,13 +12,13 @@ function ppc() {
     title:    'Proposta para a grade de LC',
     subtitle: 'Licenciatura em Computação — arraste disciplinas entre períodos para experimentar a grade.',
     categories: [
-      { value:'salmon', label:'Formação docente',  nucleus:'I'   },
-      { value:'blue',   label:'Computação',         nucleus:'II'  },
-      { value:'cyan',   label:'Mat. / Computação',  nucleus:'II'  },
-      { value:'green',  label:'Matemática',          nucleus:'II'  },
-      { value:'gray',   label:'Optativa',            nucleus:'II'  },
-      { value:'purple', label:'Extensão / Projeto',  nucleus:'III' },
-      { value:'orange', label:'Estágio',             nucleus:'IV'  },
+      { value:'salmon', label:'Formação docente', nucleus:'I',   locked: true },
+      { value:'blue',   label:'Computação',        nucleus:'II'  },
+      { value:'cyan',   label:'Mat. / Computação', nucleus:'II'  },
+      { value:'green',  label:'Matemática',         nucleus:'II'  },
+      { value:'gray',   label:'Optativa',           nucleus:'II',  locked: true },
+      { value:'purple', label:'Extensão',           nucleus:'III', locked: true },
+      { value:'orange', label:'Estágio',            nucleus:'IV',  locked: true },
     ],
     _stagingCategories: null,
     _nextId:              100,
@@ -61,7 +61,11 @@ function ppc() {
       }
       if (state.numPeriods          != null) this.numPeriods          = state.numPeriods
       if (state.atividadesAutonomas != null) this.atividadesAutonomas = state.atividadesAutonomas
-      if (state.categories)                  this.categories          = state.categories
+      if (state.categories) {
+        this.categories = state.categories
+        const LOCKED = { salmon: true, gray: true, purple: true, orange: true }
+        this.categories.forEach(c => { if (LOCKED[c.value]) c.locked = true })
+      }
       if (state.title)                       this.title               = state.title
       if (state.subtitle)                    this.subtitle            = state.subtitle
       if (state.disabledConstraints)         this.disabledConstraints = state.disabledConstraints
@@ -205,6 +209,7 @@ function ppc() {
       if (idx !== -1) {
         this.editing.hours = this.editing.teoria.hours + this.editing.pratica.hours + this.editing.extensao.hours
         this.editing.tags  = this.editing.tags ?? []
+        this.editing.isElective = this.isOptativaColor(this.editing.color)
         this.disciplines[idx] = this.editing
       }
       this.closeModal()
@@ -274,6 +279,20 @@ function ppc() {
       const avail = this.availableCategories()
       if (!avail.some(c => c.value === this.editing.color))
         this.editing.color = avail[0]?.value ?? 'blue'
+    },
+
+    isOptativaColor(colorVal) {
+      return !!this.categories.find(c => c.value === colorVal && c.label === 'Optativa')
+    },
+
+    onColorChange() {
+      if (!this.editing) return
+      if (this.isOptativaColor(this.editing.color)) {
+        this.editing.name = 'Optativa'
+        this.editing.isElective = true
+      } else {
+        this.editing.isElective = false
+      }
     },
 
     // ── Categories modal ──────────────────────────────────────────────────────
