@@ -13,9 +13,9 @@ Users can move disciplines, change hours, and get real-time constraint feedback.
 - MEC compliance — legal source for all constraints
 
 ## Source Material
-`academy/administration/coordenação de LC/novo PPC/`
+`academy/administration/coordenacao-lc/novo-ppc-bcc/`
 - `Nova Grade — Licenciatura em Computação.html` — initial visual proposal
-- `Restrições Curriculares Atualizado.md` — legal constraints with citations
+- `restricoes-curriculares-atualizado.md` — legal constraints with citations
 - `Documentos/` — PDFs (CNE/CP 4/2024, CEPE/UFRPE 744/2024, CEPE/UFRPE 924/2025)
 
 ## Stack
@@ -37,6 +37,7 @@ GitHub Pages, `main` branch, root directory.
 
 | File | Interface | API | Description |
 |------|-----------|-----|-------------|
+| [`ROADMAP.md`](ROADMAP.md) | — | — | ROADMAP — PPC Tool |
 | [`SPECS.md`](SPECS.md) | — | — | SPECS — PPC Tool |
 | [`app.js`](app.js) | [`app.d.ts`](app.d.ts) | `ppc` | Alpine root component: curriculum state, initialization, queries, and display helpers |
 | [`categories.js`](categories.js) | [`categories.d.ts`](categories.d.ts) | `ppcCategories` | Category modal state, period CRUD, and curriculum import/export |
