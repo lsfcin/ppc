@@ -1,0 +1,21 @@
+// Type declarations for ppcDisciplines() Alpine component
+declare function ppcDisciplines(): {
+    editing: null;
+    editingId: null;
+    addDiscipline(period: any): void;
+    openModal(id: any): void;
+    closeModal(): void;
+    saveEditing(): void;
+    deleteEditing(): void;
+    hoursInvalid(): boolean;
+    hoursWarning(): string;
+    transversalThemes(): any;
+    toggleTag(id: any): void;
+    otherDisciplines(): any;
+    togglePrereq(id: any): void;
+    availableCategories(): any;
+    onElectiveNucleusChange(nucleus: any): void;
+    fixColor(): void;
+    isOptativaColor(colorVal: any): boolean;
+    onColorChange(): void;
+};
