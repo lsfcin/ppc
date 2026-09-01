@@ -37,6 +37,7 @@ GitHub Pages, `main` branch, root directory.
 
 | File | Interface | API | Description |
 |------|-----------|-----|-------------|
+| [`ISSUES.md`](ISSUES.md) | — | — | What is currently untrue that we know about in this repo: hand-written issues first, every measured number inside its own generated block. |
 | [`ROADMAP.md`](ROADMAP.md) | — | — | ROADMAP — PPC Tool |
 | [`SPECS.md`](SPECS.md) | — | — | SPECS — PPC Tool |
 | [`app.js`](app.js) | [`app.d.ts`](app.d.ts) | `ppc` | Alpine root component: curriculum state, initialization, queries, and display helpers |

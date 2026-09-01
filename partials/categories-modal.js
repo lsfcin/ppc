@@ -1,3 +1,4 @@
+// Categories and period management dialog HTML
 MODALS.cats = `
 <dialog id="categories-modal" @click.self="closeCategoriesModal()">
   <div class="modal-head">

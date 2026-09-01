@@ -1,3 +1,4 @@
+// TRANSVERSAL_THEMES: the 12 MEC cross-cutting curriculum themes (stable constant)
 const TRANSVERSAL_THEMES = [
   // ── Diversidade, Inclusão e Direitos ────────────────────────────────────────
   { id: 'ambiental',

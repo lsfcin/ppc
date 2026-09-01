@@ -1,4 +1,3 @@
-// Type declarations for ppcHistory() Alpine component
 declare function ppcHistory(): {
     _history: never[];
     _future: never[];

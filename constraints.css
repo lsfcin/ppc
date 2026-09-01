@@ -1,3 +1,4 @@
+/* Constraint sidebar and main content area layout */
 .main-area    { display: flex; gap: 16px; margin-top: 16px; align-items: stretch; }
 .content-area { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
 

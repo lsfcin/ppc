@@ -1,3 +1,4 @@
+// Alpine root component: curriculum state, initialization, queries, and display helpers
 const PALETTE = ['salmon','blue','cyan','green','gray','purple','orange','yellow','pink','red','sapphire']
 
 function ppc() {

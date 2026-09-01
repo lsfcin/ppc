@@ -1,3 +1,4 @@
+// MEC constraint validation checks and constraint summary builder
 const MANDATORY_NAMES = [
   'Educação das Relações Étnico-Raciais', 'Libras', 'Produção de Texto',
   'Fundamentos da Educação', 'Educação Brasileira', 'Didática',

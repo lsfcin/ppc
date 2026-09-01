@@ -1,3 +1,4 @@
+// SortableJS integration for drag-and-drop between period columns
 function ppcSortable() {
   return {
     _dragAnchor: null,

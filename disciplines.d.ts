@@ -1,4 +1,3 @@
-// Type declarations for ppcDisciplines() Alpine component
 declare function ppcDisciplines(): {
     editing: null;
     editingId: null;

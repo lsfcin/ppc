@@ -1,3 +1,4 @@
+// Undo/redo history stack for curriculum state changes
 function ppcHistory() {
   return {
     _history: [], _future: [],

@@ -1,4 +1,3 @@
-// Type declarations for ppcCategories() Alpine component
 declare function ppcCategories(): {
     _stagingCategories: null;
     openCategoriesModal(): void;

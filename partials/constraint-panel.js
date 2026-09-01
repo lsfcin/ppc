@@ -1,3 +1,4 @@
+// Constraint sidebar HTML panel
 MODALS.constraint = `
 <div class="constraint-bar" :class="{open: constraintOpen}">
   <div class="constraint-collapsed" @click="constraintOpen = true">

@@ -1,3 +1,4 @@
+// Discipline CRUD, elective flags, and category and theme assignments
 function ppcDisciplines() {
   return {
     editing: null, editingId: null,

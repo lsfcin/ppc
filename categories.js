@@ -1,3 +1,4 @@
+// Category modal state, period CRUD, and curriculum import/export
 function ppcCategories() {
   return {
     _stagingCategories: null,

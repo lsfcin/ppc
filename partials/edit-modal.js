@@ -1,3 +1,4 @@
+// Edit discipline dialog HTML, injected synchronously before Alpine initializes
 MODALS.edit = `
 <dialog id="edit-modal" @click.self="closeModal()">
   <div class="modal-head">
