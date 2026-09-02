@@ -159,7 +159,7 @@ Clean.
 
 *two machines share this workspace — push it, or give the repo a remote to push to: code/SPECS-git.md § Push policy*
 
-- code/ppc — main is 10 ahead of origin/main
+- code/ppc — main is 11 ahead of origin/main
 
 ### Local branches already merged into their base
 
