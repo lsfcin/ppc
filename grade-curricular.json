@@ -1017,7 +1017,8 @@
         "nucleus": "III"
       },
       "prerequisites": [
-        "met-ens"
+        "met-ens",
+        "proj-1"
       ],
       "department": "DC",
       "color": "purple",
