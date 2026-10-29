@@ -30,7 +30,9 @@ The default grade (`grade-curricular.json`) requires HTTP — silently skipped o
 | `<dialog>` | Native | Edit and categories modals |
 
 ## Deployment
-GitHub Pages, `main` branch, root directory.
+GitHub Pages, `main` branch, root directory — `lsfcin.github.io/ppc`.
+Mirror without the login in the URL: `ufrpe.pages.dev/montagrade` (Cloudflare Pages project `ufrpe`, direct upload — a push does NOT update it).
+Redeploy after each push: `git archive HEAD index.html '*.js' '*.css' grade-curricular.json partials` into `<dir>/montagrade/`, then the deploy line in [`core/tools/links/CONTEXT.md`](../../core/tools/links/CONTEXT.md) with `<project>` = `ufrpe`.
 
 <!-- routing:start -->
 ## Routing
@@ -45,12 +47,14 @@ GitHub Pages, `main` branch, root directory.
 | [`constraints.css`](constraints.css) | — | — | Constraint sidebar and main content area layout |
 | [`constraints.js`](constraints.js) | [`constraints.d.ts`](constraints.d.ts) | `buildConstraints`, `buildConstraintSummary` | MEC constraint validation checks and constraint summary builder |
 | [`disciplines.js`](disciplines.js) | [`disciplines.d.ts`](disciplines.d.ts) | `ppcDisciplines` | Discipline CRUD, elective flags, and category and theme assignments |
+| [`grade-curricular.json`](grade-curricular.json) | — | — | ← add first-line comment |
 | [`history.js`](history.js) | [`history.d.ts`](history.d.ts) | `ppcHistory` | Undo/redo history stack for curriculum state changes |
 | [`index.html`](index.html) | — | — | Curriculum grid shell: mounts header, period columns, footer, and all partials |
+| [`jsconfig.json`](jsconfig.json) | — | — | ← add first-line comment |
 | [`modal.css`](modal.css) | — | — | Edit and categories dialog styles |
-| [`partials/categories-modal.js`](partials/categories-modal.js) | — | — | Categories and period management dialog HTML |
-| [`partials/constraint-panel.js`](partials/constraint-panel.js) | — | — | Constraint sidebar HTML panel |
-| [`partials/edit-modal.js`](partials/edit-modal.js) | — | — | Edit discipline dialog HTML, injected synchronously before Alpine initializes |
+| [`partials/categories-modal.js`](partials/categories-modal.js) | [`partials/categories-modal.d.ts`](partials/categories-modal.d.ts) | — | Categories and period management dialog HTML |
+| [`partials/constraint-panel.js`](partials/constraint-panel.js) | [`partials/constraint-panel.d.ts`](partials/constraint-panel.d.ts) | — | Constraint sidebar HTML panel |
+| [`partials/edit-modal.js`](partials/edit-modal.js) | [`partials/edit-modal.d.ts`](partials/edit-modal.d.ts) | — | Edit discipline dialog HTML, injected synchronously before Alpine initializes |
 | [`sortable.js`](sortable.js) | [`sortable.d.ts`](sortable.d.ts) | `ppcSortable` | SortableJS integration for drag-and-drop between period columns |
 | [`style.css`](style.css) | — | — | Base layout, curriculum grid, discipline cards, footer, and print styles |
 | [`transversal-themes.js`](transversal-themes.js) | [`transversal-themes.d.ts`](transversal-themes.d.ts) | — | TRANSVERSAL_THEMES: the 12 MEC cross-cutting curriculum themes (stable constant) |
