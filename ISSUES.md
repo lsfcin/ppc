@@ -64,7 +64,7 @@
 
 *promote when the work is green, or say which reason applies — /roundup Phase 5*
 
-- . — feature/montagrade-multicurso is 3 ahead of main
+- . — feature/montagrade-multicurso is 4 ahead of main
 
 ### Local branches already merged into their base
 
