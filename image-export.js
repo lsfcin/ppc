@@ -1,7 +1,7 @@
-// PNG and SVG download of the page, without toolbar, add buttons and the constraint sidebar
+// PNG download of the page, without toolbar, buttons and the constraint sidebar
 const IMAGE_SKIP = '.toolbar, .tool-btn, .add-btn, .constraint-bar, .import-file, template'
 
-// Alpine attributes (@click, :class, x-…) are not valid XML names and break the SVG; render a clean clone instead
+// Alpine attributes (@click, :class, x-…) are not valid XML names and break the render; draw a clean clone instead
 function cleanClone(node) {
   const clone   = node.cloneNode(true)
   const sources = node.querySelectorAll('input')
@@ -15,14 +15,11 @@ function cleanClone(node) {
 
 function ppcImageExport() {
   return {
-    async exportImage(format) {
-      const clone  = document.body.appendChild(cleanClone(document.querySelector('.wrap')))
-      const render = format === 'svg' ? htmlToImage.toSvg : htmlToImage.toPng
+    async exportPNG() {
+      const clone = document.body.appendChild(cleanClone(document.querySelector('.wrap')))
       try {
-        const href = await render(clone, { backgroundColor: '#ffffff', pixelRatio: 2, style: { position: 'static', left: '0' } })
-        Object.assign(document.createElement('a'), {
-          href, download: `grade-${new Date().toISOString().slice(0, 10)}.${format}`,
-        }).click()
+        const href = await htmlToImage.toPng(clone, { backgroundColor: '#ffffff', pixelRatio: 2, style: { position: 'static', left: '0' } })
+        Object.assign(document.createElement('a'), { href, download: `grade-${new Date().toISOString().slice(0, 10)}.png` }).click()
       } finally {
         clone.remove()
       }

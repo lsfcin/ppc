@@ -24,6 +24,13 @@ test('stressed grid keeps its verdicts', () => {
   assert.deepEqual(failing(makeApp(s).app), ['c1', 'c2', 'c6', 'c7', 'c8', 'c10', 'c11', 'c12', 'ct1'])
 })
 
+test('Psicologia II does not stand in for a missing Psicologia I', () => {
+  const s = readGrade()
+  s.disciplines = s.disciplines.filter(d => d.name !== 'Psicologia I')
+  const c10 = panel(makeApp(s).app).find(c => c.id === 'c10')
+  assert.deepEqual([c10.ok, c10.value], [false, 'Ausentes: Psicologia I'])
+})
+
 test('builder rules reproduce the fixed ones', () => {
   const { app } = makeApp()
   const pairs = [

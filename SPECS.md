@@ -81,7 +81,7 @@ engine the "Criar restrição" builder writes to: c2/c3/c5 group ≥ N h, c4 Ext
 period, c8 multiple of 15h, c9 EaD ≤ 40%, c10 ten mandatory names (`each`), c12 no EaD in groups IV/III,
 ct1–ct12 ≥ 2 disciplines per transversal theme. `tests/rules.test.js` pins the verdicts.
 
-Known defect: name matching is substring, so "Psicologia II" also satisfies "Psicologia I".
+Name filters match substrings, except a term ending in a number ("Psicologia I") must not run on into a longer one.
 
 ---
 
@@ -110,7 +110,7 @@ Known defect: name matching is substring, so "Psicologia II" also satisfies "Psi
 - Custom rows get "deletar" under "ver lei".
 
 ### Image Export
-- PNG and SVG beside "Gerar PDF" (`html-to-image`). Renders a clone stripped of Alpine attributes, toolbar and sidebar. The SVG wraps HTML in a `foreignObject`: browsers render it, vector editors do not.
+- "Gerar PNG" beside "Gerar PDF" (`html-to-image`). Renders a clone stripped of Alpine attributes, buttons and sidebar.
 
 ### Categories Modal
 - Top section edits hour groups (add, rename, delete). Below, it lists all categories with color picker (11 swatches), editable label (locked for built-ins), nucleus selector (locked for built-ins).

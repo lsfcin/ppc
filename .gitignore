@@ -2,3 +2,5 @@
 
 # codegraph knowledge graph index
 .codegraph/
+# stubgen writes one per subfolder; the root jsconfig.json already covers them
+*/jsconfig.json

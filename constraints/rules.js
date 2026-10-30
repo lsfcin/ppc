@@ -12,6 +12,14 @@ function groupHours(d, groups) {
 
 function asList(value) { return Array.isArray(value) ? value : [value] }
 
+// A term ending in a number ("Psicologia I") must not run on into a longer one ("Psicologia II")
+function nameMatches(name, term) {
+  const t = String(term).toLowerCase().trim()
+  if (!/\s([ivx]+|\d+)$/.test(t)) return name.toLowerCase().includes(t)
+  const escaped = t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return new RegExp(`${escaped}(?![\\p{L}\\p{N}])`, 'iu').test(name)
+}
+
 function filterMatcher(app, filter) {
   const values = asList(filter.value)
   switch (filter.kind) {
@@ -22,7 +30,7 @@ function filterMatcher(app, filter) {
     case 'group':      return d => groupHours(d, values) > 0
     case 'department': return d => values.includes(d.department)
     case 'theme':      return d => values.some(t => (d.tags ?? []).includes(t))
-    case 'name':       return d => values.some(n => d.name.toLowerCase().includes(String(n).toLowerCase()))
+    case 'name':       return d => values.some(n => nameMatches(d.name, n))
     default:           return () => true
   }
 }

@@ -1,5 +1,6 @@
 declare function groupHours(d: any, groups: any): any;
 declare function asList(value: any): any[];
+declare function nameMatches(name: any, term: any): any;
 declare function filterMatcher(app: any, filter: any): (d: any) => any;
 declare function ruleHours(d: any, filter: any): any;
 declare function measure(rule: any, ds: any): any;

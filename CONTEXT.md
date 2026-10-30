@@ -45,17 +45,18 @@ Redeploy after each push: `git archive HEAD index.html '*.js' '*.css' grade-curr
 | [`SPECS.md`](SPECS.md) | — | — | SPECS — PPC Tool |
 | [`app.js`](app.js) | [`app.d.ts`](app.d.ts) | `ppc` | Alpine root component: curriculum state, initialization, queries, and display helpers |
 | [`categories.js`](categories.js) | [`categories.d.ts`](categories.d.ts) | `ppcCategories` | Category modal state, period CRUD, and curriculum import/export |
-| [`constraints/builder.js`](constraints/builder.js) | — | `ppcRuleBuilder` | Rule builder modal: draft rule, valid choice combinations, Portuguese preview sentence, save and delete |
-| [`constraints/fixed-rules.js`](constraints/fixed-rules.js) | — | `fixedRules` | Fixed rules: the MEC/UFRPE Licenciatura constraints expressed as engine rules (data, not code) |
+| [`constraints/builder.js`](constraints/builder.js) | [`constraints/builder.d.ts`](constraints/builder.d.ts) | `ppcRuleBuilder` | Rule builder modal: draft rule, valid choice combinations, Portuguese preview sentence, save and delete |
+| [`constraints/fixed-rules.js`](constraints/fixed-rules.js) | [`constraints/fixed-rules.d.ts`](constraints/fixed-rules.d.ts) | `fixedRules` | Fixed rules: the MEC/UFRPE Licenciatura constraints expressed as engine rules (data, not code) |
+| [`constraints/jsconfig.json`](constraints/jsconfig.json) | — | — | ← add first-line comment |
 | [`constraints/panel.css`](constraints/panel.css) | — | — | Constraint sidebar and main content area layout |
-| [`constraints/panel.js`](constraints/panel.js) | — | `codeChecks`, `fixedRank`, `buildConstraints`, `buildConstraintSummary` | Constraint panel list: code-only checks (cw1, c1, c6, c11), fixed and custom rules, and the summary |
-| [`constraints/rules.js`](constraints/rules.js) | — | `groupHours`, `asList`, `filterMatcher`, `ruleHours`, `measure` | Constraint engine: evaluates one rule (scope · filter · measure · op · value) against the curriculum |
+| [`constraints/panel.js`](constraints/panel.js) | [`constraints/panel.d.ts`](constraints/panel.d.ts) | `codeChecks`, `fixedRank`, `buildConstraints`, `buildConstraintSummary` | Constraint panel list: code-only checks (cw1, c1, c6, c11), fixed and custom rules, and the summary |
+| [`constraints/rules.js`](constraints/rules.js) | [`constraints/rules.d.ts`](constraints/rules.d.ts) | `groupHours`, `asList`, `nameMatches`, `filterMatcher`, `ruleHours` | Constraint engine: evaluates one rule (scope · filter · measure · op · value) against the curriculum |
 | [`departments.js`](departments.js) | [`departments.d.ts`](departments.d.ts) | `findDepartment`, `mergeDepartments`, `ppcDepartments` | Department list: defaults, merging on load, and the "new department" dropdown choice |
 | [`disciplines.js`](disciplines.js) | [`disciplines.d.ts`](disciplines.d.ts) | `ppcDisciplines` | Discipline CRUD, elective flags, and category and theme assignments |
 | [`grade-curricular.json`](grade-curricular.json) | — | — | ← add first-line comment |
 | [`groups.js`](groups.js) | [`groups.d.ts`](groups.d.ts) | `mergeGroups`, `ppcGroups` | Hour groups (formerly MEC nuclei I–IV): defaults, merging on load, lookup, and staging in the categories modal |
 | [`history.js`](history.js) | [`history.d.ts`](history.d.ts) | `ppcHistory` | Undo/redo history stack for curriculum state changes |
-| [`image-export.js`](image-export.js) | [`image-export.d.ts`](image-export.d.ts) | `cleanClone`, `ppcImageExport` | PNG and SVG download of the page, without toolbar, add buttons and the constraint sidebar |
+| [`image-export.js`](image-export.js) | [`image-export.d.ts`](image-export.d.ts) | `cleanClone`, `ppcImageExport` | PNG download of the page, without toolbar, buttons and the constraint sidebar |
 | [`index.html`](index.html) | — | — | Curriculum grid shell: mounts header, period columns, footer, and all partials |
 | [`jsconfig.json`](jsconfig.json) | — | — | ← add first-line comment |
 | [`modal.css`](modal.css) | — | — | Edit and categories dialog styles |
@@ -66,6 +67,7 @@ Redeploy after each push: `git archive HEAD index.html '*.js' '*.css' grade-curr
 | [`sortable.js`](sortable.js) | [`sortable.d.ts`](sortable.d.ts) | `ppcSortable` | SortableJS integration for drag-and-drop between period columns |
 | [`style.css`](style.css) | — | — | Base layout, curriculum grid, discipline cards, footer, and print styles |
 | [`tests/harness.js`](tests/harness.js) | [`tests/harness.d.ts`](tests/harness.d.ts) | `loadContext`, `readGrade`, `makeApp`, `panel` | Loads the browser scripts into a Node vm context and builds a ppc() app from a grade JSON |
+| [`tests/jsconfig.json`](tests/jsconfig.json) | — | — | ← add first-line comment |
 | [`tests/rules.test.js`](tests/rules.test.js) | [`tests/rules.test.d.ts`](tests/rules.test.d.ts) | — | Engine, fixed-rule equivalence, departments, hour groups and custom rules — run with `make verify-full` |
 | [`transversal-themes.js`](transversal-themes.js) | [`transversal-themes.d.ts`](transversal-themes.d.ts) | — | TRANSVERSAL_THEMES: the 12 MEC cross-cutting curriculum themes (stable constant) |
 <!-- routing:end -->
