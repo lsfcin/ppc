@@ -74,9 +74,9 @@ hours allocated to that group. `each` (fixed only) checks every listed filter va
 
 ## Constraints
 
-`buildConstraints(app)` in `constraints.js` returns custom rules (newest first), then the fixed list in id order.
+`buildConstraints(app)` in `constraints/panel.js` returns custom rules (newest first), then the fixed list in id order.
 Code-only checks: cw1 (EaD warning), c1 (CH total ≥ 3200h), c6 (autônomas ≥ 120h), c11 (prerequisites earlier).
-Every other fixed check is a Rule in `fixed-rules.js`, evaluated by `evaluateRule` in `rules.js` — the same
+Every other fixed check is a Rule in `constraints/fixed-rules.js`, evaluated by `evaluateRule` in `constraints/rules.js` — the same
 engine the "Criar restrição" builder writes to: c2/c3/c5 group ≥ N h, c4 Extensão ≥ 10%, c7 ≤ 28h/sem per
 period, c8 multiple of 15h, c9 EaD ≤ 40%, c10 ten mandatory names (`each`), c12 no EaD in groups IV/III,
 ct1–ct12 ≥ 2 disciplines per transversal theme. `tests/rules.test.js` pins the verdicts.

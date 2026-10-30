@@ -1,4 +1,4 @@
-// Department list: defaults, merging on load, and the "＋ Novo departamento…" dropdown choice
+// Department list: defaults, merging on load, and the "new department" dropdown choice
 const DEFAULT_DEPARTMENTS = ['DC', 'DED', 'DM', 'DL', 'DLCH', 'Outro']
 const NEW_DEPARTMENT      = '__new__'
 

@@ -33,7 +33,7 @@ The default grade (`grade-curricular.json`) requires HTTP — silently skipped o
 ## Deployment
 GitHub Pages, `main` branch, root directory — `lsfcin.github.io/ppc`.
 Mirror without the login in the URL: `ufrpe.pages.dev/montagrade` (Cloudflare Pages project `ufrpe`, direct upload — a push does NOT update it).
-Redeploy after each push: `git archive HEAD index.html '*.js' '*.css' grade-curricular.json partials` into `<dir>/montagrade/`, then the deploy line in [`core/tools/links/SPECS.md`](../../core/tools/links/SPECS.md) with `<project>` = `ufrpe`.
+Redeploy after each push: `git archive HEAD index.html '*.js' '*.css' grade-curricular.json partials constraints` into `<dir>/montagrade/`, then the deploy line in [`core/tools/links/SPECS.md`](../../core/tools/links/SPECS.md) with `<project>` = `ufrpe`.
 
 <!-- routing:start -->
 ## Routing
@@ -45,11 +45,13 @@ Redeploy after each push: `git archive HEAD index.html '*.js' '*.css' grade-curr
 | [`SPECS.md`](SPECS.md) | — | — | SPECS — PPC Tool |
 | [`app.js`](app.js) | [`app.d.ts`](app.d.ts) | `ppc` | Alpine root component: curriculum state, initialization, queries, and display helpers |
 | [`categories.js`](categories.js) | [`categories.d.ts`](categories.d.ts) | `ppcCategories` | Category modal state, period CRUD, and curriculum import/export |
-| [`constraints.css`](constraints.css) | — | — | Constraint sidebar and main content area layout |
-| [`constraints.js`](constraints.js) | [`constraints.d.ts`](constraints.d.ts) | `codeChecks`, `fixedRank`, `buildConstraints`, `buildConstraintSummary` | Constraint panel list: code-only checks (cw1, c1, c6, c11), fixed and custom rules, and the summary |
-| [`departments.js`](departments.js) | [`departments.d.ts`](departments.d.ts) | `findDepartment`, `mergeDepartments`, `ppcDepartments` | Department list: defaults, merging on load, and the "＋ Novo departamento…" dropdown choice |
+| [`constraints/builder.js`](constraints/builder.js) | — | `ppcRuleBuilder` | Rule builder modal: draft rule, valid choice combinations, Portuguese preview sentence, save and delete |
+| [`constraints/fixed-rules.js`](constraints/fixed-rules.js) | — | `fixedRules` | Fixed rules: the MEC/UFRPE Licenciatura constraints expressed as engine rules (data, not code) |
+| [`constraints/panel.css`](constraints/panel.css) | — | — | Constraint sidebar and main content area layout |
+| [`constraints/panel.js`](constraints/panel.js) | — | `codeChecks`, `fixedRank`, `buildConstraints`, `buildConstraintSummary` | Constraint panel list: code-only checks (cw1, c1, c6, c11), fixed and custom rules, and the summary |
+| [`constraints/rules.js`](constraints/rules.js) | — | `groupHours`, `asList`, `filterMatcher`, `ruleHours`, `measure` | Constraint engine: evaluates one rule (scope · filter · measure · op · value) against the curriculum |
+| [`departments.js`](departments.js) | [`departments.d.ts`](departments.d.ts) | `findDepartment`, `mergeDepartments`, `ppcDepartments` | Department list: defaults, merging on load, and the "new department" dropdown choice |
 | [`disciplines.js`](disciplines.js) | [`disciplines.d.ts`](disciplines.d.ts) | `ppcDisciplines` | Discipline CRUD, elective flags, and category and theme assignments |
-| [`fixed-rules.js`](fixed-rules.js) | [`fixed-rules.d.ts`](fixed-rules.d.ts) | `fixedRules` | Fixed rules: the MEC/UFRPE Licenciatura constraints expressed as engine rules (data, not code) |
 | [`grade-curricular.json`](grade-curricular.json) | — | — | ← add first-line comment |
 | [`groups.js`](groups.js) | [`groups.d.ts`](groups.d.ts) | `mergeGroups`, `ppcGroups` | Hour groups (formerly MEC nuclei I–IV): defaults, merging on load, lookup, and staging in the categories modal |
 | [`history.js`](history.js) | [`history.d.ts`](history.d.ts) | `ppcHistory` | Undo/redo history stack for curriculum state changes |
@@ -61,8 +63,6 @@ Redeploy after each push: `git archive HEAD index.html '*.js' '*.css' grade-curr
 | [`partials/constraint-panel.js`](partials/constraint-panel.js) | [`partials/constraint-panel.d.ts`](partials/constraint-panel.d.ts) | — | Constraint sidebar HTML panel |
 | [`partials/edit-modal.js`](partials/edit-modal.js) | [`partials/edit-modal.d.ts`](partials/edit-modal.d.ts) | — | Edit discipline dialog HTML, injected synchronously before Alpine initializes |
 | [`partials/rule-modal.js`](partials/rule-modal.js) | [`partials/rule-modal.d.ts`](partials/rule-modal.d.ts) | — | Rule builder dialog HTML: four choices and a value, read back as one Portuguese sentence |
-| [`rule-builder.js`](rule-builder.js) | [`rule-builder.d.ts`](rule-builder.d.ts) | `ppcRuleBuilder` | Rule builder modal: draft rule, valid choice combinations, Portuguese preview sentence, save and delete |
-| [`rules.js`](rules.js) | [`rules.d.ts`](rules.d.ts) | `groupHours`, `asList`, `filterMatcher`, `ruleHours`, `measure` | Constraint engine: evaluates one rule (scope · filter · measure · op · value) against the curriculum |
 | [`sortable.js`](sortable.js) | [`sortable.d.ts`](sortable.d.ts) | `ppcSortable` | SortableJS integration for drag-and-drop between period columns |
 | [`style.css`](style.css) | — | — | Base layout, curriculum grid, discipline cards, footer, and print styles |
 | [`tests/harness.js`](tests/harness.js) | [`tests/harness.d.ts`](tests/harness.d.ts) | `loadContext`, `readGrade`, `makeApp`, `panel` | Loads the browser scripts into a Node vm context and builds a ppc() app from a grade JSON |
