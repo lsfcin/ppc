@@ -39,3 +39,6 @@ const TRANSVERSAL_THEMES = [
     label: 'Incorporação Curricular de Espaços Virtuais de Aprendizagem (AVAs)',
     detail: 'Resolução CNE/CP Nº 4/2024, Art. VII: "a incorporação de espaços virtuais de aprendizagem para aprimoramento das práticas de ensino, permitindo dinamicidade e interatividade para exploração de métodos inovadores de ensino que se adaptem às necessidades diversificadas dos alunos, desenvolvendo o pensamento crítico e a habilidade de navegar eficazmente no vasto universo da informação digital."' },
 ]
+
+// Constraint id of the i-th theme — stable, stored in disabledConstraints
+const themeConstraintId = i => `ct${i + 1}`

@@ -3,3 +3,4 @@ declare const TRANSVERSAL_THEMES: {
     label: string;
     detail: string;
 }[];
+declare function themeConstraintId(i: any): string;

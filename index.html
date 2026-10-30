@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PPC — Grade LC/UFRPE</title>
+  <title>Montagrade — Grade Curricular</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="modal.css">
   <link rel="stylesheet" href="constraints.css">
@@ -12,13 +12,21 @@
   <script src="partials/constraint-panel.js"></script>
   <script src="partials/edit-modal.js"></script>
   <script src="partials/categories-modal.js"></script>
+  <script src="partials/rule-modal.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
   <script src="transversal-themes.js"></script>
+  <script src="groups.js"></script>
+  <script src="rules.js"></script>
+  <script src="fixed-rules.js"></script>
   <script src="constraints.js"></script>
+  <script src="rule-builder.js"></script>
   <script src="history.js"></script>
   <script src="sortable.js"></script>
   <script src="disciplines.js"></script>
   <script src="categories.js"></script>
+  <script src="departments.js"></script>
+  <script src="image-export.js"></script>
   <script src="app.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
 </head>
@@ -47,6 +55,8 @@
         </label>
         <button class="tool-btn" @click="exportJSON()">⬇ Exportar JSON</button>
         <button class="tool-btn" @click="printPDF()">⎙ Gerar PDF</button>
+        <button class="tool-btn" @click="exportImage('png')">🖼 PNG</button>
+        <button class="tool-btn" @click="exportImage('svg')">🖼 SVG</button>
       </div>
     </div>
   </div>
@@ -93,12 +103,13 @@
           <h2>Resumo da proposta</h2>
           <div class="summary-grid">
             <div class="stat"><div class="label">CH Disciplinas</div><div class="value" x-text="disciplineHours() + 'h'"></div></div>
-            <div class="stat"><div class="label">Extensão (N. III)</div><div class="value" x-text="nucleusHours('III') + 'h'"></div></div>
-            <div class="stat"><div class="label">Estágio (N. IV)</div><div class="value" x-text="nucleusHours('IV') + 'h'"></div></div>
+            <div class="stat"><div class="label">Extensão</div><div class="value" x-text="extensionHours() + 'h'"></div></div>
+            <div class="stat"><div class="label">Disciplinas</div><div class="value" x-text="disciplines.length"></div></div>
             <div class="stat"><div class="label">CH Total</div><div class="value" x-text="totalHours() + 'h'"></div></div>
           </div>
-          <div class="note" x-text="`Núcleo I (Formação Geral): ${nucleusHours('I')}h de 880h`"></div>
-          <div class="note" x-text="`Núcleo II (Conhecimentos Específicos): ${nucleusHours('II')}h de 1600h`"></div>
+          <template x-for="g in groups" :key="g.id">
+            <div class="note" x-text="`${g.label}: ${nucleusHours(g.id)}h`"></div>
+          </template>
           <div class="note">
             Atividades Autônomas:
             <input type="number" min="0" step="15" x-model.number="atividadesAutonomas"
@@ -117,7 +128,7 @@
               <template x-for="cat in categories.slice(0, Math.ceil(categories.length/2))" :key="cat.id">
                 <div class="legend-item">
                   <span class="swatch" :class="cat.value"></span>
-                  <span x-text="`Núcleo ${cat.nucleus} — ${cat.label}`"></span>
+                  <span x-text="`${groupLabel(cat.nucleus)} — ${cat.label}`"></span>
                 </div>
               </template>
             </div>
@@ -125,7 +136,7 @@
               <template x-for="cat in categories.slice(Math.ceil(categories.length/2))" :key="cat.id">
                 <div class="legend-item">
                   <span class="swatch" :class="cat.value"></span>
-                  <span x-text="`Núcleo ${cat.nucleus} — ${cat.label}`"></span>
+                  <span x-text="`${groupLabel(cat.nucleus)} — ${cat.label}`"></span>
                 </div>
               </template>
             </div>
@@ -138,7 +149,7 @@
 </div>
 <div id="modal-mount"></div>
 <script>
-  document.getElementById('modal-mount').innerHTML = MODALS.edit + MODALS.cats
+  document.getElementById('modal-mount').innerHTML = MODALS.edit + MODALS.cats + MODALS.rule
   document.getElementById('constraint-mount').innerHTML = MODALS.constraint
 </script>
 </body>

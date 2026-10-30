@@ -8,9 +8,9 @@ function ppcDisciplines() {
       const id = 'new-' + (this._nextId++)
       this.disciplines.push({
         id, name: 'Nova disciplina', period, hours: 60,
-        teoria:   { hours: 60, nucleus: 'II' },
-        pratica:  { hours: 0,  nucleus: 'II' },
-        extensao: { hours: 0,  nucleus: 'III' },
+        teoria:   { hours: 60, nucleus: this.defaultGroup() },
+        pratica:  { hours: 0,  nucleus: this.defaultGroup() },
+        extensao: { hours: 0,  nucleus: EXTENSION_GROUP },
         prerequisites: [], department: 'DC',
         color: 'blue', isElective: false, eadPercent: 0, skipWeekly: false, tags: [],
         order: this.disciplines.filter(d => d.period === period).length,
@@ -40,8 +40,8 @@ function ppcDisciplines() {
       if (idx !== -1) {
         this.editing.isElective = this.isOptativaColor(this.editing.color)
         if (this.editing.isElective) {
-          this.editing.pratica       = { hours: 0, nucleus: 'II' }
-          this.editing.extensao      = { hours: 0, nucleus: 'III' }
+          this.editing.pratica       = { hours: 0, nucleus: this.defaultGroup() }
+          this.editing.extensao      = { hours: 0, nucleus: EXTENSION_GROUP }
           this.editing.prerequisites = []
           this.editing.tags          = []
           this.editing.skipWeekly    = false
@@ -78,7 +78,9 @@ function ppcDisciplines() {
       return ''
     },
 
-    transversalThemes() { return TRANSVERSAL_THEMES },
+    transversalThemes() {
+      return TRANSVERSAL_THEMES.filter((_, i) => !this.disabledConstraints.includes(themeConstraintId(i)))
+    },
 
     toggleTag(id) {
       if (!this.editing) return
@@ -107,7 +109,7 @@ function ppcDisciplines() {
       const used = new Set()
       if (this.editing.teoria.hours   > 0) used.add(this.editing.teoria.nucleus)
       if (this.editing.pratica.hours  > 0) used.add(this.editing.pratica.nucleus)
-      if (this.editing.extensao.hours > 0) used.add('III')
+      if (this.editing.extensao.hours > 0) used.add(EXTENSION_GROUP)
       if (used.size === 0) return this.categories
       return this.categories.filter(c => used.has(c.nucleus))
     },
@@ -136,10 +138,10 @@ function ppcDisciplines() {
         this.editing.name       = 'Optativa'
         this.editing.isElective = true
         const total      = this.editing.teoria.hours + this.editing.pratica.hours + this.editing.extensao.hours
-        const prevNucleus = this.editing.teoria.nucleus || 'II'
+        const prevNucleus = this.editing.teoria.nucleus || this.defaultGroup()
         this.editing.teoria       = { hours: total || 60, nucleus: prevNucleus }
-        this.editing.pratica      = { hours: 0, nucleus: 'II' }
-        this.editing.extensao     = { hours: 0, nucleus: 'III' }
+        this.editing.pratica      = { hours: 0, nucleus: this.defaultGroup() }
+        this.editing.extensao     = { hours: 0, nucleus: EXTENSION_GROUP }
         this.editing.prerequisites = []
         this.editing.tags         = []
         this.editing.skipWeekly   = false

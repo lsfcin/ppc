@@ -16,9 +16,11 @@ MODALS.edit = `
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <div class="field">
             <label>Departamento</label>
-            <select x-model="editing.department">
-              <option>DC</option><option>DED</option><option>DM</option>
-              <option>DL</option><option>DLCH</option><option>Outro</option>
+            <select @change="pickDepartment(\$event.target)">
+              <template x-for="dep in departments" :key="dep">
+                <option :value="dep" :selected="dep === editing.department" x-text="dep"></option>
+              </template>
+              <option value="__new__">＋ Novo departamento…</option>
             </select>
           </div>
           <div class="field">
@@ -42,8 +44,9 @@ MODALS.edit = `
               <select class="nucleus-inline" style="width:auto"
                 :value="editing.teoria.nucleus"
                 @change="onElectiveNucleusChange(\$event.target.value)">
-                <option value="I">Núcleo I</option><option value="II">Núcleo II</option>
-                <option value="III">Núcleo III</option><option value="IV">Núcleo IV</option>
+                <template x-for="g in groups" :key="g.id">
+                  <option :value="g.id" :selected="g.id === editing.teoria.nucleus" x-text="g.label"></option>
+                </template>
               </select>
             </div>
             <span class="hours-warning" x-show="hoursInvalid()" x-text="hoursWarning()" style="margin-top:4px;display:block"></span>
@@ -56,21 +59,25 @@ MODALS.edit = `
               <div class="hours-cell">
                 <label>Teoria</label>
                 <input type="number" min="0" step="15" x-model.number="editing.teoria.hours" @change="fixColor()">
-                <select x-show="editing.teoria.hours > 0" x-model="editing.teoria.nucleus" class="nucleus-inline" @change="fixColor()">
-                  <option value="I">Núcleo I</option><option value="II">Núcleo II</option><option value="IV">Núcleo IV</option>
+                <select x-show="editing.teoria.hours > 0" class="nucleus-inline" @change="editing.teoria.nucleus = \$event.target.value; fixColor()">
+                  <template x-for="g in teachingGroups()" :key="g.id">
+                    <option :value="g.id" :selected="g.id === editing.teoria.nucleus" x-text="g.label"></option>
+                  </template>
                 </select>
               </div>
               <div class="hours-cell">
                 <label>Prática</label>
                 <input type="number" min="0" step="15" x-model.number="editing.pratica.hours" @change="fixColor()">
-                <select x-show="editing.pratica.hours > 0" x-model="editing.pratica.nucleus" class="nucleus-inline" @change="fixColor()">
-                  <option value="I">Núcleo I</option><option value="II">Núcleo II</option><option value="IV">Núcleo IV</option>
+                <select x-show="editing.pratica.hours > 0" class="nucleus-inline" @change="editing.pratica.nucleus = \$event.target.value; fixColor()">
+                  <template x-for="g in teachingGroups()" :key="g.id">
+                    <option :value="g.id" :selected="g.id === editing.pratica.nucleus" x-text="g.label"></option>
+                  </template>
                 </select>
               </div>
               <div class="hours-cell">
                 <label>Extensão</label>
                 <input type="number" min="0" step="15" x-model.number="editing.extensao.hours" @change="fixColor()">
-                <div x-show="editing.extensao.hours > 0" class="nucleus-fixed">Núcleo III (fixo)</div>
+                <div x-show="editing.extensao.hours > 0" class="nucleus-fixed" x-text="groupLabel(extensionGroup()) + ' (fixo)'"></div>
               </div>
             </div>
             <div style="margin-top:6px;font-size:12px;color:var(--muted)">
@@ -100,7 +107,7 @@ MODALS.edit = `
             </template>
           </div>
         </div>
-        <div class="field">
+        <div class="field" x-show="transversalThemes().length > 0">
           <label>Temas Transversais</label>
           <div class="prereq-list">
             <template x-for="theme in transversalThemes()" :key="theme.id">

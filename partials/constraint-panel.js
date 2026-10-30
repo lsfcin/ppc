@@ -18,6 +18,9 @@ MODALS.constraint = `
       </div>
       <span style="font-size:12px;color:var(--muted)">✕</span>
     </div>
+    <div class="rule-create">
+      <button class="tool-btn" @click="openRuleModal()">＋ Criar restrição</button>
+    </div>
     <div class="constraint-rows">
       <template x-for="c in constraints()" :key="c.id">
         <div class="constraint-row"
@@ -34,6 +37,8 @@ MODALS.constraint = `
               @click.stop="toggleConstraint(c.id)" title="Ativar/desativar restrição"></button>
             <button class="adv-toggle" @click="c.detailOpen = !c.detailOpen"
               x-text="c.detailOpen ? '▲' : 'ver lei'"></button>
+            <button class="adv-toggle rule-delete" x-show="c.custom"
+              @click.stop="confirm('Deletar esta restrição?') && deleteRule(c.id)">deletar</button>
           </div>
           <div class="constraint-detail" x-show="c.detailOpen" x-text="c.detail"></div>
         </div>

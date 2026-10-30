@@ -1,10 +1,11 @@
-# PPC — Projeto Pedagógico de Curso (LC/UFRPE)
-> Interactive browser tool for experimenting with LC/UFRPE curriculum redesign
+# Montagrade — PPC (Projeto Pedagógico de Curso) grid tool
+> Interactive browser tool for drafting a UFRPE course curriculum grid; LC is the default grid
 > goal: none
 
 ## Purpose
-Interactive browser tool for experimenting with the curriculum redesign of
-Licenciatura em Computação (LC/DC/UFRPE), driven by MEC requirements.
+Interactive browser tool for drafting a course curriculum grid, driven by MEC requirements. Built for
+Licenciatura em Computação (LC/DC/UFRPE); since the PREG meeting of 2026-10-29 it serves any UFRPE course:
+departments and hour groups are editable, fixed constraints can be disabled, and new ones built.
 Users can move disciplines, change hours, and get real-time constraint feedback.
 
 ## Stakeholders
@@ -40,22 +41,31 @@ Redeploy after each push: `git archive HEAD index.html '*.js' '*.css' grade-curr
 | File | Interface | API | Description |
 |------|-----------|-----|-------------|
 | [`ISSUES.md`](ISSUES.md) | — | — | What is currently untrue that we know about in this repo: hand-written issues first, every measured number inside its own generated block. |
-| [`ROADMAP.md`](ROADMAP.md) | — | — | ROADMAP — PPC Tool |
+| [`ROADMAP.md`](ROADMAP.md) | — | — | Montagrade — Roadmap |
 | [`SPECS.md`](SPECS.md) | — | — | SPECS — PPC Tool |
 | [`app.js`](app.js) | [`app.d.ts`](app.d.ts) | `ppc` | Alpine root component: curriculum state, initialization, queries, and display helpers |
 | [`categories.js`](categories.js) | [`categories.d.ts`](categories.d.ts) | `ppcCategories` | Category modal state, period CRUD, and curriculum import/export |
 | [`constraints.css`](constraints.css) | — | — | Constraint sidebar and main content area layout |
-| [`constraints.js`](constraints.js) | [`constraints.d.ts`](constraints.d.ts) | `buildConstraints`, `buildConstraintSummary` | MEC constraint validation checks and constraint summary builder |
+| [`constraints.js`](constraints.js) | [`constraints.d.ts`](constraints.d.ts) | `codeChecks`, `fixedRank`, `buildConstraints`, `buildConstraintSummary` | Constraint panel list: code-only checks (cw1, c1, c6, c11), fixed and custom rules, and the summary |
+| [`departments.js`](departments.js) | [`departments.d.ts`](departments.d.ts) | `findDepartment`, `mergeDepartments`, `ppcDepartments` | Department list: defaults, merging on load, and the "＋ Novo departamento…" dropdown choice |
 | [`disciplines.js`](disciplines.js) | [`disciplines.d.ts`](disciplines.d.ts) | `ppcDisciplines` | Discipline CRUD, elective flags, and category and theme assignments |
+| [`fixed-rules.js`](fixed-rules.js) | [`fixed-rules.d.ts`](fixed-rules.d.ts) | `fixedRules` | Fixed rules: the MEC/UFRPE Licenciatura constraints expressed as engine rules (data, not code) |
 | [`grade-curricular.json`](grade-curricular.json) | — | — | ← add first-line comment |
+| [`groups.js`](groups.js) | [`groups.d.ts`](groups.d.ts) | `mergeGroups`, `ppcGroups` | Hour groups (formerly MEC nuclei I–IV): defaults, merging on load, lookup, and staging in the categories modal |
 | [`history.js`](history.js) | [`history.d.ts`](history.d.ts) | `ppcHistory` | Undo/redo history stack for curriculum state changes |
+| [`image-export.js`](image-export.js) | [`image-export.d.ts`](image-export.d.ts) | `cleanClone`, `ppcImageExport` | PNG and SVG download of the page, without toolbar, add buttons and the constraint sidebar |
 | [`index.html`](index.html) | — | — | Curriculum grid shell: mounts header, period columns, footer, and all partials |
 | [`jsconfig.json`](jsconfig.json) | — | — | ← add first-line comment |
 | [`modal.css`](modal.css) | — | — | Edit and categories dialog styles |
 | [`partials/categories-modal.js`](partials/categories-modal.js) | [`partials/categories-modal.d.ts`](partials/categories-modal.d.ts) | — | Categories and period management dialog HTML |
 | [`partials/constraint-panel.js`](partials/constraint-panel.js) | [`partials/constraint-panel.d.ts`](partials/constraint-panel.d.ts) | — | Constraint sidebar HTML panel |
 | [`partials/edit-modal.js`](partials/edit-modal.js) | [`partials/edit-modal.d.ts`](partials/edit-modal.d.ts) | — | Edit discipline dialog HTML, injected synchronously before Alpine initializes |
+| [`partials/rule-modal.js`](partials/rule-modal.js) | [`partials/rule-modal.d.ts`](partials/rule-modal.d.ts) | — | Rule builder dialog HTML: four choices and a value, read back as one Portuguese sentence |
+| [`rule-builder.js`](rule-builder.js) | [`rule-builder.d.ts`](rule-builder.d.ts) | `ppcRuleBuilder` | Rule builder modal: draft rule, valid choice combinations, Portuguese preview sentence, save and delete |
+| [`rules.js`](rules.js) | [`rules.d.ts`](rules.d.ts) | `groupHours`, `asList`, `filterMatcher`, `ruleHours`, `measure` | Constraint engine: evaluates one rule (scope · filter · measure · op · value) against the curriculum |
 | [`sortable.js`](sortable.js) | [`sortable.d.ts`](sortable.d.ts) | `ppcSortable` | SortableJS integration for drag-and-drop between period columns |
 | [`style.css`](style.css) | — | — | Base layout, curriculum grid, discipline cards, footer, and print styles |
+| [`tests/harness.js`](tests/harness.js) | [`tests/harness.d.ts`](tests/harness.d.ts) | `loadContext`, `readGrade`, `makeApp`, `panel` | Loads the browser scripts into a Node vm context and builds a ppc() app from a grade JSON |
+| [`tests/rules.test.js`](tests/rules.test.js) | [`tests/rules.test.d.ts`](tests/rules.test.d.ts) | — | Engine, fixed-rule equivalence, departments, hour groups and custom rules — run with `make verify-full` |
 | [`transversal-themes.js`](transversal-themes.js) | [`transversal-themes.d.ts`](transversal-themes.d.ts) | — | TRANSVERSAL_THEMES: the 12 MEC cross-cutting curriculum themes (stable constant) |
 <!-- routing:end -->

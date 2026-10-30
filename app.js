@@ -19,9 +19,12 @@ function ppc() {
       { id:'cat-6', value:'purple', label:'Extensão',           nucleus:'III', locked: true },
       { id:'cat-7', value:'orange', label:'Estágio',            nucleus:'IV',  locked: true },
     ],
+    departments: [...DEFAULT_DEPARTMENTS],
+    groups:      DEFAULT_GROUPS.map(g => ({ ...g })),
     _nextCatId: 8,
     _nextId:    100,
     disabledConstraints: [],
+    customRules:         [],
 
     async init() {
       const saved = localStorage.getItem('ppc-state')
@@ -63,16 +66,22 @@ function ppc() {
       if (state.title)               this.title               = state.title
       if (state.subtitle)            this.subtitle            = state.subtitle
       if (state.disabledConstraints) this.disabledConstraints = state.disabledConstraints
+      if (state.customRules)         this.customRules         = state.customRules
+      this.groups      = mergeGroups(state.groups ?? DEFAULT_GROUPS, this.disciplines, this.categories)
+      this.departments = mergeDepartments(state.departments ?? DEFAULT_DEPARTMENTS, this.disciplines)
       this._nextId = Math.max(99, ...this.disciplines.map(d => parseInt(d.id.split('-').pop()) || 0)) + 1
     },
 
-    saveProgress() {
-      localStorage.setItem('ppc-state', JSON.stringify({
+    stateSnapshot() {
+      return {
         disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas,
-        numPeriods: this.numPeriods, categories: this.categories,
+        numPeriods: this.numPeriods, categories: this.categories, departments: this.departments, groups: this.groups,
         title: this.title, subtitle: this.subtitle, disabledConstraints: this.disabledConstraints,
-      }))
+        customRules: this.customRules,
+      }
     },
+
+    saveProgress() { localStorage.setItem('ppc-state', JSON.stringify(this.stateSnapshot())) },
 
     toggleConstraint(id) {
       const idx = this.disabledConstraints.indexOf(id)
@@ -86,12 +95,9 @@ function ppc() {
     disciplineHours(){ return this.disciplines.reduce((s, d) => s + d.hours, 0) },
     totalHours()     { return this.disciplineHours() + this.atividadesAutonomas },
 
-    nucleusHours(n) {
-      return this.disciplines.reduce((s, d) => {
-        if (n === 'III') return s + d.extensao.hours
-        return s + (d.teoria.nucleus === n ? d.teoria.hours : 0) + (d.pratica.nucleus === n ? d.pratica.hours : 0)
-      }, 0)
-    },
+    extensionHours() { return this.nucleusHours(EXTENSION_GROUP) },
+
+    nucleusHours(n) { return this.disciplines.reduce((s, d) => s + groupHours(d, [n]), 0) },
 
     periodMeta(p) {
       const ds = this.disciplinesIn(p)
@@ -120,6 +126,10 @@ function ppc() {
 
     ...ppcDisciplines(),
     ...ppcCategories(),
+    ...ppcDepartments(),
+    ...ppcGroups(),
+    ...ppcRuleBuilder(),
+    ...ppcImageExport(),
     ...ppcHistory(),
     ...ppcSortable(),
   }

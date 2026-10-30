@@ -1,23 +1,8 @@
-// MEC constraint validation checks and constraint summary builder
-const MANDATORY_NAMES = [
-  'Educação das Relações Étnico-Raciais', 'Libras', 'Produção de Texto',
-  'Fundamentos da Educação', 'Educação Brasileira', 'Didática',
-  'Psicologia I', 'Psicologia II', 'Metodologia do Ensino', 'Estágio',
-]
-
-function buildConstraints(app) {
-  const { disciplines: ds, atividadesAutonomas, ordinals } = app
-  const nh  = n => app.nucleusHours(n)
-  const tot = app.disciplineHours()
-  const ead = ds.reduce((s, d) => s + d.hours * ((d.eadPercent ?? 0) / 100), 0)
-
-  const periodOver = []
-  for (let p = 1; p <= app.numPeriods; p++) {
-    const w = app.disciplinesIn(p).reduce((s, d) => s + (d.skipWeekly ? 0 : d.hours), 0) / 15
-    if (w > 28) periodOver.push(`${ordinals[p-1]} (${w.toFixed(1)}h/sem)`)
-  }
-
-  const nonMult = ds.filter(d => d.hours % 15 !== 0).map(d => d.name)
+// Constraint panel list: code-only checks (cw1, c1, c6, c11), fixed and custom rules, and the summary
+function codeChecks(app) {
+  const { disciplines: ds, atividadesAutonomas } = app
+  const tot    = app.disciplineHours()
+  const totalH = tot + atividadesAutonomas
 
   const preqViol = []
   ds.forEach(d => {
@@ -28,20 +13,8 @@ function buildConstraints(app) {
     })
   })
 
-  const missingMandatory = MANDATORY_NAMES.filter(m =>
-    !ds.some(d => d.name.toLowerCase().includes(m.toLowerCase()))
-  )
-
-  const totalH  = tot + atividadesAutonomas
-  const minN3   = Math.ceil(totalH * 0.10)
-  const hasEad  = ds.some(d => (d.eadPercent ?? 0) > 0)
-  const eadViol = ds
-    .filter(d => (d.eadPercent ?? 0) > 0 &&
-      (d.teoria.nucleus === 'IV' || d.pratica.nucleus === 'IV' || d.extensao.hours > 0))
-    .map(d => d.name)
-
   return [
-    ...(hasEad ? [{
+    ...(ds.some(d => (d.eadPercent ?? 0) > 0) ? [{
       id: 'cw1', warn: true, ok: true,
       label: 'Uso Obrigatório de TDIC e AVAs em EaD',
       value: 'O PPC e o Plano de Ensino de cada componente EaD devem prever TDIC, AVA institucional, material didático específico, equipe multidisciplinar, tutoria e experiência docente em EaD.',
@@ -53,56 +26,10 @@ function buildConstraints(app) {
       value: `Atual: ${totalH}h (disciplinas ${tot}h + autônomas ${atividadesAutonomas}h)`,
       detail: 'Resolução CNE/CP Nº 4/2024, §1º: "Os cursos terão, no mínimo, 3.200 horas."',
       detailOpen: false },
-    { id:'c2',  label:'Núcleo I ≥ 880h (Formação Geral)',
-      ok: nh('I') >= 880,
-      value: `Atual: ${nh('I')}h`,
-      detail: 'Resolução CNE/CP Nº 4/2024, §1º, I: "880 horas dedicadas às atividades de formação geral."',
-      detailOpen: false },
-    { id:'c3',  label:'Núcleo II ≥ 1600h (Conhecimentos Específicos)',
-      ok: nh('II') >= 1600,
-      value: `Atual: ${nh('II')}h`,
-      detail: 'Resolução CNE/CP Nº 4/2024, §1º, II: "1.600 horas dedicadas ao estudo de aprofundamento de conhecimentos específicos."',
-      detailOpen: false },
-    { id:'c4',  label:`Núcleo III ≥ ${minN3}h (Extensão — 10% de ${totalH}h)`,
-      ok: nh('III') >= minN3,
-      value: `Atual: ${nh('III')}h — mínimo ${minN3}h. ESO e TCC excluídos da contagem de extensão.`,
-      detail: 'CNE/CP Nº 4/2024, §1º, III: mínimo de 10% da CH total em atividades acadêmicas de extensão. §6º: presencial obrigatório. CEPE/UFRPE 924/2025: ESO, TCC e PFC não contabilizam para extensão.',
-      detailOpen: false },
-    { id:'c5',  label:'Núcleo IV ≥ 400h (Estágio Supervisionado)',
-      ok: nh('IV') >= 400,
-      value: `Atual: ${nh('IV')}h`,
-      detail: 'Resolução CNE/CP Nº 4/2024, §1º, IV: "400 horas dedicadas ao estágio curricular supervisionado." §5º: "deve ser realizado integralmente de forma presencial."',
-      detailOpen: false },
     { id:'c6',  label:'Atividades Autônomas ≥ 120h',
       ok: atividadesAutonomas >= 120,
       value: `Atual: ${atividadesAutonomas}h`,
       detail: 'Resolução CEPE/UFRPE Nº 744/2024: "Nos cursos de Licenciatura, a parcela de carga horária prevista para atividades autônomas deverá alcançar, no mínimo, 120h."',
-      detailOpen: false },
-    { id:'c7',  label:'Carga semanal ≤ 28h/sem por período (noturno)',
-      ok: periodOver.length === 0,
-      value: periodOver.length === 0
-        ? 'Todos os períodos dentro do limite'
-        : `Acima do limite: ${periodOver.join(', ')}`,
-      detail: 'Resolução CEPE/UFRPE Nº 744/2024: "O maior valor da carga horária discente semanal é: III - 28 horas em cursos noturnos." Convenção: 15 semanas por semestre. Disciplinas marcadas como "Excluir do limite semanal" (ESO, TCC) não entram no cômputo.',
-      detailOpen: false },
-    { id:'c8',  label:'CH de cada disciplina é múltiplo de 15h',
-      ok: nonMult.length === 0,
-      value: nonMult.length === 0
-        ? 'Todas as disciplinas em conformidade'
-        : `Violação: ${nonMult.join(', ')}`,
-      detail: 'Resolução CEPE/UFRPE Nº 744/2024: "A carga horária total do componente curricular é sempre múltipla de 15 horas."',
-      detailOpen: false },
-    { id:'c9',  label:'EaD ≤ 40% da CH total',
-      ok: tot === 0 || (ead / tot) <= 0.40,
-      value: `CH EaD: ${Math.round(ead)}h / CH total: ${tot}h = ${tot > 0 ? (ead / tot * 100).toFixed(1) : 0}%`,
-      detail: 'Resolução CEPE/UFRPE Nº 744/2024: "poderão ser ofertados componentes curriculares a distância [...] desde que esta oferta não ultrapasse 40% da carga horária total do curso."',
-      detailOpen: false },
-    { id:'c10', label:'Disciplinas obrigatórias presentes (10 nominadas)',
-      ok: missingMandatory.length === 0,
-      value: missingMandatory.length === 0
-        ? 'Todas presentes'
-        : `Ausentes: ${missingMandatory.join(', ')}`,
-      detail: 'Resolução CEPE/UFRPE Nº 744/2024: "Nos cursos de Licenciatura é obrigatório: a) Ed. das Relações Étnico-Raciais; b) Libras; c) Produção de Texto Acadêmico; d) Fundamentos da Educação; e) Educação Brasileira; f) Didática; g) Psicologia I; h) Psicologia II; i) Metodologia de Ensino; j) ESO."',
       detailOpen: false },
     { id:'c11', label:'Pré-requisitos em períodos anteriores',
       ok: preqViol.length === 0,
@@ -111,27 +38,21 @@ function buildConstraints(app) {
         : `Violações: ${preqViol.join('; ')}`,
       detail: 'Pré-requisito deve estar alocado em período anterior ao da disciplina que o exige.',
       detailOpen: false },
-    { id:'c12', label:'EaD proibido em Estágio e Extensão (presencialidade obrigatória)',
-      ok: eadViol.length === 0,
-      value: eadViol.length === 0
-        ? 'Sem violações'
-        : `Com EaD indevido: ${eadViol.join(', ')}`,
-      detail: 'Resolução CEPE/UFRPE Nº 744/2024, §5º: "O estágio curricular supervisionado deve ser realizado, integralmente, de forma presencial tanto nos cursos presenciais quanto nos cursos ofertados na modalidade a distância." §6º: "As 320 horas destinadas às atividades de extensão devem ser realizadas, integralmente, de forma presencial."',
-      detailOpen: false },
-    ...TRANSVERSAL_THEMES.map((theme, i) => {
-      const count = ds.filter(d => (d.tags ?? []).includes(theme.id)).length
-      return {
-        id: `ct${i + 1}`,
-        label: `[ transversal | multidisciplinar ]\n ${theme.label}`,
-        ok: count >= 2,
-        value: count === 0 ? 'Nenhuma disciplina contém este tema (mínimo: 2)'
-             : count === 1 ? '1 disciplina contém este tema (mínimo: 2)'
-             :               `${count} disciplinas contemplam este tema`,
-        detail: theme.detail,
-        detailOpen: false,
-      }
-    }),
   ]
+}
+
+// cw1 first, then c1..c12 by number, then ct1..ct12 — the order the panel always had
+function fixedRank(id) {
+  if (id === 'cw1') return 0
+  const n = parseInt(id.replace(/^\D+/, ''))
+  return id.startsWith('ct') ? 100 + n : n
+}
+
+function buildConstraints(app) {
+  const fixed  = [...codeChecks(app), ...fixedRules().map(r => evaluateRule(app, r))]
+    .sort((a, b) => fixedRank(a.id) - fixedRank(b.id))
+  const custom = [...app.customRules].reverse().map(r => evaluateRule(app, r))
+  return [...custom, ...fixed]
 }
 
 function buildConstraintSummary(app) {

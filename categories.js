@@ -5,6 +5,7 @@ function ppcCategories() {
 
     openCategoriesModal() {
       this._stagingCategories = JSON.parse(JSON.stringify(this.categories))
+      this._stagingGroups     = JSON.parse(JSON.stringify(this.groups))
       document.getElementById('categories-modal').showModal()
     },
 
@@ -17,15 +18,17 @@ function ppcCategories() {
       })
       if (Object.keys(colorMap).length)
         this.disciplines.forEach(d => { if (colorMap[d.color]) d.color = colorMap[d.color] })
-      const order = { I: 0, II: 1, III: 2, IV: 3 }
-      this.categories = this._stagingCategories.sort((a, b) => (order[a.nucleus] ?? 9) - (order[b.nucleus] ?? 9))
+      this.groups     = this._stagingGroups
+      this.categories = this._stagingCategories.sort((a, b) => this.groupIndex(a.nucleus) - this.groupIndex(b.nucleus))
       this._stagingCategories = null
+      this._stagingGroups     = null
       document.getElementById('categories-modal').close()
       this.saveProgress()
     },
 
     closeCategoriesModal() {
       this._stagingCategories = null
+      this._stagingGroups     = null
       document.getElementById('categories-modal').close()
     },
 
@@ -33,7 +36,7 @@ function ppcCategories() {
       const used  = new Set(this._stagingCategories.map(c => c.value))
       const color = PALETTE.find(c => !used.has(c)) ?? 'blue'
       const id    = `cat-${this._nextCatId++}`
-      this._stagingCategories.push({ id, value: color, label: 'Nova categoria', nucleus: 'II' })
+      this._stagingCategories.push({ id, value: color, label: 'Nova categoria', nucleus: this.defaultGroup() })
     },
 
     deleteStagingCategory(idx) { this._stagingCategories.splice(idx, 1) },
@@ -58,11 +61,7 @@ function ppcCategories() {
       const defaultName = `grade-${new Date().toISOString().slice(0, 10)}.json`
       const name = prompt('Nome do arquivo:', defaultName)
       if (name === null) return
-      const payload = JSON.stringify({
-        disciplines: this.disciplines, atividadesAutonomas: this.atividadesAutonomas,
-        numPeriods: this.numPeriods, categories: this.categories,
-        title: this.title, subtitle: this.subtitle,
-      }, null, 2)
+      const payload = JSON.stringify(this.stateSnapshot(), null, 2)
       const a = Object.assign(document.createElement('a'), {
         href:     URL.createObjectURL(new Blob([payload], { type: 'application/json' })),
         download: name.endsWith('.json') ? name : name + '.json',

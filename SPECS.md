@@ -9,11 +9,11 @@
   name:          string,
   period:        number,          // 1–N semester column
   hours:         number,          // total = teoria.hours + pratica.hours + extensao.hours
-  teoria:        { hours: number, nucleus: 'I'|'II'|'IV' },
-  pratica:       { hours: number, nucleus: 'I'|'II'|'IV' },
-  extensao:      { hours: number, nucleus: 'III' },  // nucleus always III
+  teoria:        { hours: number, nucleus: string },  // an hour-group id, never the Extensão group
+  pratica:       { hours: number, nucleus: string },
+  extensao:      { hours: number, nucleus: 'III' },  // always the Extensão group
   prerequisites: string[],        // ids of disciplines required in earlier periods
-  department:    string,          // DC | DED | DM | DL | DLCH | Outro
+  department:    string,          // one of state.departments
   color:         string,          // CSS class key matching a category value
   isElective:    boolean,         // true when category label === 'Optativa'
   eadPercent:    number,          // 0–100; % of hours delivered remotely
@@ -31,10 +31,25 @@
   id:      string,   // stable (e.g. 'cat-1') — never changes even if color changes
   value:   string,   // CSS class key (e.g. 'blue', 'salmon') — can change
   label:   string,   // display name; locked for 4 built-ins
-  nucleus: 'I'|'II'|'III'|'IV',
+  nucleus: string,   // hour-group id
   locked:  boolean,  // true → name not editable; color still editable
 }
 ```
+
+### Hour group
+`{ id, label, locked? }`. Defaults are the MEC nuclei I–IV (`groups.js`); `III` is the Extensão group, locked,
+and receives every `extensao.hours`. New groups get `g-<n>`. A group cannot be deleted while a discipline
+allocates hours to it, a category points to it, or an enabled rule filters by it.
+
+### Rule
+```js
+{ id, fixed?, each?, scope: 'course'|'period'|'discipline',
+  filter: { kind: 'all'|'category'|'group'|'department'|'theme'|'name', value },
+  measure: 'hours'|'weekly'|'count'|'ead', op: 'min'|'max'|'multiple', value: number, unit: 'h'|'%',
+  label, detail }
+```
+`unit: '%'` = percent of total course hours including atividades autônomas. A group filter counts only the
+hours allocated to that group. `each` (fixed only) checks every listed filter value on its own.
 
 **Locked categories (name fixed):** Formação docente (I), Optativa (II), Extensão (III), Estágio (IV).
 
@@ -49,6 +64,9 @@
   subtitle:            string,
   constraintOpen:      boolean,
   disabledConstraints: string[],   // constraint ids toggled off by the user
+  departments:         string[],   // dropdown list; old JSON → defaults ∪ departments in use
+  groups:              HourGroup[],
+  customRules:         Rule[],     // user-built, shown on top, newest first, deletable (ids r-<n>)
 }
 ```
 
@@ -56,30 +74,14 @@
 
 ## Constraints
 
-All constraints are computed by `buildConstraints(app)` in `constraints.js`.
-Each returns `{ id, label, ok, value, detail, warn?, detailOpen }`.
+`buildConstraints(app)` in `constraints.js` returns custom rules (newest first), then the fixed list in id order.
+Code-only checks: cw1 (EaD warning), c1 (CH total ≥ 3200h), c6 (autônomas ≥ 120h), c11 (prerequisites earlier).
+Every other fixed check is a Rule in `fixed-rules.js`, evaluated by `evaluateRule` in `rules.js` — the same
+engine the "Criar restrição" builder writes to: c2/c3/c5 group ≥ N h, c4 Extensão ≥ 10%, c7 ≤ 28h/sem per
+period, c8 multiple of 15h, c9 EaD ≤ 40%, c10 ten mandatory names (`each`), c12 no EaD in groups IV/III,
+ct1–ct12 ≥ 2 disciplines per transversal theme. `tests/rules.test.js` pins the verdicts.
 
-| id  | Rule | Note |
-|-----|------|------|
-| cw1 | EaD — aviso sobre TDIC/AVA obrigatório | warn only; shown when any EaD > 0 |
-| c1  | CH Total ≥ 3200h | disciplines + atividadesAutonomas |
-| c2  | Núcleo I ≥ 880h | teoria/prática hours where nucleus='I' |
-| c3  | Núcleo II ≥ 1600h | teoria/prática hours where nucleus='II' |
-| c4  | Núcleo III ≥ 10% da CH total | extensao.hours; ESO/TCC excluded |
-| c5  | Núcleo IV ≥ 400h | teoria/prática hours where nucleus='IV' |
-| c6  | Atividades Autônomas ≥ 120h | atividadesAutonomas |
-| c7  | Carga semanal ≤ 28h/sem por período | sum(hours)/15; skipWeekly excluded |
-| c8  | CH de cada disciplina é múltiplo de 15h | d.hours % 15 === 0 |
-| c9  | EaD ≤ 40% da CH total | sum(hours * eadPercent/100) / sum(hours) |
-| c10 | 10 disciplinas obrigatórias presentes | name-match against fixed list |
-| c11 | Pré-requisitos em períodos anteriores | prereq.period < d.period |
-| c12 | EaD proibido em Estágio e Extensão | nucleus IV or extensao.hours > 0 → eadPercent must be 0 |
-| ct1–ct12 | Temas transversais (≥ 2 disciplinas por tema) | d.tags includes theme.id |
-
-**Mandatory discipline list (c10):**
-Educação das Relações Étnico-Raciais, Libras, Produção de Texto,
-Fundamentos da Educação, Educação Brasileira, Didática,
-Psicologia I, Psicologia II, Metodologia do Ensino, Estágio.
+Known defect: name matching is substring, so "Psicologia II" also satisfies "Psicologia I".
 
 ---
 
@@ -93,16 +95,25 @@ Psicologia I, Psicologia II, Metodologia do Ensino, Estágio.
 
 ### Edit Modal
 - **Name** — locked when category is Optativa.
-- **Department / Período** — free dropdowns.
+- **Department** — list from state; last option "＋ Novo departamento…" prompts for an acronym (case-insensitive dedupe).
+- **Período** — dropdown.
 - **Elective mode** (category = Optativa): single CH Total field + nucleus selector; prereqs, transversal themes, and skipWeekly hidden.
 - **Normal mode**: Teoria / Prática / Extensão hour inputs with per-component nucleus selectors; total validated as multiple of 15.
 - **Categoria / Cor** — dropdown filters to categories matching current nucleus usage; changing to Optativa auto-sets name and clears prereqs/tags.
 - **Pré-requisitos** — checkbox list of other non-elective disciplines.
-- **Temas Transversais** — 12 theme checkboxes (from `transversal-themes.js`).
+- **Temas Transversais** — one checkbox per theme whose constraint is enabled; section hidden when none is.
 - **EaD %** — always visible; blocks save if nucleus IV or extensão > 0.
 
+### Rule Builder
+- "＋ Criar restrição" between the panel title and the list opens `#rule-modal`: Em cada · Considerando (+ qual) · Medir · Regra · Valor.
+- Only valid combinations are offered (`MEASURES_BY_SCOPE`, `OPS_BY_MEASURE`; % only for course hours). A live sentence previews the rule and is the default title.
+- Custom rows get "deletar" under "ver lei".
+
+### Image Export
+- PNG and SVG beside "Gerar PDF" (`html-to-image`). Renders a clone stripped of Alpine attributes, toolbar and sidebar. The SVG wraps HTML in a `foreignObject`: browsers render it, vector editors do not.
+
 ### Categories Modal
-- Lists all categories with color picker (11 swatches), editable label (locked for built-ins), nucleus selector (locked for built-ins).
+- Top section edits hour groups (add, rename, delete). Below, it lists all categories with color picker (11 swatches), editable label (locked for built-ins), nucleus selector (locked for built-ins).
 - Saving remaps `d.color` on all disciplines atomically (single-pass) to prevent chained-swap corruption.
 - Auto-sorts categories by nucleus order on save.
 
